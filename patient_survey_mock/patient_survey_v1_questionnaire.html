@@ -32,7 +32,7 @@
   <p>デモ版です。回答は保存・送信されません。</p>
 </header>
 <main>
-  <section class="card">
+  <section class="card" id="intro">
     <h2>この版での改善意図</h2>
     <ul><li>入院導入と外来導入の5段階vignette比較を中心に置いた。</li><li>BHTMではなくDCE/DCMへ進む前段として、政策的コアである「入院NG・外来OK」層を見える化した。</li></ul>
     <button onclick="start()">回答を開始</button>
@@ -55,7 +55,15 @@
 const dceTasks = [{"a": ["外来導入", "週1回通院", "訪問看護あり", "簡易チェック", "採血場所を選べる", "異常時は入院切替あり"], "b": ["入院導入", "週2回通院", "家族確認", "詳細チェック", "通常採血", "電話相談後に翌日受診"]}, {"a": ["外来導入", "週2回通院", "訪問看護あり", "詳細チェック", "通常採血", "異常時は入院切替あり"], "b": ["外来導入", "週1回通院", "自己確認", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["入院導入", "病棟内管理", "医療者確認", "詳細チェック", "院内採血", "異常時は入院継続"], "b": ["外来導入", "週1回通院", "訪問看護あり", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["外来導入", "週2回通院", "家族確認", "簡易チェック", "通常採血", "電話相談後に翌日受診"], "b": ["外来導入", "週1回通院", "訪問看護あり", "詳細チェック", "採血場所を選べる", "異常時は入院切替あり"]}];
 const answers = {};
 let idx = 0;
+const clozapineIntro = `
+  <h2>クロザピンについて</h2>
+  <p>クロザピンは、ほかの抗精神病薬を十分に使っても症状や生活のしづらさが残る場合に使われることがある薬です。すべての方に必要な薬ではありませんが、治療がうまく進みにくい統合失調症の方では、症状や生活機能の改善が期待できることがあります。</p>
+  <p>一方で、クロザピンには注意が必要な副作用があります。白血球が減る副作用、発熱や炎症、心臓への影響、強い眠気、便秘、体重増加、動悸などに注意します。そのため、開始時には採血、体温や脈拍の確認、体調変化があった時の連絡が必要になります。</p>
+  <p>日本では、クロザピンは入院して開始されることが一般的です。この調査では、入院で始める方法と、外来に通いながら始める方法について、どのような条件なら受け入れやすいかをお聞きします。</p>
+  <p class="note">この画面は調査用の説明です。実際にクロザピンを始めるかどうかは、主治医と相談して決めるものです。このデモでは回答は保存されません。</p>
+`;
 const steps = [
+  {id:'clozapine_info', title:'情報提供', type:'info', html: clozapineIntro},
   {id:'eligibility', title:'対象確認', type:'radio', q:'現在クロザピンを使用中、または過去に使用したことがありますか？', opts:['ない','ある','わからない']},
   {id:'current', title:'現在の治療への認識', type:'radio', q:'現在の治療で「安定しているが、本当はもっと良くなりたい」という感覚に近いですか？', opts:['かなり近い','やや近い','どちらともいえない','あまり近くない','近くない']},
   {id:'inpatient', title:'Vignette 1: 入院導入', type:'radio', q:'クロザピンを入院して開始する方法を、どの程度受け入れられますか？', opts:['受けたい','前向きに考えたい','迷う','あまり受けたくない','受けたくない']},
@@ -75,7 +83,9 @@ function render() {
   document.getElementById('back').style.visibility = idx === 0 ? 'hidden' : 'visible';
   document.getElementById('next').textContent = idx === steps.length - 1 ? '完了' : '次へ';
   let html = '<h2>'+s.title+'</h2>';
-  if (s.type === 'radio') {
+  if (s.type === 'info') {
+    html += s.html;
+  } else if (s.type === 'radio') {
     html += '<p>'+s.q+'</p>' + s.opts.map(o => `<label class="choice"><input type="radio" name="${s.id}" value="${o}" ${answers[s.id]===o?'checked':''}>${o}</label>`).join('');
   } else if (s.type === 'checks') {
     html += '<p>'+s.q+'</p>' + s.opts.map(o => `<label class="choice"><input type="checkbox" name="${s.id}" value="${o}" ${(answers[s.id]||[]).includes(o)?'checked':''}>${o}</label>`).join('');
@@ -91,7 +101,9 @@ function render() {
 }
 function collect() {
   const s = steps[idx];
-  if (s.type === 'radio' || s.type === 'dce') {
+  if (s.type === 'info') {
+    answers[s.id] = '表示済み';
+  } else if (s.type === 'radio' || s.type === 'dce') {
     const el = document.querySelector(`input[name="${s.id}"]:checked`);
     if (!el) return false;
     answers[s.id] = el.value;
