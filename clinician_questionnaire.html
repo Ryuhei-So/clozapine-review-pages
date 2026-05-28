@@ -1068,24 +1068,82 @@
       resetMgafDomain("function");
       updateMgafScores();
     }
+    function seriousOrDangerSymptomPresent() {
+      const persistentDanger = [
+        symptomValue("symptomPresence_suicide") === "明確な死亡期待を伴う重篤な自殺行為",
+        symptomValue("symptomPresence_violenceSelfHarm") === "頻回の重い暴力または自傷",
+        symptomValue("symptomPresence_agitation") === "極度の躁性興奮、または極度の焦燥・衝動性",
+        symptomValue("symptomPresence_hygiene") === "最小限の身辺衛生を持続的に保てない",
+        symptomValue("symptomPresence_emergencyAdmission") === "持続的に精神科病院への緊急入院を要する状態",
+        symptomValue("symptomPresence_physicalDanger") === "急性・重篤な身体的危険"
+      ].some(Boolean);
+      const someDanger = [
+        symptomValue("symptomPresence_suicide") === "明確な死亡期待を伴わない自殺企図",
+        symptomValue("symptomPresence_violenceSelfHarm") === "重い暴力または自傷行為が一部ある",
+        symptomValue("symptomPresence_agitation") === "重い躁性興奮、または重い焦燥・衝動性",
+        symptomValue("symptomPresence_hygiene") === "時々、最小限の身辺衛生を保てない",
+        symptomValue("symptomPresence_emergencyAdmission") === "一時的または断続的に精神科病院への緊急入院を要する状態",
+        symptomValue("symptomPresence_physicalDanger") === "身体的危険が一部ある"
+      ].some(Boolean);
+      const unique21 = [
+        symptomValue("symptomPresence_suicide") === "自殺への没頭または明確な準備がある",
+        symptomIncludes("symptomPresence_psychosis", "行動が妄想または幻覚にかなり影響されている"),
+        symptomIncludes("symptomPresence_psychosis", "重いコミュニケーション障害がある")
+      ].some(Boolean);
+      const seriousDomains = [
+        symptomValue("symptomPresence_seriousDomains").length > 0,
+        symptomIncludes("symptomPresence_psychosis", "幻覚・妄想・重い強迫儀式など"),
+        symptomValue("symptomPresence_suicide") === "受動的な希死念慮"
+      ].some(Boolean);
+      return persistentDanger || someDanger || unique21 || seriousDomains;
+    }
+    function p1StepGroups() {
+      const steps = [];
+      symptomPresenceGroups.forEach((group, index) => {
+        const name = group.name;
+        if (name === "symptomPresence_moderateImpact") {
+          if (!seriousOrDangerSymptomPresent() && symptomValue("symptomPresence_moderate").length) steps.push({ type: "symptom", index });
+          return;
+        }
+        if (name === "symptomPresence_mildType") {
+          if (!seriousOrDangerSymptomPresent() && !symptomValue("symptomPresence_moderate").length) steps.push({ type: "symptom", index });
+          return;
+        }
+        if (name === "symptomPresence_mildImpact") {
+          if (!seriousOrDangerSymptomPresent() && !symptomValue("symptomPresence_moderate").length && symptomValue("symptomPresence_mildType")) steps.push({ type: "symptom", index });
+          return;
+        }
+        if (name === "symptomPresence_minimal") {
+          if (!seriousOrDangerSymptomPresent() && !symptomValue("symptomPresence_moderate").length && !symptomValue("symptomPresence_mildType")) steps.push({ type: "symptom", index });
+          return;
+        }
+        steps.push({ type: "symptom", index });
+      });
+      steps.push({ type: "function" }, { type: "scores" });
+      return steps;
+    }
     function p1TotalSubsteps() {
-      return symptomPresenceGroups.length + 2;
+      return p1StepGroups().length;
     }
     function p1StepLabel() {
-      if (p1SubstepIndex < symptomPresenceGroups.length) return `mGAF-S: ${symptomPresenceGroups[p1SubstepIndex].title}`;
-      if (p1SubstepIndex === symptomPresenceGroups.length) return "mGAF-Function";
+      const step = p1StepGroups()[p1SubstepIndex];
+      if (!step) return "";
+      if (step.type === "symptom") return `mGAF-S: ${symptomPresenceGroups[step.index].title}`;
+      if (step.type === "function") return "mGAF-Function";
       return "スコア確認";
     }
     function renderP1Substep(keepIndex = true) {
       if (!byId("p1PanelSymptomPresence")) return;
       if (!keepIndex) p1SubstepIndex = 0;
-      const total = p1TotalSubsteps();
+      const steps = p1StepGroups();
+      const total = steps.length;
       p1SubstepIndex = Math.max(0, Math.min(p1SubstepIndex, total - 1));
+      const step = steps[p1SubstepIndex];
       document.querySelectorAll(".p1-panel").forEach(panel => panel.classList.remove("active"));
-      if (p1SubstepIndex < symptomPresenceGroups.length) {
+      if (step.type === "symptom") {
         byId("p1PanelSymptomPresence").classList.add("active");
-        renderSymptomPresenceItems(p1SubstepIndex);
-      } else if (p1SubstepIndex === symptomPresenceGroups.length) {
+        renderSymptomPresenceItems(step.index);
+      } else if (step.type === "function") {
         byId("p1PanelFunctionScore").classList.add("active");
       } else {
         byId("p1PanelScores").classList.add("active");
@@ -1099,22 +1157,19 @@
       msg.textContent = "";
       msg.className = "message";
       captureSymptomPresenceFromDom();
-      if (symptomPresenceGroups[p1SubstepIndex] && symptomPresenceGroups[p1SubstepIndex].name === "symptomPresence_moderateImpact" && symptomValue("symptomPresence_moderate").length && !symptomValue("symptomPresence_moderateImpact")) {
+      const currentStep = p1StepGroups()[p1SubstepIndex];
+      const currentGroup = currentStep && currentStep.type === "symptom" ? symptomPresenceGroups[currentStep.index] : null;
+      if (currentGroup && currentGroup.name === "symptomPresence_moderateImpact" && symptomValue("symptomPresence_moderate").length && !symptomValue("symptomPresence_moderateImpact")) {
         msg.textContent = "中等度症状がある場合の影響範囲を選択してください。";
         msg.className = "message err";
         return false;
       }
-      if (symptomPresenceGroups[p1SubstepIndex] && symptomPresenceGroups[p1SubstepIndex].name === "symptomPresence_mildImpact" && symptomValue("symptomPresence_mildType") && !symptomValue("symptomPresence_mildImpact")) {
+      if (currentGroup && currentGroup.name === "symptomPresence_mildImpact" && symptomValue("symptomPresence_mildType") && !symptomValue("symptomPresence_mildImpact")) {
         msg.textContent = "軽い症状がある場合の影響範囲を選択してください。";
         msg.className = "message err";
         return false;
       }
-      if (p1SubstepIndex === symptomPresenceGroups.length - 1 && !computeMgafSymptomFromProfile()) {
-        msg.textContent = "mGAF-Symptomの自動採点に必要な症状項目を確認してください。";
-        msg.className = "message err";
-        return false;
-      }
-      if (p1SubstepIndex === symptomPresenceGroups.length && !byId("mgafFunction").value) {
+      if (currentStep && currentStep.type === "function" && !byId("mgafFunction").value) {
         msg.textContent = "mGAF-Functionを完了してください。";
         msg.className = "message err";
         return false;
