@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>主治医調査 図表モック</title>
+  <style>
+    :root { --ink:#17212b; --muted:#5d6773; --line:#cfd6df; --soft:#f5f7fa; --accent:#2f6f7e; --page:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#eef1f4; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif; line-height:1.62; }
+    header { background:var(--page); border-bottom:1px solid var(--line); padding:30px 36px 22px; }
+    main { max-width:1120px; margin:0 auto; padding:24px 20px 56px; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    h2 { margin:0 0 14px; font-size:22px; letter-spacing:0; }
+    p { margin:8px 0; }
+    .subtitle,.note,.footnote { color:var(--muted); }
+    .note { max-width:1120px; margin:14px auto 0; font-size:14px; }
+    section { background:var(--page); border:1px solid var(--line); border-radius:8px; padding:24px 26px; margin:18px 0; }
+    .panel { border-left:4px solid var(--accent); background:var(--soft); padding:12px 14px; margin:12px 0 18px; color:#26323f; }
+    table { width:100%; border-collapse:collapse; margin:12px 0 8px; font-size:14px; }
+    caption { caption-side:top; text-align:left; font-weight:700; font-size:15px; margin-bottom:6px; }
+    th,td { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:7px 9px; vertical-align:top; }
+    th { background:#f0f3f6; font-weight:650; text-align:left; }
+    td.num, th.num { text-align:right; white-space:nowrap; }
+    .footnote { font-size:12.5px; margin-top:6px; }
+    figure { margin:18px 0 6px; padding:0; }
+    figure img { width:100%; height:auto; display:block; background:#fff; border:1px solid var(--line); border-radius:6px; }
+    figcaption { margin-top:8px; font-size:14px; color:var(--ink); }
+    figcaption strong { display:block; margin-bottom:3px; }
+    .mock-label { display:inline-block; border:1px solid var(--line); color:var(--muted); background:#fff; border-radius:999px; padding:2px 8px; font-size:12px; margin-left:6px; font-weight:500; }
+    .subhead td { background:#f8fafc; font-weight:700; color:#26323f; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>主治医調査 図表モック <span class="mock-label">CSV生成</span></h1>
+    <p class="subtitle">クロザピン潜在ニーズに関する主治医評価調査の投稿用図表案</p>
+    <p class="note">このHTMLは <code>scripts/generate_clinician_figures_mock.py</code> により、<code>mock_data/*.csv</code> から生成。数値はすべてダミーデータ。</p>
+  </header>
+  <main>
+    <section>
+      <h2>推奨図表セット</h2>
+      <div class="panel">図表間の整合性を保つため、医師CSV、患者CSV、理由CSV、RCT効果CSV、モデル結果CSVからHTMLとSVGを再生成する構成にした。図3は表2に示した患者特徴のみを対象とし、図4として主治医特徴と主治医判断の関連を示すフォレストプロットを配置した。</div>
+      <table>
+        <caption>表S0. 主治医調査論文の推奨図表セット</caption>
+        <tr><th>表示</th><th>主な目的</th><th>本文/補足</th></tr>
+        <tr><td>図1</td><td>外来患者からクロザピン適応相当症例までの抽出フローを示す</td><td>本文</td></tr>
+        <tr><td>表1</td><td>回答した精神科医の背景を示す</td><td>本文</td></tr>
+        <tr><td>表2</td><td>精神科医が評価したクロザピン適応相当症例の患者背景を示す</td><td>本文</td></tr>
+        <tr><td>図2</td><td>クロザピン適応相当症例から入院/外来導入推奨、患者受容見込みまでを実数で示す</td><td>本文</td></tr>
+        <tr><td>図3</td><td>表2の患者特徴と外来導入推奨・積極検討との関連を示す</td><td>本文</td></tr>
+        <tr><td>図4</td><td>主治医特徴と主治医判断アウトカムとの関連を示す</td><td>本文</td></tr>
+        <tr><td>図5</td><td>積極検討しない理由を、医師判断と医師が想像する患者判断に分けて示す</td><td>本文</td></tr>
+        <tr><td>表3</td><td>患者受容性情報、自殺予防情報、外来導入頻度シナリオのfactorial RCT効果推定を示す</td><td>補足または本文</td></tr>
+        <tr><td>補足図S1</td><td>図2の主要回答に関する医師間ばらつきを小パネルで示す</td><td>補足</td></tr>
+        <tr><td>補足表S1</td><td>積極検討しない理由の詳細数値を示す</td><td>補足</td></tr>
+      </table>
+    </section>
+
+    <section><h2>図1. 対象者抽出フロー</h2><figure><img src="mock_data/figures/fig1_flow.svg" alt="対象者抽出フロー"><figcaption><strong>図1. 患者単位のスクリーニングと主治医評価によるクロザピン候補性。</strong>ダミーデータ。クロザピン適応相当患者のうち、主治医が入院導入または外来導入を積極的に検討する患者と保留する患者を示す。</figcaption></figure></section>
+    <section><h2>表1. 回答した精神科医の背景</h2><table>
+<caption>表1. 回答した精神科医の背景</caption>
+<tr><th>項目</th><th>全体<br>n = 50</th><th>岡山<br>n = 31</th><th>山梨<br>n = 19</th></tr>
+<tr><td>精神科経験年数, 中央値 (IQR)</td><td class="num">12 (6-16)</td><td class="num">13 (8-17)</td><td class="num">12 (6-14)</td></tr>
+<tr><td>精神科専門医, n (%)</td><td class="num">42 (84.0)</td><td class="num">27 (87.1)</td><td class="num">15 (78.9)</td></tr>
+<tr><td>精神保健指定医, n (%)</td><td class="num">38 (76.0)</td><td class="num">24 (77.4)</td><td class="num">14 (73.7)</td></tr>
+<tr><td>過去のクロザピン導入症例数, 中央値 (IQR)</td><td class="num">2 (1-4)</td><td class="num">3 (2-5)</td><td class="num">2 (1-3)</td></tr>
+<tr><td>現在担当しているクロザピン処方患者数, 中央値 (IQR)</td><td class="num">1 (0-2)</td><td class="num">1 (0-2)</td><td class="num">1 (0-2)</td></tr>
+<tr><td>精神科医1名あたり評価患者数, 中央値 (IQR)</td><td class="num">21 (13-33)</td><td class="num">20 (14-32)</td><td class="num">22 (12-32)</td></tr>
+</table><p class="footnote">値はダミーデータ。各精神科医に担当患者リストを提示し、患者単位の主治医評価を回答してもらう。</p></section>
+    <section><h2>表2. 患者背景</h2><table>
+<caption>表2. 精神科医が評価したクロザピン適応相当患者の背景</caption>
+<tr><th>項目</th><th>全体<br>n = 186</th><th>積極検討あり<br>n = 89</th><th>積極検討なし/保留<br>n = 97</th></tr>
+<tr><td>年齢, 歳, 中央値 (IQR)</td><td class="num">46 (36-52)</td><td class="num">43 (34-50)</td><td class="num">48 (39-54)</td></tr>
+<tr><td>女性, n (%)</td><td class="num">81 (43.5)</td><td class="num">36 (40.4)</td><td class="num">45 (46.4)</td></tr>
+<tr><td>罹病期間, 年, 中央値 (IQR)</td><td class="num">19 (12-29)</td><td class="num">16 (9-25)</td><td class="num">23 (14-32)</td></tr>
+<tr><td>mGAF-Symptom, 中央値 (IQR)</td><td class="num">46 (36-57)</td><td class="num">45 (35-55)</td><td class="num">46 (37-60)</td></tr>
+<tr><td>mGAF-Function, 中央値 (IQR)</td><td class="num">49 (40-64)</td><td class="num">49 (39-62)</td><td class="num">50 (40-66)</td></tr>
+<tr><td>mGAF低い方, 中央値 (IQR)</td><td class="num">40 (33-47)</td><td class="num">40 (33-47)</td><td class="num">40 (35-47)</td></tr>
+<tr><td>自殺への没頭または明確な準備, n (%)</td><td class="num">56 (30.1)</td><td class="num">30 (33.7)</td><td class="num">26 (26.8)</td></tr>
+<tr><td>行動が妄想・幻覚にかなり影響, n (%)</td><td class="num">132 (71.0)</td><td class="num">67 (75.3)</td><td class="num">65 (67.0)</td></tr>
+<tr><td>重いコミュニケーション障害, n (%)</td><td class="num">72 (38.7)</td><td class="num">32 (36.0)</td><td class="num">40 (41.2)</td></tr>
+<tr><td>判断・思考・気分・不安の重い障害, n (%)</td><td class="num">158 (84.9)</td><td class="num">80 (89.9)</td><td class="num">78 (80.4)</td></tr>
+<tr><td>幻覚・妄想・重い強迫儀式など, n (%)</td><td class="num">141 (75.8)</td><td class="num">75 (84.3)</td><td class="num">66 (68.0)</td></tr>
+<tr><td>受動的な希死念慮, n (%)</td><td class="num">72 (38.7)</td><td class="num">37 (41.6)</td><td class="num">35 (36.1)</td></tr>
+<tr><td>仕事・学業・家事の重い障害, n (%)</td><td class="num">122 (65.6)</td><td class="num">58 (65.2)</td><td class="num">64 (66.0)</td></tr>
+<tr><td>法律上の問題または攻撃的行動, n (%)</td><td class="num">83 (44.6)</td><td class="num">38 (42.7)</td><td class="num">45 (46.4)</td></tr>
+<tr><td>友人関係の重い障害, n (%)</td><td class="num">127 (68.3)</td><td class="num">61 (68.5)</td><td class="num">66 (68.0)</td></tr>
+<tr><td>家族関係の重い障害または住居なし, n (%)</td><td class="num">116 (62.4)</td><td class="num">58 (65.2)</td><td class="num">58 (59.8)</td></tr>
+<tr><td>過去の精神科入院回数, 中央値 (IQR)</td><td class="num">3 (2-5)</td><td class="num">3 (2-5)</td><td class="num">3 (2-4)</td></tr>
+<tr><td>直近入院からの月数, 中央値 (IQR)</td><td class="num">20 (12-30)</td><td class="num">20 (13-33)</td><td class="num">19 (12-28)</td></tr>
+<tr><td>現在LAI使用中, n (%)</td><td class="num">58 (31.2)</td><td class="num">30 (33.7)</td><td class="num">28 (28.9)</td></tr>
+<tr><td>過去のクロザピン拒否記載あり, n (%)</td><td class="num">29 (15.6)</td><td class="num">7 (7.9)</td><td class="num">22 (22.7)</td></tr>
+</table><p class="footnote">値はダミーデータ。mGAF-SymptomとmGAF-Functionは別々に集計し、mGAF入力時にチェックされた各項目も二値変数として集計する。IQR, 四分位範囲; LAI, 持効性注射製剤。</p></section>
+    <section><h2>図2. 主治医評価による潜在ニーズと導入推奨</h2><figure><img src="mock_data/figures/fig2_counts.svg" alt="主治医評価による潜在ニーズと導入推奨"><figcaption><strong>図2. 主治医評価による潜在ニーズと導入推奨の実数表示。</strong>ダミーデータ。実数で示すことで、統合失調症外来患者、クロザピン適応相当、導入推奨、受容見込みの規模を示す。</figcaption></figure></section>
+    <section><h2>図3. 患者特徴と主治医判断との関連</h2><figure><img src="mock_data/figures/fig3_patient_factor_forest.svg" alt="患者因子フォレストプロット"><figcaption><strong>図3. 表2に示した患者特徴と主治医評価による外来導入推奨および積極検討との関連。</strong>各行は1つの患者特徴のみを固定効果として含み、主治医のランダム切片を含めるモデルを想定する。因果推論ではなく記述的な探索モデルとして扱う。</figcaption></figure></section>
+    <section><h2>図4. 主治医特徴と主治医判断との関連</h2><figure><img src="mock_data/figures/figS2_physician_factor_forest.svg" alt="主治医特徴フォレストプロット"><figcaption><strong>図4. 主治医特徴と主治医判断アウトカムとの関連。</strong>各行は1つの主治医特徴のみを固定効果として含み、患者構成の違いを考慮するためmGAF-Symptom、mGAF-Function、主要なmGAFチェック項目を共変量に含めるモデルを想定する。主治医内相関は主治医ランダム切片で考慮する。</figcaption></figure></section>
+    <section><h2>図5. クロザピンを積極検討しない理由</h2><figure><img src="mock_data/figures/fig4_reasons.svg" alt="クロザピンを積極検討しない理由"><figcaption><strong>図5. クロザピン適応相当患者でクロザピンを積極検討しない理由。</strong>医師側の判断と、医師が想像する患者側の判断を分けて示す。詳細な数値は補足表S1に示す。</figcaption></figure></section>
+    <section><h2>補足表S1. クロザピンを積極検討しない理由の詳細</h2><table>
+<caption>補足表S1. クロザピン適応相当患者でクロザピンを積極検討しない理由</caption><tr><th>理由カテゴリ</th><th class="num">主な理由<br>n = 97</th><th class="num">副次的理由<br>n = 97</th></tr><tr class="subhead"><td>医師側の判断</td><td class="num"></td><td class="num"></td></tr><tr><td>Stably well / 十分治療されている</td><td class="num">12 (12.4)</td><td class="num">22 (22.7)</td></tr><tr><td>Stably unwell / 低機能だが安定</td><td class="num">19 (19.6)</td><td class="num">41 (42.3)</td></tr><tr><td>改善見込みが乏しい / beyond clozapine</td><td class="num">16 (16.5)</td><td class="num">35 (36.1)</td></tr><tr><td>有害事象・忍容性への懸念</td><td class="num">10 (10.3)</td><td class="num">27 (27.8)</td></tr><tr><td>服薬遵守・連絡・支援体制への懸念</td><td class="num">8 (8.2)</td><td class="num">31 (32.0)</td></tr><tr class="subhead"><td>医師が想像する患者側の判断</td><td class="num"></td><td class="num"></td></tr><tr><td>入院が困難または受け入れ困難</td><td class="num">11 (11.3)</td><td class="num">30 (30.9)</td></tr><tr><td>採血・受診の負担</td><td class="num">8 (8.2)</td><td class="num">28 (28.9)</td></tr><tr><td>副作用への懸念</td><td class="num">7 (7.2)</td><td class="num">25 (25.8)</td></tr><tr><td>期待される有用性の理解が難しい</td><td class="num">6 (6.2)</td><td class="num">19 (19.6)</td></tr></table><p class="footnote">値はn (%)。主な理由は1つのみ、副次的理由は複数選択可。患者拒否/拒否見込みそのものは独立した理由として集計せず、医師が想像する患者側理由の下位カテゴリとして表示する。</p></section>
+    <section><h2>表3. 質問紙内factorial RCTの効果推定</h2><table>
+<caption>表3. 主治医質問紙に組み込む2 x 2 x 2 factorial RCTの効果推定</caption><tr><th>介入とアウトカム</th><th class="num">介入群<br>n / N (%)</th><th class="num">対照群<br>n / N (%)</th><th class="num">群間差<br>ポイント (95% CI)</th></tr><tr class="subhead"><td>Patient-willingness evidence: Shown / Not shown</td><td class="num"></td><td class="num"></td><td class="num"></td></tr><tr><td>外来導入を勧めたい</td><td class="num">59 / 96 (61.5)</td><td class="num">45 / 90 (50.0)</td><td class="num">+11.5 (-2.7 to +25.7)</td></tr><tr><td>患者受け入れ見込みあり</td><td class="num">45 / 96 (46.9)</td><td class="num">31 / 90 (34.4)</td><td class="num">+12.4 (-1.6 to +26.4)</td></tr><tr><td>クロザピン積極検討あり</td><td class="num">53 / 96 (55.2)</td><td class="num">36 / 90 (40.0)</td><td class="num">+15.2 (+1.0 to +29.4)</td></tr><tr class="subhead"><td>Suicide-prevention evidence: Shown / Not shown</td><td class="num"></td><td class="num"></td><td class="num"></td></tr><tr><td>外来導入を勧めたい</td><td class="num">61 / 94 (64.9)</td><td class="num">43 / 92 (46.7)</td><td class="num">+18.2 (+4.1 to +32.2)</td></tr><tr><td>患者受け入れ見込みあり</td><td class="num">43 / 94 (45.7)</td><td class="num">33 / 92 (35.9)</td><td class="num">+9.9 (-4.2 to +23.9)</td></tr><tr><td>クロザピン積極検討あり</td><td class="num">55 / 94 (58.5)</td><td class="num">34 / 92 (37.0)</td><td class="num">+21.6 (+7.5 to +35.6)</td></tr><tr class="subhead"><td>Outpatient visit frequency during first 6 weeks: once-weekly / twice-weekly</td><td class="num"></td><td class="num"></td><td class="num"></td></tr><tr><td>外来導入を勧めたい</td><td class="num">57 / 93 (61.3)</td><td class="num">47 / 93 (50.5)</td><td class="num">+10.8 (-3.4 to +24.9)</td></tr><tr><td>患者受け入れ見込みあり</td><td class="num">42 / 93 (45.2)</td><td class="num">34 / 93 (36.6)</td><td class="num">+8.6 (-5.5 to +22.7)</td></tr><tr><td>クロザピン積極検討あり</td><td class="num">48 / 93 (51.6)</td><td class="num">41 / 93 (44.1)</td><td class="num">+7.5 (-6.8 to +21.8)</td></tr></table><p class="footnote">群間差はパーセンテージポイントで示す。3つのプロンプトは、患者受容性情報の提示有無、自殺予防情報の提示有無、外来導入シナリオにおける最初6週間の受診頻度（週1回/週2回）として独立にランダム化する。</p></section>
+    <section><h2>補足図S1. 図2の主要回答における医師間ばらつき</h2><figure><img src="mock_data/figures/figS1_physician_variation.svg" alt="医師間ばらつき"><figcaption><strong>補足図S1. 図2の主要回答における医師間ばらつき。</strong>各点は精神科医1名を示す。横軸は医師ごとの該当割合であり、縦位置は点の重なりを避けるためのジッターで、主治医IDや順位を表すものではない。小さい分母による0%/100%の過度な強調を避けるため、表示割合は安定化したデモ値を用いる。</figcaption></figure></section>
+  </main>
+</body>
+</html>

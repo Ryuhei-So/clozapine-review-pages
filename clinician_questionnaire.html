@@ -1,0 +1,1581 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>主治医調査 インタラクティブ質問票</title>
+  <style>
+    :root {
+      --ink:#17212b;
+      --muted:#5d6773;
+      --line:#cfd6df;
+      --soft:#f5f7fa;
+      --accent:#2f6f7e;
+      --accent-2:#d76f30;
+      --danger:#b42318;
+      --ok:#1f7a4d;
+      --page:#fff;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      color:var(--ink);
+      background:#eef1f4;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;
+      line-height:1.62;
+    }
+    header {
+      background:var(--page);
+      border-bottom:1px solid var(--line);
+      padding:28px 36px 20px;
+    }
+    main { max-width:1120px; margin:0 auto; padding:22px 20px 56px; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    h2 { margin:0 0 14px; font-size:22px; letter-spacing:0; }
+    h3 { margin:18px 0 10px; font-size:17px; letter-spacing:0; }
+    p { margin:8px 0; }
+    section {
+      background:var(--page);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:24px 26px;
+      margin:18px 0;
+    }
+    label { font-weight:650; display:block; margin:0 0 6px; }
+    input[type="number"], input[type="text"], select {
+      width:100%;
+      min-height:40px;
+      border:1px solid var(--line);
+      border-radius:6px;
+      padding:8px 10px;
+      font:inherit;
+      background:#fff;
+    }
+    button {
+      border:1px solid var(--accent);
+      border-radius:6px;
+      background:var(--accent);
+      color:#fff;
+      font-weight:700;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
+      min-height:44px;
+      touch-action:manipulation;
+    }
+    button.secondary { background:#fff; color:var(--accent); }
+    button:disabled { background:#c3ccd6; border-color:#c3ccd6; cursor:not-allowed; }
+    .subtitle,.note,.help,.small { color:var(--muted); }
+    .note { max-width:1120px; margin:12px auto 0; font-size:14px; }
+    .small { font-size:12.5px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+    .two-col { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .panel {
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      margin:12px 0 16px;
+      color:#26323f;
+    }
+    .evidence {
+      border:1px solid #bcd3d9;
+      border-left:4px solid var(--accent);
+      background:#f2f8fa;
+      border-radius:8px;
+      padding:14px 16px;
+      margin:12px 0 14px;
+    }
+    .regimen {
+      border:1px solid #ead0bc;
+      border-left:4px solid var(--accent-2);
+      background:#fff8f2;
+      border-radius:8px;
+      padding:14px 16px;
+      margin:12px 0 14px;
+    }
+    .quiz {
+      border:1px solid #e2c56f;
+      background:#fff9e8;
+      border-radius:8px;
+      padding:14px 16px;
+      margin:12px 0 14px;
+    }
+    .question {
+      border-top:1px solid var(--line);
+      padding:14px 0;
+    }
+    .question:first-of-type { border-top:0; }
+    .q-title { font-weight:750; margin-bottom:8px; }
+    .required { color:var(--danger); font-weight:750; }
+    .radio-row, .check-row {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:8px;
+    }
+    .choice {
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      border:1px solid var(--line);
+      border-radius:6px;
+      background:#fff;
+      padding:9px 10px;
+      font-weight:500;
+      cursor:pointer;
+      min-height:44px;
+    }
+    .choice input { margin-top:5px; }
+    .choice.disabled {
+      color:var(--muted);
+      background:#f1f4f7;
+      cursor:not-allowed;
+    }
+    .scale { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+    .scale .choice { min-height:72px; justify-content:center; text-align:center; font-size:13px; }
+    .status {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      margin-top:12px;
+    }
+    .pill {
+      display:inline-block;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:2px 9px;
+      color:var(--muted);
+      background:#fff;
+      font-size:12px;
+      font-weight:650;
+    }
+    .pill.ok { color:var(--ok); border-color:#b7d8c8; background:#f1faf5; }
+    .pill.warn { color:#8a5a00; border-color:#ebd188; background:#fff9e8; }
+    .page { display:none; }
+    .page.active { display:block; }
+    .page-nav {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:18px;
+      padding-top:14px;
+      border-top:1px solid var(--line);
+    }
+    #patientAnswerArea.wizard-mode > .question,
+    #patientAnswerArea.wizard-mode #eligibleBlock > .question,
+    #patientAnswerArea.wizard-mode #settingBlock > .question,
+    #patientAnswerArea.wizard-mode #inpatientRecommendationBlock > .question,
+    #patientAnswerArea.wizard-mode #reasonBlock > .question,
+    #patientAnswerArea.wizard-mode #mgafScreenNotice {
+      display:none;
+    }
+    #patientAnswerArea.wizard-mode .wizard-current {
+      display:block !important;
+    }
+    .patient-step-nav {
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:10px;
+      align-items:center;
+      margin:14px 0;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+    }
+    .patient-step-nav .step-count {
+      text-align:center;
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .stepper {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+    .step {
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:4px 10px;
+      color:var(--muted);
+      background:#fff;
+      font-size:13px;
+      font-weight:650;
+    }
+    .step.current { color:#fff; background:var(--accent); border-color:var(--accent); }
+    .patient-card {
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .patient-card.done { border-color:#b7d8c8; background:#f7fcf9; }
+    .patient-card h3 { margin:0; font-size:16px; }
+    .patient-card .meta { color:var(--muted); font-size:13px; }
+    .answer-area { margin-top:14px; }
+    .score-board {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .score-box {
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      padding:10px 12px;
+    }
+    .score-box strong { display:block; font-size:13px; color:var(--muted); }
+    .score-value { font-size:24px; font-weight:800; margin-top:2px; }
+    .mgaf-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:14px;
+      margin-top:10px;
+    }
+    .mgaf-card {
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      padding:14px;
+    }
+    .mgaf-card h3 { margin:0 0 8px; font-size:16px; }
+    .p1-panel { display:none; }
+    .p1-panel.active { display:block; }
+    .p1-panel .score-board { margin-top:0; }
+    .mgaf-subsection {
+      border-top:1px solid var(--line);
+      margin-top:14px;
+      padding-top:14px;
+    }
+    .symptom-presence {
+      display:grid;
+      gap:12px;
+    }
+    .symptom-group {
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:10px;
+      background:#fff;
+    }
+    .symptom-group-title {
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .symptom-group .radio-row,
+    .symptom-group .check-row {
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    }
+    .mgaf-question { font-weight:750; margin:8px 0 10px; }
+    .mgaf-options { display:grid; gap:8px; }
+    .mgaf-options button {
+      text-align:left;
+      background:#fff;
+      color:var(--ink);
+      border-color:var(--line);
+      font-weight:650;
+    }
+    .mgaf-options button:hover { border-color:var(--accent); }
+    .mgaf-result {
+      border:1px solid #b7d8c8;
+      border-radius:8px;
+      background:#f1faf5;
+      padding:10px 12px;
+      margin-top:10px;
+    }
+    .hidden { display:none !important; }
+    .message {
+      min-height:28px;
+      margin-top:10px;
+      font-weight:650;
+    }
+    .message.ok { color:var(--ok); }
+    .message.err { color:var(--danger); }
+    table { width:100%; border-collapse:collapse; margin:12px 0 8px; font-size:14px; }
+    th,td { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:7px 9px; vertical-align:top; }
+    th { background:#f0f3f6; font-weight:650; text-align:left; }
+    code {
+      background:#eef2f5;
+      border:1px solid #dde4ea;
+      border-radius:4px;
+      padding:1px 4px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:0.92em;
+    }
+    @media (max-width:760px) {
+      header { padding:24px 20px 18px; }
+      main { padding:18px 12px 42px; }
+      section { padding:20px 16px; }
+      .two-col { grid-template-columns:1fr; }
+      .scale { grid-template-columns:1fr; }
+      .grid { grid-template-columns:1fr; }
+      .radio-row, .check-row { grid-template-columns:1fr; }
+      .mgaf-grid { grid-template-columns:1fr; }
+      .score-board { grid-template-columns:1fr; }
+      .page-nav, .status { display:grid; grid-template-columns:1fr; }
+      .patient-step-nav { grid-template-columns:1fr; }
+      .patient-step-nav .step-count { order:-1; }
+      .page-nav button, .status button, .patient-card button { width:100%; }
+      .patient-step-nav button { width:100%; }
+      .choice { padding:12px 12px; }
+      .choice input { width:18px; height:18px; }
+      .mgaf-options button { width:100%; padding:12px 12px; }
+      h1 { font-size:24px; }
+      h2 { font-size:20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>主治医調査 インタラクティブ質問票</h1>
+    <p class="subtitle">クロザピン外来導入の潜在ニーズに関する主治医評価調査</p>
+    <p class="note">患者ID・患者背景・処方歴・入院歴は研究事務局が事前入力する想定。主治医は臨床判断のみ回答する。</p>
+  </header>
+
+  <main>
+    <div class="stepper" aria-label="進行状況">
+      <span class="step" data-step="pagePhysician">1. 医師属性</span>
+      <span class="step" data-step="pageInstructions">2. 教示</span>
+      <span class="step" data-step="pageList">3. 患者一覧</span>
+      <span class="step" data-step="pagePatient">4. 患者回答</span>
+    </div>
+
+    <form id="surveyForm">
+      <section id="pagePhysician" class="page active">
+        <h2>1. 精神科医本人の属性</h2>
+        <p class="help">初回のみ回答してください。施設名、主治医ID、対象患者リストは研究事務局で事前設定する想定です。</p>
+        <div class="grid">
+          <div>
+            <label for="experienceYears">精神科医としての経験年数 <span class="required">*</span></label>
+            <input id="experienceYears" name="experienceYears" type="number" min="0" max="60" placeholder="例: 12">
+          </div>
+          <div>
+            <label for="boardCertified">精神科専門医資格 <span class="required">*</span></label>
+            <select id="boardCertified" name="boardCertified">
+              <option value="">選択してください</option>
+              <option>あり</option>
+              <option>なし</option>
+            </select>
+          </div>
+          <div>
+            <label for="designatedPsychiatrist">精神保健指定医資格 <span class="required">*</span></label>
+            <select id="designatedPsychiatrist" name="designatedPsychiatrist">
+              <option value="">選択してください</option>
+              <option>あり</option>
+              <option>なし</option>
+            </select>
+          </div>
+          <div>
+            <label for="clozapineInitiations">過去のクロザピン導入症例数 <span class="required">*</span></label>
+            <input id="clozapineInitiations" name="clozapineInitiations" type="number" min="0" max="999" placeholder="例: 3">
+          </div>
+          <div>
+            <label for="currentClozapinePatients">現在担当しているクロザピン処方患者数 <span class="required">*</span></label>
+            <input id="currentClozapinePatients" name="currentClozapinePatients" type="number" min="0" max="999" placeholder="例: 1">
+          </div>
+        </div>
+        <div id="physicianMessage" class="message"></div>
+        <div class="page-nav">
+          <button type="button" id="toInstructions">次へ: 教示</button>
+        </div>
+      </section>
+
+      <section id="pageInstructions" class="page">
+        <h2>2. 教示</h2>
+        <div class="panel">
+          担当患者リストから患者を選び、患者ごとに回答します。患者ID、患者背景、処方歴、入院歴、LAI使用、過去の拒否記載などは研究側が事前入力・抽出する想定です。主治医は、mGAF、適応相当判定、積極検討有無、導入形態、受け入れ見込み、理由のみ回答します。
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <strong>回答の進み方</strong>
+            <p>各患者について、画面に表示される質問に沿って回答してください。回答内容に応じて、次に必要な質問だけが表示されます。</p>
+          </div>
+          <div class="panel">
+            <strong>回答前の前提条件</strong>
+            <p>このページで回答セッション全体に共通する前提条件を確認します。患者ごとの回答画面では再表示しません。</p>
+          </div>
+        </div>
+        <div id="instructionSection">
+          <h3>回答前の確認</h3>
+          <p class="help">以下の内容を確認してから、患者一覧へ進んでください。この前提条件は、この回答セッションの全患者に共通です。</p>
+          <div class="status hidden">
+            <span id="evidenceBadge" class="pill"></span>
+            <span id="suicideEvidenceBadge" class="pill"></span>
+            <span id="regimenBadge" class="pill"></span>
+          </div>
+          <div id="evidenceBox" class="evidence"></div>
+          <div id="evidenceQuiz" class="quiz hidden">
+            <div class="q-title">確認問題1: 上の説明として正しいものを選んでください。</div>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="quizEvidence" value="correct">医師が十分治療されていると判断していても、提案されればクロザピンを受け入れる患者がいる</label>
+              <label class="choice"><input type="radio" name="quizEvidence" value="wrong1">クロザピン適格患者は、ほぼ全員がクロザピンを拒否する</label>
+              <label class="choice"><input type="radio" name="quizEvidence" value="wrong2">採血はすべての患者にとって唯一の障壁である</label>
+            </div>
+          </div>
+          <div id="suicideEvidenceBox" class="evidence hidden"></div>
+          <div id="suicideEvidenceQuiz" class="quiz hidden">
+            <div class="q-title">確認問題: 上の説明として正しいものを選んでください。</div>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="quizSuicideEvidence" value="correct">クロザピンは、統合失調症または統合失調感情障害における自殺企図・自殺リスク低減について、抗精神病薬の中でも特に強いエビデンスを持つ</label>
+              <label class="choice"><input type="radio" name="quizSuicideEvidence" value="wrong1">クロザピンには自殺リスク低減に関する臨床試験やガイドライン上の根拠はほとんどない</label>
+              <label class="choice"><input type="radio" name="quizSuicideEvidence" value="wrong2">自殺リスクが高い患者では、クロザピンは原則として避けるべき薬剤である</label>
+            </div>
+          </div>
+          <div id="regimenBox" class="regimen"></div>
+          <div id="regimenQuiz" class="quiz">
+            <div class="q-title">確認問題2: この回答セッションで想定する外来導入開始後6週間の受診頻度を選んでください。</div>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="quizRegimen" value="once">週1回</label>
+              <label class="choice"><input type="radio" name="quizRegimen" value="twice">週2回</label>
+            </div>
+          </div>
+          <button type="button" id="confirmInstructions">教示を確認</button>
+          <div id="quizMessage" class="message"></div>
+        </div>
+        <div class="page-nav">
+          <button type="button" class="secondary" data-goto="pagePhysician">戻る</button>
+          <button type="button" id="toPatientList">次へ: 患者一覧</button>
+        </div>
+      </section>
+
+      <section id="pageList" class="page">
+        <h2>3. 患者一覧</h2>
+        <p class="help">回答済みかどうかを確認しながら、患者を選んで回答してください。</p>
+        <div id="listProgress" class="status"></div>
+        <div id="patientPager" class="status"></div>
+        <div id="patientList" class="grid"></div>
+        <div class="page-nav">
+          <button type="button" class="secondary" data-goto="pageInstructions">戻る</button>
+        </div>
+      </section>
+
+      <section id="pagePatient" class="page">
+        <h2>4. 患者ごとの回答</h2>
+        <div id="patientMeta" class="panel"></div>
+        <div id="patientAnswerArea" class="answer-area">
+          <p class="help">この画面で医師が回答するのは、mGAF、適応相当判定、導入推奨、受け入れ見込み、積極検討しない理由のみです。</p>
+
+          <div class="question">
+            <div class="q-title">P1. 現在のmGAF <span class="required">*</span></div>
+            <input id="mgafSymptom" name="mgafSymptom" type="hidden">
+            <input id="mgafFunction" name="mgafFunction" type="hidden">
+            <div id="p1SubstepMessage" class="message"></div>
+            <div id="p1PanelSymptomScore" class="mgaf-card p1-panel">
+              <h3>mGAF-Symptom</h3>
+              <div id="mgafSymptomWizard"></div>
+            </div>
+            <div id="p1PanelSymptomPresence" class="mgaf-card p1-panel">
+              <h3 id="symptomPresenceTitle">現在みられる症状</h3>
+              <p class="small">mGAF-Symptomの点数にかかわらず、症状有無の解析に使うため、該当するものを選択してください。階層性のある項目は、矛盾を避けるため1つだけ選択します。</p>
+              <div id="symptomPresenceItems" class="symptom-presence"></div>
+            </div>
+            <div id="p1PanelFunctionScore" class="mgaf-card p1-panel">
+              <h3>mGAF-Function</h3>
+              <div id="mgafFunctionWizard"></div>
+            </div>
+            <div id="p1PanelScores" class="p1-panel">
+              <div class="score-board">
+                <div class="score-box"><strong>mGAF-S</strong><div id="mgafSymptomScore" class="score-value">--</div></div>
+                <div class="score-box"><strong>mGAF-F</strong><div id="mgafFunctionScore" class="score-value">--</div></div>
+                <div class="score-box"><strong>参考: 低い方</strong><div id="mgafCompositeScore" class="score-value">--</div></div>
+              </div>
+              <p class="small">mGAF-SとmGAF-Fは別々に保存・集計する。各選択肢は範囲の低い値で採点し、参考値として低い方も自動表示する。</p>
+            </div>
+            <div id="p1SubNav" class="patient-step-nav">
+              <button type="button" id="prevP1Substep" class="secondary">前へ</button>
+              <div id="p1SubstepCount" class="step-count"></div>
+              <button type="button" id="nextP1Substep">次へ</button>
+            </div>
+          </div>
+
+          <div id="mgafScreenNotice" class="panel hidden">
+            mGAF-Functionが41点以上のため、日本の治療抵抗性統合失調症の操作的基準は満たさないものとして、この患者の回答はここで終了します。
+          </div>
+
+          <div id="eligibilityQuestion" class="question">
+            <div class="q-title">P2. 操作的定義にもとづくクロザピン適応相当と考えますか <span class="required">*</span></div>
+            <div class="radio-row">
+              <label class="choice"><input type="radio" name="eligible" value="yes">はい</label>
+              <label class="choice"><input type="radio" name="eligible" value="no">いいえ</label>
+              <label class="choice"><input type="radio" name="eligible" value="unknown">判断困難</label>
+            </div>
+            <p class="small">「いいえ」または「判断困難」の場合、この患者の回答はここで終了できます。</p>
+          </div>
+
+          <div id="eligibleBlock" class="hidden">
+            <div class="question">
+              <div class="q-title">P3. 過去にクロザピン導入を提案し、患者本人または家族に拒否された記録・明確な記憶がありますか <span class="required">*</span></div>
+              <div class="radio-row">
+                <label class="choice"><input type="radio" name="priorRefusal" value="inpatient">はい、入院導入を提案して拒否された</label>
+                <label class="choice"><input type="radio" name="priorRefusal" value="outpatient">はい、外来導入を提案して拒否された</label>
+                <label class="choice"><input type="radio" name="priorRefusal" value="unspecified">はい、導入形態は不明または未区分</label>
+                <label class="choice"><input type="radio" name="priorRefusal" value="no">いいえ</label>
+                <label class="choice"><input type="radio" name="priorRefusal" value="unknown">不明</label>
+              </div>
+            </div>
+
+            <div class="question">
+              <div class="q-title">P4. 総合すると、この患者についてクロザピン導入を積極的に検討したいと思いますか <span class="required">*</span></div>
+              <div class="radio-row">
+                <label class="choice"><input type="radio" name="activeConsider" value="yes">はい</label>
+                <label class="choice"><input type="radio" name="activeConsider" value="no">いいえ</label>
+                <label class="choice"><input type="radio" name="activeConsider" value="hold">保留・判断困難</label>
+              </div>
+              <p class="small">「いいえ」または「保留・判断困難」の場合、導入形態の詳細は聞かず、理由の回答へ進みます。</p>
+            </div>
+
+            <div id="settingBlock" class="hidden">
+              <div id="inpatientRecommendationBlock">
+                <div class="question">
+                  <div class="q-title">P5. 現時点で、入院でのクロザピン導入を勧めたいと思いますか <span class="required">*</span></div>
+                  <div class="radio-row">
+                    <label class="choice"><input type="radio" name="recommendInpatient" value="yes">はい</label>
+                    <label class="choice"><input type="radio" name="recommendInpatient" value="no">いいえ</label>
+                    <label class="choice"><input type="radio" name="recommendInpatient" value="hold">保留・判断困難</label>
+                  </div>
+                </div>
+                <div id="acceptInpatientBlock" class="question hidden">
+                  <div class="q-title">P6. 入院での導入を提案した場合、患者本人は受け入れると思いますか</div>
+                  <div class="radio-row">
+                    <label class="choice"><input type="radio" name="acceptInpatient" value="yes">受け入れると思う</label>
+                    <label class="choice"><input type="radio" name="acceptInpatient" value="no">受け入れないと思う</label>
+                    <label class="choice"><input type="radio" name="acceptInpatient" value="unknown">判断困難</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="question">
+                <div class="q-title">P7. 現時点で、外来でのクロザピン導入を勧めたいと思いますか <span class="required">*</span></div>
+                <div class="radio-row">
+                  <label class="choice"><input type="radio" name="recommendOutpatient" value="yes">はい</label>
+                  <label class="choice"><input type="radio" name="recommendOutpatient" value="no">いいえ</label>
+                  <label class="choice"><input type="radio" name="recommendOutpatient" value="hold">保留・判断困難</label>
+                </div>
+              </div>
+
+              <div id="acceptOutpatientBlock" class="question hidden">
+                <div class="q-title">P8. 外来での導入を提案した場合、患者本人は受け入れると思いますか</div>
+                <div class="radio-row">
+                  <label class="choice"><input type="radio" name="acceptOutpatient" value="yes">受け入れると思う</label>
+                  <label class="choice"><input type="radio" name="acceptOutpatient" value="no">受け入れないと思う</label>
+                  <label class="choice"><input type="radio" name="acceptOutpatient" value="unknown">判断困難</label>
+                </div>
+              </div>
+            </div>
+
+            <div id="reasonBlock" class="hidden">
+              <div class="question">
+                <div class="q-title">P9. クロザピン導入を積極的に検討しない、または保留する主な理由を1つ選んでください <span class="required">*</span></div>
+                <select id="primaryReason" name="primaryReason">
+                  <option value="">選択してください</option>
+                  <option>Stably well / 十分治療されている</option>
+                  <option>Stably unwell / 低機能だが安定している</option>
+                  <option>改善見込みが乏しい / beyond clozapine</option>
+                  <option>有害事象・忍容性への懸念</option>
+                  <option>服薬遵守・連絡・支援体制への懸念</option>
+                  <option>患者側: 入院が困難または受け入れ困難</option>
+                  <option>患者側: 採血・受診の負担</option>
+                  <option>患者側: 副作用への懸念</option>
+                  <option>患者側: 期待される有用性の理解が難しい</option>
+                </select>
+              </div>
+              <div class="question">
+                <div class="q-title">P10. 副次的理由があれば選んでください <span class="pill">複数選択可</span></div>
+                <div id="secondaryReasons" class="check-row"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="patientStepNav" class="patient-step-nav">
+            <button type="button" id="prevPatientStep" class="secondary">前へ</button>
+            <div id="patientStepCount" class="step-count"></div>
+            <button type="button" id="nextPatientStep">次へ</button>
+          </div>
+
+          <div id="patientSaveActions" class="status hidden">
+            <button type="button" id="savePatient">この患者の回答を保存</button>
+            <button type="button" id="resetPatient" class="secondary">この患者の回答をリセット</button>
+          </div>
+          <div id="saveMessage" class="message"></div>
+          <div id="postSaveNav" class="page-nav hidden">
+            <button type="button" id="nextPatient">次の未回答患者へ</button>
+            <button type="button" id="backToList" class="secondary">患者一覧へ戻る</button>
+          </div>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <script>
+    const patients = [
+      { id:"P0001", age:39, sex:"男性", diagnosis:"統合失調症", facility:"岡山", lai:"あり", admissions:3, lastAdmission:"18か月前", priorAp:"4剤", priorRefusal:"記載なし" },
+      { id:"P0002", age:52, sex:"女性", diagnosis:"統合失調症", facility:"岡山", lai:"なし", admissions:5, lastAdmission:"7か月前", priorAp:"5剤", priorRefusal:"入院導入拒否の記載あり" },
+      { id:"P0003", age:34, sex:"男性", diagnosis:"統合失調症", facility:"山梨", lai:"あり", admissions:2, lastAdmission:"31か月前", priorAp:"3剤", priorRefusal:"記載なし" },
+      { id:"P0004", age:45, sex:"女性", diagnosis:"統合失調症", facility:"山梨", lai:"なし", admissions:1, lastAdmission:"54か月前", priorAp:"2剤", priorRefusal:"不明" }
+    ];
+
+    const mgafSymptomOptions = [
+      { score: 88, range: "88-90", label: "症状なし、または日常的問題のみ" },
+      { score: 84, range: "84-87", label: "ごく軽微な症状、日常的問題なし" },
+      { score: 81, range: "81-83", label: "ごく軽微な症状と日常的問題" },
+      { score: 78, range: "78-80", label: "一過性の軽い症状、社会/仕事/学業の問題なし" },
+      { score: 74, range: "74-77", label: "一過性の軽い症状、複数領域に軽い影響" },
+      { score: 71, range: "71-73", label: "一過性の軽い症状、社会・仕事・学業に影響" },
+      { score: 68, range: "68-70", label: "持続する軽い症状、機能問題は乏しい" },
+      { score: 64, range: "64-67", label: "持続する軽い症状、複数領域に軽い困難" },
+      { score: 61, range: "61-63", label: "持続する軽い症状、社会・仕事・学業に困難" },
+      { score: 58, range: "58-60", label: "中等度症状、機能困難は軽度以下" },
+      { score: 54, range: "54-57", label: "中等度症状、複数領域に中等度困難" },
+      { score: 51, range: "51-53", label: "中等度症状、社会・仕事・学業に中等度困難" },
+      { score: 46, range: "46-50", label: "重い症状が1領域" },
+      { score: 41, range: "41-45", label: "重い症状が2領域" },
+      { score: 36, range: "36-40", label: "重い症状が3領域" },
+      { score: 31, range: "31-35", label: "重い症状が4領域" },
+      { score: 26, range: "26-30", label: "ほぼ全領域で機能不能、複合項目5つ" },
+      { score: 21, range: "21-25", label: "妄想/幻覚に著しく影響された行動、自殺への没頭、重度コミュニケーション障害、または複合項目6つ" },
+      { score: 18, range: "18-20", label: "自傷他害などの危険が一部あり、該当1-2項目" },
+      { score: 14, range: "14-17", label: "自傷他害などの危険が一部あり、該当3-4項目" },
+      { score: 11, range: "11-13", label: "自傷他害などの危険が一部あり、該当5-6項目" },
+      { score: 8, range: "8-10", label: "重篤な自傷他害リスクが持続、該当1-2項目" },
+      { score: 4, range: "4-7", label: "重篤な自傷他害リスクが持続、該当3-4項目" },
+      { score: 1, range: "1-3", label: "重篤な自傷他害リスクが持続、該当5-6項目" }
+    ];
+    const mgafFunctionOptions = [
+      { score: 88, range: "88-90", label: "全領域で良好、生活に満足、日常的問題のみ" },
+      { score: 84, range: "84-87", label: "日常的問題はあるが症状なし" },
+      { score: 81, range: "81-83", label: "ごく軽微な症状と日常的問題" },
+      { score: 78, range: "78-80", label: "一過性の軽い社会/仕事/学業機能低下、症状なし" },
+      { score: 74, range: "74-77", label: "一過性の軽い機能低下と軽い症状、複数領域" },
+      { score: 71, range: "71-73", label: "一過性の軽い機能低下と軽い症状、社会・仕事・学業" },
+      { score: 68, range: "68-70", label: "持続する軽い機能困難、意味ある対人関係あり" },
+      { score: 64, range: "64-67", label: "持続する軽い機能困難と症状、複数領域" },
+      { score: 61, range: "61-63", label: "持続する軽い機能困難と症状、社会・仕事・学業" },
+      { score: 58, range: "58-60", label: "中等度の社会/仕事/学業機能低下、症状は軽度" },
+      { score: 54, range: "54-57", label: "中等度の機能低下と中等度症状、複数領域" },
+      { score: 51, range: "51-53", label: "中等度の機能低下と中等度症状、社会・仕事・学業" },
+      { score: 44, range: "44-50", label: "主要な機能障害が1領域" },
+      { score: 37, range: "37-43", label: "主要な機能障害が2領域" },
+      { score: 31, range: "31-36", label: "主要な機能障害が3領域" },
+      { score: 21, range: "21-30", label: "主要な機能障害が4領域" },
+      { score: 18, range: "18-20", label: "自傷他害などの危険または最小限の衛生保持困難、該当1-2項目" },
+      { score: 14, range: "14-17", label: "自傷他害などの危険または最小限の衛生保持困難、該当3-4項目" },
+      { score: 11, range: "11-13", label: "自傷他害などの危険または最小限の衛生保持困難、該当5-6項目" },
+      { score: 8, range: "8-10", label: "重篤な危険が持続、該当1-2項目" },
+      { score: 4, range: "4-7", label: "重篤な危険が持続、該当3-4項目" },
+      { score: 1, range: "1-3", label: "重篤な危険が持続、該当5-6項目" }
+    ];
+    const reasonOptions = [
+      "Stably well / 十分治療されている",
+      "Stably unwell / 低機能だが安定している",
+      "改善見込みが乏しい / beyond clozapine",
+      "有害事象・忍容性への懸念",
+      "服薬遵守・連絡・支援体制への懸念",
+      "患者側: 入院が困難または受け入れ困難",
+      "患者側: 採血・受診の負担",
+      "患者側: 副作用への懸念",
+      "患者側: 期待される有用性の理解が難しい"
+    ];
+    const symptomPresenceGroups = [
+      {
+        title: "自殺・自傷",
+        type: "radio",
+        name: "symptomPresence_suicide",
+        options: [
+          ["", "なし"],
+          ["受動的な希死念慮", "受動的な希死念慮"],
+          ["自殺への没頭または明確な準備がある", "自殺への没頭/準備"],
+          ["明確な死亡期待を伴わない自殺企図", "死亡期待なしの自殺企図"],
+          ["明確な死亡期待を伴う重篤な自殺行為", "死亡期待ありの重篤な自殺行為"]
+        ]
+      },
+      {
+        title: "躁性興奮・焦燥・衝動性",
+        type: "radio",
+        name: "symptomPresence_agitation",
+        options: [
+          ["", "なし"],
+          ["重い躁性興奮、または重い焦燥・衝動性", "重い"],
+          ["極度の躁性興奮、または極度の焦燥・衝動性", "極度"]
+        ]
+      },
+      {
+        title: "身辺衛生",
+        type: "radio",
+        name: "symptomPresence_hygiene",
+        options: [
+          ["", "なし"],
+          ["時々、最小限の身辺衛生を保てない", "時々保てない"],
+          ["最小限の身辺衛生を持続的に保てない", "持続的に保てない"]
+        ]
+      },
+      {
+        title: "精神科病院への緊急入院相当",
+        type: "radio",
+        name: "symptomPresence_emergencyAdmission",
+        options: [
+          ["", "なし"],
+          ["一時的または断続的に精神科病院への緊急入院を要する状態", "一時的/断続的"],
+          ["持続的に精神科病院への緊急入院を要する状態", "持続的"]
+        ]
+      },
+      {
+        title: "身体的危険",
+        type: "radio",
+        name: "symptomPresence_physicalDanger",
+        options: [
+          ["", "なし"],
+          ["身体的危険が一部ある", "一部あり"],
+          ["急性・重篤な身体的危険", "急性・重篤"]
+        ]
+      },
+      {
+        title: "精神病症状・コミュニケーション",
+        type: "checkbox",
+        name: "symptomPresence_psychosis",
+        options: [
+          "行動が妄想または幻覚にかなり影響されている",
+          "重いコミュニケーション障害がある",
+          "幻覚・妄想・重い強迫儀式など"
+        ]
+      },
+      {
+        title: "重い症状領域",
+        type: "checkbox",
+        name: "symptomPresence_seriousDomains",
+        options: [
+          "判断の重い障害",
+          "思考の重い障害",
+          "気分の重い障害",
+          "不安による重い障害"
+        ]
+      },
+      {
+        title: "中等度症状",
+        type: "checkbox",
+        name: "symptomPresence_moderate",
+        options: [
+          "頻回の中等度抑うつまたは不眠",
+          "反すう",
+          "時々の不安発作",
+          "平板な感情"
+        ]
+      }
+    ];
+    const answers = {};
+    let currentPatient = null;
+    let physicianAssignment = null;
+    let instructionConfirmed = false;
+    let patientListIndex = 0;
+    let patientStepIndex = 0;
+    let p1SubstepIndex = 0;
+    const symptomPresenceState = {};
+    const mgafState = {
+      symptom: { step: "dangerPersistent", score: null, label: "", checkedItems: {}, history: [] },
+      function: { step: "dangerPersistent", score: null, label: "", checkedItems: {}, history: [] }
+    };
+    const mgafFlows = {
+      symptom: {
+        dangerPersistent: {
+          q: "重篤な自傷他害リスク、極度の興奮、最小限の衛生保持不能、または急性・重篤な身体的危険が持続していますか？",
+          options: [
+            { text: "はい: 該当1-2項目", score: 8, label: "1-10 重篤な危険が持続、該当1-2項目" },
+            { text: "はい: 該当3-4項目", score: 4, label: "1-10 重篤な危険が持続、該当3-4項目" },
+            { text: "はい: 該当5-6項目", score: 1, label: "1-10 重篤な危険が持続、該当5-6項目" },
+            { text: "いいえ", next: "dangerSome" }
+          ]
+        },
+        dangerSome: {
+          q: "自殺企図、重い暴力/自傷、重い躁性興奮、時々の衛生保持困難、緊急入院相当、または身体的危険が一部ありますか？",
+          options: [
+            { text: "はい: 該当1-2項目", score: 18, label: "11-20 危険が一部あり、該当1-2項目" },
+            { text: "はい: 該当3-4項目", score: 14, label: "11-20 危険が一部あり、該当3-4項目" },
+            { text: "はい: 該当5-6項目", score: 11, label: "11-20 危険が一部あり、該当5-6項目" },
+            { text: "いいえ", next: "unique21" }
+          ]
+        },
+        unique21: { q: "以下のいずれかに該当しますか？" },
+        seriousCount: {
+          q: "重い症状領域はいくつありますか？判断、思考、気分、不安、幻覚/妄想/強迫、希死念慮を数えます。",
+          options: [
+            { text: "0領域", next: "moderate" },
+            { text: "1領域", score: 46, label: "31-50 重い症状が1領域" },
+            { text: "2領域", score: 41, label: "31-50 重い症状が2領域" },
+            { text: "3領域", score: 36, label: "31-50 重い症状が3領域" },
+            { text: "4領域", score: 31, label: "31-50 重い症状が4領域" },
+            { text: "5領域", score: 26, label: "26-30 複合項目5つ" },
+            { text: "6領域", score: 21, label: "21-25 複合項目6つ" }
+          ]
+        },
+        moderate: {
+          q: "中等度の症状がありますか？例: 頻回の中等度抑うつ/不眠、反すう、時々の不安発作、平板な感情など。",
+          options: [
+            { text: "はい: 機能困難は軽度以下", score: 58, label: "51-60 中等度症状、機能困難は軽度以下" },
+            { text: "はい: 複数領域に中等度困難", score: 54, label: "51-60 中等度症状、複数領域に困難" },
+            { text: "はい: 社会・仕事・学業に中等度困難", score: 51, label: "51-60 中等度症状、社会・仕事・学業に困難" },
+            { text: "いいえ", next: "persistentMild" }
+          ]
+        },
+        persistentMild: {
+          q: "心理社会的ストレスへの一過性反応ではない、持続する軽い症状がありますか？",
+          options: [
+            { text: "はい: 機能問題は乏しい", score: 68, label: "61-70 持続する軽い症状、機能問題は乏しい" },
+            { text: "はい: 複数領域に軽い困難", score: 64, label: "61-70 持続する軽い症状、複数領域に困難" },
+            { text: "はい: 社会・仕事・学業に困難", score: 61, label: "61-70 持続する軽い症状、広い領域に困難" },
+            { text: "いいえ", next: "transientMild" }
+          ]
+        },
+        transientMild: {
+          q: "心理社会的ストレスへの予測可能な反応として、一過性の軽い症状がありますか？",
+          options: [
+            { text: "はい: 機能問題なし", score: 78, label: "71-80 一過性の軽い症状、機能問題なし" },
+            { text: "はい: 複数領域に軽い影響", score: 74, label: "71-80 一過性の軽い症状、複数領域に影響" },
+            { text: "はい: 社会・仕事・学業に影響", score: 71, label: "71-80 一過性の軽い症状、広い領域に影響" },
+            { text: "いいえ", next: "minimal" }
+          ]
+        },
+        minimal: {
+          q: "症状はどの程度ですか？",
+          options: [
+            { text: "症状なし、または日常的問題のみ", score: 88, label: "88-90 症状なし/最小限" },
+            { text: "ごく軽微な症状、日常的問題なし", score: 84, label: "84-87 ごく軽微な症状" },
+            { text: "ごく軽微な症状と日常的問題", score: 81, label: "81-83 ごく軽微な症状と日常的問題" }
+          ]
+        }
+      },
+      function: {
+        dangerPersistent: {
+          q: "重篤な自傷他害リスク、最小限の衛生保持不能、または急性・重篤な身体的危険が持続していますか？",
+          options: [
+            { text: "はい: 該当1-2項目", score: 8, label: "1-10 重篤な危険が持続、該当1-2項目" },
+            { text: "はい: 該当3-4項目", score: 4, label: "1-10 重篤な危険が持続、該当3-4項目" },
+            { text: "はい: 該当5-6項目", score: 1, label: "1-10 重篤な危険が持続、該当5-6項目" },
+            { text: "いいえ", next: "dangerSome" }
+          ]
+        },
+        dangerSome: {
+          q: "自傷他害などの危険、時々の衛生保持困難、緊急入院相当、または身体的危険が一部ありますか？",
+          options: [
+            { text: "はい: 該当1-2項目", score: 18, label: "11-20 危険が一部あり、該当1-2項目" },
+            { text: "はい: 該当3-4項目", score: 14, label: "11-20 危険が一部あり、該当3-4項目" },
+            { text: "はい: 該当5-6項目", score: 11, label: "11-20 危険が一部あり、該当5-6項目" },
+            { text: "いいえ", next: "majorCount" }
+          ]
+        },
+        majorCount: {
+          q: "主要な機能障害はいくつの領域にありますか？仕事/学業/家事、法律・攻撃行動、友人関係、家族関係を数えます。",
+          options: [
+            { text: "0領域", next: "moderate" },
+            { text: "1領域", score: 44, label: "21-50 主要な機能障害が1領域" },
+            { text: "2領域", score: 37, label: "21-50 主要な機能障害が2領域" },
+            { text: "3領域", score: 31, label: "21-50 主要な機能障害が3領域" },
+            { text: "4領域", score: 21, label: "21-50 主要な機能障害が4領域" }
+          ]
+        },
+        moderate: {
+          q: "中等度の社会・仕事・学業機能低下がありますか？例: 友人が少ない、同僚との衝突など。",
+          options: [
+            { text: "はい: 症状は軽度", score: 58, label: "51-60 中等度機能低下、症状は軽度" },
+            { text: "はい: 複数領域に中等度機能低下と症状", score: 54, label: "51-60 中等度機能低下、複数領域" },
+            { text: "はい: 社会・仕事・学業に中等度機能低下と症状", score: 51, label: "51-60 中等度機能低下、広い領域" },
+            { text: "いいえ", next: "persistentMild" }
+          ]
+        },
+        persistentMild: {
+          q: "持続する軽い社会・仕事・学業機能低下がありますか？",
+          options: [
+            { text: "はい: 症状は乏しく、意味ある対人関係あり", score: 68, label: "61-70 持続する軽い機能低下" },
+            { text: "はい: 複数領域に軽い機能低下と症状", score: 64, label: "61-70 軽い機能低下、複数領域" },
+            { text: "はい: 社会・仕事・学業に軽い機能低下と症状", score: 61, label: "61-70 軽い機能低下、広い領域" },
+            { text: "いいえ", next: "transientMild" }
+          ]
+        },
+        transientMild: {
+          q: "一過性の軽い社会・仕事・学業機能低下がありますか？",
+          options: [
+            { text: "はい: 症状なし", score: 78, label: "71-80 一過性の軽い機能低下、症状なし" },
+            { text: "はい: 複数領域に軽い機能低下と症状", score: 74, label: "71-80 一過性の軽い機能低下、複数領域" },
+            { text: "はい: 社会・仕事・学業に軽い機能低下と症状", score: 71, label: "71-80 一過性の軽い機能低下、広い領域" },
+            { text: "いいえ", next: "minimal" }
+          ]
+        },
+        minimal: {
+          q: "機能はどの程度保たれていますか？",
+          options: [
+            { text: "全領域で良好、日常的問題のみ", score: 88, label: "88-90 機能良好" },
+            { text: "日常的問題はあるが症状なし", score: 84, label: "84-87 日常的問題のみ" },
+            { text: "ごく軽微な症状と日常的問題", score: 81, label: "81-83 ごく軽微な症状と日常的問題" }
+          ]
+        }
+      }
+    };
+    const mgafChecklists = {
+      symptom: {
+        dangerPersistent: {
+          next: "dangerSome",
+          items: ["明確な死亡期待を伴う重篤な自殺行為", "頻回の重い暴力または自傷", "極度の躁性興奮、または極度の焦燥・衝動性", "最小限の身辺衛生を持続的に保てない", "持続的に精神科病院への緊急入院を要する状態", "急性・重篤な身体的危険"],
+          rules: [[1, 2, 8, "1-10 重篤な危険が持続、該当1-2項目"], [3, 4, 4, "1-10 重篤な危険が持続、該当3-4項目"], [5, 6, 1, "1-10 重篤な危険が持続、該当5-6項目"]]
+        },
+        dangerSome: {
+          next: "unique21",
+          items: ["明確な死亡期待を伴わない自殺企図", "重い暴力または自傷行為が一部ある", "重い躁性興奮、または重い焦燥・衝動性", "時々、最小限の身辺衛生を保てない", "一時的または断続的に精神科病院への緊急入院を要する状態", "身体的危険が一部ある"],
+          rules: [[1, 2, 18, "11-20 危険が一部あり、該当1-2項目"], [3, 4, 14, "11-20 危険が一部あり、該当3-4項目"], [5, 6, 11, "11-20 危険が一部あり、該当5-6項目"]]
+        },
+        unique21: {
+          next: "seriousCount",
+          items: ["自殺への没頭または明確な準備がある", "行動が妄想または幻覚にかなり影響されている", "重いコミュニケーション障害がある"],
+          rules: [[1, 3, 21, "21-25 ほぼ全領域で機能不能に相当する症状"]]
+        },
+        seriousCount: {
+          next: "moderate",
+          items: ["判断の重い障害", "思考の重い障害", "気分の重い障害", "不安による重い障害", "幻覚・妄想・重い強迫儀式など", "受動的な希死念慮"],
+          rules: [[1, 1, 46, "31-50 重い症状が1領域"], [2, 2, 41, "31-50 重い症状が2領域"], [3, 3, 36, "31-50 重い症状が3領域"], [4, 4, 31, "31-50 重い症状が4領域"], [5, 5, 26, "26-30 複合項目5つ"], [6, 6, 21, "21-25 複合項目6つ"]]
+        }
+      },
+      function: {
+        dangerPersistent: {
+          next: "dangerSome",
+          items: ["明確な死亡期待を伴う重篤な自殺行為", "頻回の重い暴力または自傷", "極度の躁性興奮、または極度の焦燥・衝動性", "最小限の身辺衛生を持続的に保てない", "持続的に精神科病院への緊急入院を要する状態", "急性・重篤な身体的危険"],
+          rules: [[1, 2, 8, "1-10 重篤な危険が持続、該当1-2項目"], [3, 4, 4, "1-10 重篤な危険が持続、該当3-4項目"], [5, 6, 1, "1-10 重篤な危険が持続、該当5-6項目"]]
+        },
+        dangerSome: {
+          next: "majorCount",
+          items: ["明確な死亡期待を伴わない自殺企図", "重い暴力または自傷行為が一部ある", "重い躁性興奮、または重い焦燥・衝動性", "時々、最小限の身辺衛生を保てない", "一時的または断続的に精神科病院への緊急入院を要する状態", "身体的危険が一部ある"],
+          rules: [[1, 2, 18, "11-20 危険が一部あり、該当1-2項目"], [3, 4, 14, "11-20 危険が一部あり、該当3-4項目"], [5, 6, 11, "11-20 危険が一部あり、該当5-6項目"]]
+        },
+        majorCount: {
+          next: "moderate",
+          items: ["仕事・学業・家事の重い障害", "法律上の問題が頻回、または時々の攻撃的行動", "友人関係の重い障害", "家族関係の重い障害、または住居がない"],
+          rules: [[1, 1, 44, "21-50 主要な機能障害が1領域"], [2, 2, 37, "21-50 主要な機能障害が2領域"], [3, 3, 31, "21-50 主要な機能障害が3領域"], [4, 4, 21, "21-50 主要な機能障害が4領域"]]
+        }
+      }
+    };
+
+    function byId(id) { return document.getElementById(id); }
+    function checked(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : "";
+    }
+    function setHidden(id, hidden) { byId(id).classList.toggle("hidden", hidden); }
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
+      document.querySelectorAll(".step").forEach(step => step.classList.toggle("current", step.dataset.step === pageId));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function validatePhysician() {
+      const required = ["experienceYears", "boardCertified", "designatedPsychiatrist", "clozapineInitiations", "currentClozapinePatients"];
+      const missing = required.some(id => byId(id).value === "");
+      const msg = byId("physicianMessage");
+      if (missing) {
+        msg.textContent = "必須項目を入力してください。";
+        msg.className = "message err";
+        return false;
+      }
+      msg.textContent = "";
+      msg.className = "message";
+      return true;
+    }
+    function ensurePhysicianAssignment() {
+      if (!physicianAssignment) physicianAssignment = randomAssignment();
+    }
+    function randomAssignment() {
+      return {
+        evidence: Math.random() < 0.5 ? "shown" : "not_shown",
+        suicideEvidence: Math.random() < 0.5 ? "shown" : "not_shown",
+        regimen: Math.random() < 0.5 ? "once" : "twice"
+      };
+    }
+    function renderPatientList() {
+      const done = Object.keys(answers).length;
+      byId("listProgress").innerHTML = `
+        <span class="pill ${done === patients.length ? "ok" : ""}">回答済み ${done} / ${patients.length}</span>
+        <span class="pill">未回答 ${patients.length - done}</span>
+      `;
+      const patient = patients[patientListIndex];
+      const patientNumber = patientListIndex + 1;
+      byId("patientPager").innerHTML = `
+        <button type="button" class="secondary" data-list-prev="1">前の患者</button>
+        <span class="pill">${patientNumber} / ${patients.length}</span>
+        <button type="button" class="secondary" data-list-next="1">次の患者</button>
+      `;
+      byId("patientList").innerHTML = [patient].map(patient => {
+        const answer = answers[patient.id];
+        const status = answer ? '<span class="pill ok">回答済み</span>' : '<span class="pill warn">未回答</span>';
+        const buttonText = answer ? "回答を開く/修正" : "回答開始";
+        return `
+          <div class="patient-card ${answer ? "done" : ""}">
+            <div>
+              <h3>${patient.id} ${status}</h3>
+              <div class="meta">${patient.age}歳 ${patient.sex} | ${patient.facility} | LAI ${patient.lai} | 入院 ${patient.admissions}回 | 直近入院 ${patient.lastAdmission}</div>
+            </div>
+            <button type="button" data-start-patient="${patient.id}">${buttonText}</button>
+          </div>
+        `;
+      }).join("");
+    }
+    function renderMgafSelectors() {
+      resetMgafDomain("symptom");
+      resetMgafDomain("function");
+      updateMgafScores();
+    }
+    function p1TotalSubsteps() {
+      return 1 + symptomPresenceGroups.length + 2;
+    }
+    function p1StepLabel() {
+      if (p1SubstepIndex === 0) return "mGAF-Symptom";
+      if (p1SubstepIndex <= symptomPresenceGroups.length) return `症状確認: ${symptomPresenceGroups[p1SubstepIndex - 1].title}`;
+      if (p1SubstepIndex === symptomPresenceGroups.length + 1) return "mGAF-Function";
+      return "スコア確認";
+    }
+    function renderP1Substep(keepIndex = true) {
+      if (!byId("p1PanelSymptomScore")) return;
+      if (!keepIndex) p1SubstepIndex = 0;
+      const total = p1TotalSubsteps();
+      p1SubstepIndex = Math.max(0, Math.min(p1SubstepIndex, total - 1));
+      document.querySelectorAll(".p1-panel").forEach(panel => panel.classList.remove("active"));
+      if (p1SubstepIndex === 0) {
+        byId("p1PanelSymptomScore").classList.add("active");
+      } else if (p1SubstepIndex <= symptomPresenceGroups.length) {
+        byId("p1PanelSymptomPresence").classList.add("active");
+        renderSymptomPresenceItems(p1SubstepIndex - 1);
+      } else if (p1SubstepIndex === symptomPresenceGroups.length + 1) {
+        byId("p1PanelFunctionScore").classList.add("active");
+      } else {
+        byId("p1PanelScores").classList.add("active");
+      }
+      byId("p1SubstepCount").textContent = `${p1SubstepIndex + 1} / ${total} ${p1StepLabel()}`;
+      byId("prevP1Substep").disabled = p1SubstepIndex === 0;
+      byId("nextP1Substep").textContent = p1SubstepIndex === total - 1 ? "次へ" : "次へ";
+    }
+    function canLeaveP1SubstepForward() {
+      const msg = byId("p1SubstepMessage");
+      msg.textContent = "";
+      msg.className = "message";
+      if (p1SubstepIndex === 0 && !byId("mgafSymptom").value) {
+        msg.textContent = "mGAF-Symptomを完了してください。";
+        msg.className = "message err";
+        return false;
+      }
+      if (p1SubstepIndex === symptomPresenceGroups.length + 1 && !byId("mgafFunction").value) {
+        msg.textContent = "mGAF-Functionを完了してください。";
+        msg.className = "message err";
+        return false;
+      }
+      return true;
+    }
+    function moveP1Substep(delta) {
+      if (delta > 0 && !canLeaveP1SubstepForward()) return;
+      captureSymptomPresenceFromDom();
+      const total = p1TotalSubsteps();
+      if (delta > 0 && p1SubstepIndex >= total - 1) {
+        movePatientStep(1);
+        return;
+      }
+      p1SubstepIndex = Math.max(0, Math.min(p1SubstepIndex + delta, total - 1));
+      renderP1Substep(true);
+      const current = byId("patientAnswerArea").querySelector(".wizard-current");
+      if (current) current.scrollIntoView({ block: "start", behavior: "smooth" });
+    }
+    function isAvailablePatientStep(el) {
+      if (el.classList.contains("hidden")) return false;
+      let node = el.parentElement;
+      while (node && node.id !== "patientAnswerArea") {
+        if (node.classList && node.classList.contains("hidden")) return false;
+        node = node.parentElement;
+      }
+      return true;
+    }
+    function patientStepElements() {
+      return Array.from(document.querySelectorAll(
+        "#patientAnswerArea > .question, #patientAnswerArea > #mgafScreenNotice, #eligibleBlock > .question, #settingBlock > .question, #inpatientRecommendationBlock > .question, #reasonBlock > .question"
+      )).filter(isAvailablePatientStep);
+    }
+    function renderPatientStep(keepIndex = true) {
+      const area = byId("patientAnswerArea");
+      if (!area) return;
+      area.classList.add("wizard-mode");
+      const steps = patientStepElements();
+      document.querySelectorAll(".wizard-current").forEach(el => el.classList.remove("wizard-current"));
+      if (!steps.length) {
+        setHidden("patientStepNav", true);
+        setHidden("patientSaveActions", false);
+        return;
+      }
+      if (!keepIndex) patientStepIndex = 0;
+      patientStepIndex = Math.max(0, Math.min(patientStepIndex, steps.length - 1));
+      const current = steps[patientStepIndex];
+      current.classList.add("wizard-current");
+      const isP1 = Boolean(current.querySelector("#p1SubNav"));
+      setHidden("patientStepNav", isP1);
+      byId("patientStepCount").textContent = `${patientStepIndex + 1} / ${steps.length}`;
+      byId("prevPatientStep").disabled = patientStepIndex === 0;
+      byId("nextPatientStep").disabled = patientStepIndex >= steps.length - 1;
+      setHidden("patientSaveActions", patientStepIndex < steps.length - 1);
+      if (isP1) renderP1Substep(true);
+    }
+    function movePatientStep(delta) {
+      const steps = patientStepElements();
+      if (!steps.length) return;
+      patientStepIndex = Math.max(0, Math.min(patientStepIndex + delta, steps.length - 1));
+      renderPatientStep(true);
+      const current = patientStepElements()[patientStepIndex];
+      if (current) current.scrollIntoView({ block: "start", behavior: "smooth" });
+    }
+    function resetMgafDomain(domain, render = true) {
+      mgafState[domain] = { step: "dangerPersistent", score: null, label: "", checkedItems: {}, history: [] };
+      byId(domain === "symptom" ? "mgafSymptom" : "mgafFunction").value = "";
+      if (render) renderMgafDomain(domain);
+    }
+    function refreshFunctionFromSymptom() {
+      resetMgafDomain("function", false);
+      renderMgafDomain("function");
+      updateMgafScores();
+    }
+    function clearMgafScore(domain) {
+      const state = mgafState[domain];
+      state.score = null;
+      state.label = "";
+      byId(domain === "symptom" ? "mgafSymptom" : "mgafFunction").value = "";
+    }
+    function goMgafStep(domain, nextStep) {
+      const state = mgafState[domain];
+      state.history.push(state.step);
+      state.step = nextStep;
+      clearMgafScore(domain);
+    }
+    function backMgaf(domain) {
+      const state = mgafState[domain];
+      if (!state.history.length) return;
+      state.step = state.history.pop();
+      clearMgafScore(domain);
+      renderMgafDomain(domain);
+      if (domain === "symptom") refreshFunctionFromSymptom();
+      updateMgafScores();
+    }
+    function scoreChecklist(domain, stepName, checkedLabels, sourceLabel = "") {
+      const checklist = mgafChecklists[domain][stepName];
+      const state = mgafState[domain];
+      state.checkedItems[stepName] = checkedLabels;
+      const count = checkedLabels.length;
+      if (count === 0) {
+        goMgafStep(domain, checklist.next);
+        return false;
+      }
+      const rule = checklist.rules.find(([min, max]) => count >= min && count <= max);
+      if (rule) {
+        state.score = rule[2];
+        state.label = `${rule[3]}（該当${count}項目${sourceLabel}）`;
+        byId(domain === "symptom" ? "mgafSymptom" : "mgafFunction").value = String(rule[2]);
+        return true;
+      }
+      return false;
+    }
+    function applySharedSymptomChecklistToFunction() {
+      const state = mgafState.function;
+      if (!["dangerPersistent", "dangerSome"].includes(state.step)) return false;
+      if (!Object.prototype.hasOwnProperty.call(mgafState.symptom.checkedItems, state.step)) return false;
+      const symptomItems = mgafState.symptom.checkedItems[state.step] || [];
+      scoreChecklist("function", state.step, symptomItems, "、mGAF-Symptomで確認済み");
+      return true;
+    }
+    function renderMgafDomain(domain) {
+      const state = mgafState[domain];
+      const box = byId(domain === "symptom" ? "mgafSymptomWizard" : "mgafFunctionWizard");
+      if (domain === "function") {
+        let guard = 0;
+        while (applySharedSymptomChecklistToFunction() && state.score === null && guard < 3) guard += 1;
+      }
+      if (state.score !== null) {
+        box.innerHTML = `
+          <div class="mgaf-result">
+            <strong>採点: ${state.score}</strong>
+            <div class="small">${state.label}</div>
+          </div>
+          <div class="status"><button type="button" class="secondary" data-mgaf-reset="${domain}">やり直す</button></div>
+        `;
+        return;
+      }
+      const step = mgafFlows[domain][state.step];
+      const checklist = mgafChecklists[domain] && mgafChecklists[domain][state.step];
+      if (checklist) {
+        box.innerHTML = `
+          <div class="mgaf-question">${step.q}</div>
+          <div class="check-row">
+            ${checklist.items.map((item, index) => `
+              <label class="choice"><input type="checkbox" data-mgaf-check-domain="${domain}" data-mgaf-check-step="${state.step}" value="${index}">${item}</label>
+            `).join("")}
+          </div>
+          <div class="status">
+            ${state.history.length ? `<button type="button" class="secondary" data-mgaf-back="${domain}">前へ</button>` : ""}
+            <button type="button" data-mgaf-check-submit="${domain}" data-mgaf-check-step="${state.step}">次へ</button>
+          </div>
+        `;
+        return;
+      }
+      box.innerHTML = `
+        <div class="mgaf-question">${step.q}</div>
+        <div class="mgaf-options">
+          ${step.options.map((option, index) => `<button type="button" data-mgaf-domain="${domain}" data-mgaf-option="${index}">${option.text}</button>`).join("")}
+        </div>
+        <div class="status">${state.history.length ? `<button type="button" class="secondary" data-mgaf-back="${domain}">前へ</button>` : ""}</div>
+      `;
+    }
+    function answerMgaf(domain, optionIndex) {
+      const state = mgafState[domain];
+      const option = mgafFlows[domain][state.step].options[Number(optionIndex)];
+      if (option.score !== undefined) {
+        state.score = option.score;
+        state.label = option.label;
+        byId(domain === "symptom" ? "mgafSymptom" : "mgafFunction").value = String(option.score);
+      } else {
+        goMgafStep(domain, option.next);
+      }
+      renderMgafDomain(domain);
+      if (domain === "symptom") refreshFunctionFromSymptom();
+      updateMgafScores();
+    }
+    function answerMgafChecklist(domain, stepName, forceNone = false) {
+      const checklist = mgafChecklists[domain][stepName];
+      const state = mgafState[domain];
+      const checkedInputs = forceNone ? [] : Array.from(document.querySelectorAll(`input[data-mgaf-check-domain="${domain}"][data-mgaf-check-step="${stepName}"]:checked`));
+      const checkedLabels = checkedInputs.map(input => checklist.items[Number(input.value)]);
+      scoreChecklist(domain, stepName, checkedLabels);
+      renderMgafDomain(domain);
+      if (domain === "symptom") refreshFunctionFromSymptom();
+      updateMgafScores();
+    }
+    function updateMgafScores() {
+      const symptom = Number(byId("mgafSymptom").value || 0);
+      const func = Number(byId("mgafFunction").value || 0);
+      byId("mgafSymptomScore").textContent = symptom ? String(symptom) : "--";
+      byId("mgafFunctionScore").textContent = func ? String(func) : "--";
+      byId("mgafCompositeScore").textContent = symptom && func ? String(Math.min(symptom, func)) : "--";
+      if (currentPatient) updateBranches();
+    }
+    function renderSecondaryReasons() {
+      byId("secondaryReasons").innerHTML = reasonOptions.concat(["副次的理由なし"]).map(reason => `
+        <label class="choice"><input type="checkbox" name="secondaryReason" value="${reason}">${reason}</label>
+      `).join("");
+    }
+    function captureSymptomPresenceFromDom() {
+      const container = byId("symptomPresenceItems");
+      if (!container) return;
+      const names = new Set(Array.from(container.querySelectorAll("input")).map(input => input.name));
+      names.forEach(name => {
+        const group = symptomPresenceGroups.find(item => item.name === name);
+        if (!group) return;
+        const checkedInputs = Array.from(container.querySelectorAll(`input[name="${name}"]:checked`));
+        symptomPresenceState[name] = group.type === "radio"
+          ? (checkedInputs[0] ? checkedInputs[0].value : "")
+          : checkedInputs.map(input => input.value);
+      });
+    }
+    function renderSymptomPresenceItems(groupIndex = 0) {
+      const group = symptomPresenceGroups[Math.max(0, Math.min(groupIndex, symptomPresenceGroups.length - 1))];
+      if (!group) return;
+      byId("symptomPresenceTitle").textContent = `現在みられる症状: ${group.title}`;
+      const saved = Object.prototype.hasOwnProperty.call(symptomPresenceState, group.name) ? symptomPresenceState[group.name] : undefined;
+      const controls = group.type === "radio"
+        ? `<div class="radio-row">${group.options.map(([value, label], index) => {
+            const checked = saved === undefined ? index === 0 : saved === value;
+            return `<label class="choice"><input type="radio" name="${group.name}" value="${value}" ${checked ? "checked" : ""}>${label}</label>`;
+          }).join("")}</div>`
+        : `<div class="check-row">${group.options.map(item => {
+            const checked = Array.isArray(saved) && saved.includes(item);
+            return `<label class="choice"><input type="checkbox" name="${group.name}" value="${item}" ${checked ? "checked" : ""}>${item}</label>`;
+          }).join("")}</div>`;
+      byId("symptomPresenceItems").innerHTML = `
+        <div class="symptom-group">
+          <div class="symptom-group-title">${group.title}</div>
+          ${controls}
+        </div>
+      `;
+    }
+    function resetSymptomPresenceDefaults() {
+      Object.keys(symptomPresenceState).forEach(key => delete symptomPresenceState[key]);
+      symptomPresenceGroups.forEach(group => {
+        symptomPresenceState[group.name] = group.type === "radio" ? "" : [];
+      });
+      renderSymptomPresenceItems(Math.max(0, Math.min(p1SubstepIndex - 1, symptomPresenceGroups.length - 1)));
+    }
+    function selectedSymptomPresenceValues() {
+      captureSymptomPresenceFromDom();
+      return symptomPresenceGroups.flatMap(group => {
+        const selected = symptomPresenceState[group.name];
+        if (Array.isArray(selected)) return selected.filter(Boolean);
+        return selected ? [selected] : [];
+      });
+    }
+    function updateSecondaryReasonOptions() {
+      const primary = byId("primaryReason").value;
+      document.querySelectorAll('input[name="secondaryReason"]').forEach(input => {
+        const sameAsPrimary = input.value === primary && primary !== "";
+        if (sameAsPrimary) input.checked = false;
+        input.disabled = sameAsPrimary;
+        input.closest(".choice").classList.toggle("disabled", sameAsPrimary);
+      });
+    }
+    function renderPatientMeta(patient) {
+      byId("patientMeta").classList.remove("hidden");
+      byId("patientMeta").innerHTML = `
+        <strong>${patient.id}</strong>
+        <div class="grid" style="margin-top:8px">
+          <div>年齢・性別: ${patient.age}歳 ${patient.sex}</div>
+          <div>施設: ${patient.facility}</div>
+          <div>診断: ${patient.diagnosis}</div>
+          <div>LAI: ${patient.lai}</div>
+          <div>過去入院回数: ${patient.admissions}回</div>
+          <div>直近入院: ${patient.lastAdmission}</div>
+          <div>過去の抗精神病薬: ${patient.priorAp}</div>
+          <div>過去拒否記載: ${patient.priorRefusal}</div>
+        </div>
+      `;
+    }
+    function renderInstructions() {
+      const evidenceShown = physicianAssignment.evidence === "shown";
+      const suicideEvidenceShown = physicianAssignment.suicideEvidence === "shown";
+      byId("evidenceBadge").textContent = evidenceShown ? "参考情報あり" : "通常条件";
+      byId("evidenceBadge").className = evidenceShown ? "pill ok" : "pill";
+      byId("suicideEvidenceBadge").textContent = suicideEvidenceShown ? "追加参考情報あり" : "通常条件";
+      byId("suicideEvidenceBadge").className = suicideEvidenceShown ? "pill ok" : "pill";
+      byId("regimenBadge").textContent = physicianAssignment.regimen === "once" ? "外来導入条件 A" : "外来導入条件 B";
+      byId("regimenBadge").className = physicianAssignment.regimen === "once" ? "pill ok" : "pill warn";
+      byId("evidenceQuiz").classList.toggle("hidden", !evidenceShown);
+      byId("suicideEvidenceQuiz").classList.toggle("hidden", !suicideEvidenceShown);
+      byId("evidenceBox").innerHTML = evidenceShown ? `
+        <strong>患者受容性に関する先行研究情報</strong>
+        <p>外来のクロザピン適格・未使用患者を対象としたJakobsen 2025 BMJ Openでは、対象者18名のうち50%が「今提案されたらクロザピンを受け入れる」と回答した。拒否理由は、現状との折り合い、クロザピンが最後の手段であるという受け止め、実務的負担に整理された。</p>
+        <p>同研究では、頻繁に挙げられる障壁のうち、採血の影響は相対的に低く、入院導入が最も大きい障壁だった。受容を促進しうる取り組みとして、採血場所の個別化、外来導入、経験者の話を聞くことが多く挙げられた。</p>
+        <p>Jakobsen 2023のデンマーク監査研究では、5年間でクロザピン新規導入25名、拒否9名であり、「提案されれば受け入れる患者が一定数いる」ことを示唆する。</p>
+      ` : `
+        <strong>通常教示</strong>
+        <p>この患者について、現在把握している臨床情報にもとづき回答してください。</p>
+      `;
+      byId("suicideEvidenceBox").classList.toggle("hidden", !suicideEvidenceShown);
+      byId("suicideEvidenceBox").innerHTML = suicideEvidenceShown ? `
+        <strong>自殺企図・自殺リスクに関する参考情報</strong>
+        <p>統合失調症または統合失調感情障害で自殺リスクが高い患者を対象にしたInterSePT trialでは、クロザピンはオランザピンと比べてsuicidal behaviorを有意に少なくした。</p>
+        <p>その後のメタ解析、大規模コホート、レジストリ研究でも、クロザピン使用は自殺企図、自殺死亡、全死亡の低下と概ね一貫して関連している。</p>
+        <p>APAガイドラインでは、他の治療にもかかわらず自殺企図または自殺のリスクが実質的に残る統合失調症患者にはクロザピン治療を推奨している。FDAも、統合失調症または統合失調感情障害に関連する反復性自殺行動をクロザピンの適応としている。したがって、自殺予防に関しては、クロザピンは抗精神病薬の中で最も特異的かつ強いエビデンスを持つ薬剤と位置づけられる。</p>
+      ` : "";
+      byId("regimenBox").innerHTML = physicianAssignment.regimen === "once" ? `
+        <strong>外来導入レジメン: 開始後6週間は週1回受診</strong>
+        <p>この設問では、外来でクロザピンを開始する場合、開始後6週間は週1回の外来受診で診察、採血、バイタル確認、副作用確認、服薬支援を行う運用を想定してください。</p>
+        <p>発熱、感染症状、強い眠気、循環動態の変化などがある場合は、臨時受診または電話連絡を行う体制があるものとします。</p>
+      ` : `
+        <strong>外来導入レジメン: 開始後6週間は週2回受診</strong>
+        <p>この設問では、外来でクロザピンを開始する場合、開始後6週間は週2回の外来受診で診察、採血、バイタル確認、副作用確認、服薬支援を行う運用を想定してください。</p>
+        <p>初期の安全確認を厚くする一方で、患者と家族の通院負担は週1回より大きい条件として回答してください。</p>
+      `;
+    }
+    function clearPatientForm() {
+      ["mgafSymptom","mgafFunction","primaryReason"].forEach(id => { if (byId(id)) byId(id).value = ""; });
+      p1SubstepIndex = 0;
+      renderMgafSelectors();
+      document.querySelectorAll('#patientAnswerArea input[type="radio"], #patientAnswerArea input[type="checkbox"]').forEach(el => { el.checked = false; });
+      resetSymptomPresenceDefaults();
+      setHidden("mgafScreenNotice", true);
+      setHidden("eligibilityQuestion", false);
+      setHidden("eligibleBlock", true);
+      setHidden("settingBlock", true);
+      setHidden("inpatientRecommendationBlock", false);
+      setHidden("acceptInpatientBlock", true);
+      setHidden("acceptOutpatientBlock", true);
+      setHidden("reasonBlock", true);
+      setHidden("postSaveNav", true);
+      setHidden("patientSaveActions", true);
+      patientStepIndex = 0;
+      byId("saveMessage").textContent = "";
+      byId("p1SubstepMessage").textContent = "";
+      renderPatientStep(false);
+    }
+    function startPatient(patientId) {
+      currentPatient = patients.find(p => p.id === patientId);
+      ensurePhysicianAssignment();
+      clearPatientForm();
+      renderPatientMeta(currentPatient);
+      showPage("pagePatient");
+    }
+    function confirmInstructions() {
+      const needsEvidenceQuiz = physicianAssignment.evidence === "shown";
+      const needsSuicideEvidenceQuiz = physicianAssignment.suicideEvidence === "shown";
+      const evidenceOk = !needsEvidenceQuiz || checked("quizEvidence") === "correct";
+      const suicideEvidenceOk = !needsSuicideEvidenceQuiz || checked("quizSuicideEvidence") === "correct";
+      const regimenOk = checked("quizRegimen") === physicianAssignment.regimen;
+      const msg = byId("quizMessage");
+      if (!evidenceOk || !suicideEvidenceOk || !regimenOk) {
+        msg.textContent = "確認が完了していません。上の説明を読み直して、該当する選択肢を選んでください。";
+        msg.className = "message err";
+        instructionConfirmed = false;
+        return false;
+      }
+      instructionConfirmed = true;
+      msg.textContent = "確認しました。患者一覧に進めます。";
+      msg.className = "message ok";
+      return true;
+    }
+    function updateBranches() {
+      const screenOutByMgafFunction = Number(byId("mgafFunction").value || 0) >= 41;
+      setHidden("mgafScreenNotice", !screenOutByMgafFunction);
+      setHidden("eligibilityQuestion", screenOutByMgafFunction);
+      if (screenOutByMgafFunction) {
+        document.querySelectorAll('input[name="eligible"], input[name="priorRefusal"], input[name="activeConsider"], input[name="recommendInpatient"], input[name="acceptInpatient"], input[name="recommendOutpatient"], input[name="acceptOutpatient"], input[name="secondaryReason"]').forEach(el => { el.checked = false; });
+        byId("primaryReason").value = "";
+        setHidden("eligibleBlock", true);
+        setHidden("settingBlock", true);
+        setHidden("reasonBlock", true);
+        setHidden("acceptInpatientBlock", true);
+        setHidden("acceptOutpatientBlock", true);
+        renderPatientStep(true);
+        return;
+      }
+      const eligible = checked("eligible");
+      setHidden("eligibleBlock", eligible !== "yes");
+      const active = checked("activeConsider");
+      setHidden("settingBlock", active !== "yes");
+      setHidden("reasonBlock", !(active === "no" || active === "hold"));
+      updateSecondaryReasonOptions();
+      const priorRefusal = checked("priorRefusal");
+      setHidden("inpatientRecommendationBlock", priorRefusal === "inpatient");
+      setHidden("acceptInpatientBlock", active !== "yes" || checked("recommendInpatient") !== "yes" || priorRefusal === "inpatient");
+      setHidden("acceptOutpatientBlock", active !== "yes" || checked("recommendOutpatient") !== "yes");
+      renderPatientStep(true);
+    }
+    function validatePatient() {
+      if (!currentPatient) return "患者を選択してください。";
+      if (!byId("mgafSymptom").value || !byId("mgafFunction").value) return "mGAF-SymptomとmGAF-Functionを選択してください。";
+      const screenOutByMgafFunction = Number(byId("mgafFunction").value) >= 41;
+      if (screenOutByMgafFunction) return "";
+      if (!checked("eligible")) return "適応相当判定を回答してください。";
+      if (checked("eligible") !== "yes") return "";
+      if (!checked("priorRefusal")) return "過去の拒否記載を回答してください。";
+      if (!checked("activeConsider")) return "積極検討の有無を回答してください。";
+      if ((checked("activeConsider") === "no" || checked("activeConsider") === "hold") && !byId("primaryReason").value) return "積極検討しない、または保留する主な理由を選んでください。";
+      if (checked("activeConsider") !== "yes") return "";
+      if (checked("priorRefusal") !== "inpatient" && !checked("recommendInpatient")) return "入院導入を勧めたいかを回答してください。";
+      if (checked("recommendInpatient") === "yes" && !checked("acceptInpatient")) return "入院導入の受け入れ見込みを回答してください。";
+      if (!checked("recommendOutpatient")) return "外来導入を勧めたいかを回答してください。";
+      if (checked("recommendOutpatient") === "yes" && !checked("acceptOutpatient")) return "外来導入の受け入れ見込みを回答してください。";
+      return "";
+    }
+    function savePatient() {
+      const error = validatePatient();
+      const msg = byId("saveMessage");
+      if (error) {
+        msg.textContent = error;
+        msg.className = "message err";
+        return;
+      }
+      answers[currentPatient.id] = {
+        evidence: physicianAssignment.evidence,
+        suicideEvidence: physicianAssignment.suicideEvidence,
+        regimen: physicianAssignment.regimen,
+        mgafSymptom: Number(byId("mgafSymptom").value),
+        mgafFunction: Number(byId("mgafFunction").value),
+        mgafComposite: Math.min(Number(byId("mgafSymptom").value), Number(byId("mgafFunction").value)),
+        screenOutByMgafFunction: Number(byId("mgafFunction").value) >= 41,
+        mgafSymptomItems: mgafState.symptom.checkedItems,
+        mgafFunctionItems: mgafState.function.checkedItems,
+        symptomPresenceItems: selectedSymptomPresenceValues(),
+        eligible: Number(byId("mgafFunction").value) >= 41 ? "no_mgaf_function_41_or_higher" : checked("eligible"),
+        recommendOutpatient: checked("recommendOutpatient"),
+        activeConsider: checked("activeConsider"),
+        primaryReason: byId("primaryReason").value
+      };
+      msg.textContent = "保存しました。次の患者を選択できます。";
+      msg.className = "message ok";
+      setHidden("postSaveNav", false);
+      renderPatientList();
+    }
+    function nextUnansweredPatientId() {
+      const currentIndex = currentPatient ? patients.findIndex(p => p.id === currentPatient.id) : -1;
+      const ordered = patients.slice(currentIndex + 1).concat(patients.slice(0, currentIndex + 1));
+      const next = ordered.find(patient => !answers[patient.id]);
+      return next ? next.id : "";
+    }
+    function labelYes(value) {
+      if (!value) return "";
+      return { yes:"はい", no:"いいえ", hold:"保留", unknown:"判断困難" }[value] || value;
+    }
+
+    document.addEventListener("click", event => {
+      const goto = event.target.dataset.goto;
+      if (goto) showPage(goto);
+      const patientId = event.target.dataset.startPatient;
+      if (patientId) startPatient(patientId);
+      if (event.target.dataset.listPrev) {
+        patientListIndex = (patientListIndex - 1 + patients.length) % patients.length;
+        renderPatientList();
+      }
+      if (event.target.dataset.listNext) {
+        patientListIndex = (patientListIndex + 1) % patients.length;
+        renderPatientList();
+      }
+      const mgafDomain = event.target.dataset.mgafDomain;
+      if (mgafDomain) answerMgaf(mgafDomain, event.target.dataset.mgafOption);
+      const mgafCheckSubmit = event.target.dataset.mgafCheckSubmit;
+      if (mgafCheckSubmit) answerMgafChecklist(mgafCheckSubmit, event.target.dataset.mgafCheckStep);
+      const mgafCheckNone = event.target.dataset.mgafCheckNone;
+      if (mgafCheckNone) answerMgafChecklist(mgafCheckNone, event.target.dataset.mgafCheckStep, true);
+      const mgafReset = event.target.dataset.mgafReset;
+      if (mgafReset) {
+        resetMgafDomain(mgafReset);
+        if (mgafReset === "symptom") refreshFunctionFromSymptom();
+        updateMgafScores();
+      }
+      const mgafBack = event.target.dataset.mgafBack;
+      if (mgafBack) backMgaf(mgafBack);
+    });
+    document.addEventListener("change", event => {
+      if (event.target.closest("#patientAnswerArea")) {
+        updateBranches();
+        const isRadio = event.target.matches('input[type="radio"]');
+        const inSymptomPresence = Boolean(event.target.closest("#symptomPresenceItems"));
+        if (inSymptomPresence) captureSymptomPresenceFromDom();
+        if (isRadio && !inSymptomPresence) {
+          window.setTimeout(() => movePatientStep(1), 120);
+        }
+      }
+    });
+    byId("toInstructions").addEventListener("click", () => {
+      if (validatePhysician()) {
+        ensurePhysicianAssignment();
+        renderInstructions();
+        showPage("pageInstructions");
+      }
+    });
+    byId("toPatientList").addEventListener("click", () => {
+      if (!instructionConfirmed && !confirmInstructions()) return;
+      renderPatientList();
+      showPage("pageList");
+    });
+    byId("confirmInstructions").addEventListener("click", confirmInstructions);
+    byId("prevP1Substep").addEventListener("click", () => moveP1Substep(-1));
+    byId("nextP1Substep").addEventListener("click", () => moveP1Substep(1));
+    byId("prevPatientStep").addEventListener("click", () => movePatientStep(-1));
+    byId("nextPatientStep").addEventListener("click", () => movePatientStep(1));
+    byId("savePatient").addEventListener("click", savePatient);
+    byId("resetPatient").addEventListener("click", clearPatientForm);
+    byId("backToList").addEventListener("click", () => {
+      renderPatientList();
+      showPage("pageList");
+    });
+    byId("nextPatient").addEventListener("click", () => {
+      const nextId = nextUnansweredPatientId();
+      if (nextId) startPatient(nextId);
+      else {
+        renderPatientList();
+        showPage("pageList");
+      }
+    });
+
+    renderMgafSelectors();
+    renderSecondaryReasons();
+    renderSymptomPresenceItems();
+    renderPatientList();
+    showPage("pagePhysician");
+  </script>
+</body>
+</html>
