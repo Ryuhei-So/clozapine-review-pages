@@ -22,8 +22,11 @@
     button.secondary { background:#eaf1f4; color:#244d5a; border:1px solid #c5d3dc; }
     .progress { font-size:13px; color:#52616b; margin-bottom:8px; }
     .note { background:#f6fafb; border-left:4px solid #2f7f92; padding:10px; font-size:14px; }
+    .visual { width:100%; max-height:220px; object-fit:cover; border-radius:10px; border:1px solid #d7e1e8; margin:4px 0 12px; background:#fff; }
+    .visual-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:10px 0 14px; }
+    .visual-grid img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:8px; border:1px solid #d7e1e8; background:#fff; }
     pre { white-space:pre-wrap; background:#f5f7f9; border:1px solid #d8e1e8; border-radius:8px; padding:10px; font-size:12px; }
-    @media (max-width: 640px) { main { padding:10px; } .row { grid-template-columns:1fr; } .card { padding:14px; } }
+    @media (max-width: 640px) { main { padding:10px; } .row { grid-template-columns:1fr; } .card { padding:14px; } .visual { max-height:170px; } .visual-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 </head>
 <body>
@@ -34,6 +37,14 @@
 <main>
   <section class="card" id="intro">
     <h2>この版での改善意図</h2>
+    <div class="visual-grid" aria-hidden="true">
+      <img src="assets/clozapine_info.png" alt="">
+      <img src="assets/inpatient_start.png" alt="">
+      <img src="assets/outpatient_visit.png" alt="">
+      <img src="assets/monitoring.png" alt="">
+      <img src="assets/dce_compare.png" alt="">
+      <img src="assets/safety_study.png" alt="">
+    </div>
     <ul><li>患者調査の3目的を、政策的主張、レジメン改善、安全性検証研究リクルート、医師判断へのフィードバックに分けた。</li><li>主要アウトカムを「入院導入では非受容/保留だが外来導入では受容/前向き」とした。</li><li>DCEは広い未使用外来患者で主解析、適応相当・未導入候補では探索的/記述的に扱う構成にした。</li><li>スマホで回答しやすいよう、1画面1ブロックの質問票にした。</li></ul>
     <button onclick="start()">回答を開始</button>
     <button class="secondary" onclick="location.href='patient_survey_v5_figures_mock.html'">この版の図表モックを見る</button>
@@ -55,6 +66,18 @@
 const dceTasks = [{"a": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "簡易チェック", "採血場所を選べる", "異常時は入院切替あり"], "b": ["入院導入", "4週間程度の予定入院", "入院中に薬剤調整と体調確認", "医療者が体調確認", "院内採血", "体調により入院延長あり"]}, {"a": ["外来導入", "最初6週間は週2回通院", "7週目以降も定期通院・採血", "訪問看護あり", "詳細チェック", "通常採血", "異常時は入院切替あり"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "自己確認", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["入院導入", "2週間程度の予定入院", "入院中に薬剤調整と体調確認", "医療者が体調確認", "院内採血", "体調により入院延長あり"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["外来導入", "最初6週間は週2回通院", "7週目以降も定期通院・採血", "家族・支援者が体調確認", "簡易チェック", "通常採血", "電話相談後に翌日受診"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "詳細チェック", "採血場所を選べる", "異常時は入院切替あり"]}, {"a": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "簡易チェック", "採血場所を選べる", "異常時は入院切替あり"], "b": ["入院導入", "4週間程度の予定入院", "入院中に薬剤調整と体調確認", "医療者が体調確認", "院内採血", "体調により入院延長あり"]}, {"a": ["外来導入", "最初6週間は週2回通院", "7週目以降も定期通院・採血", "訪問看護あり", "詳細チェック", "通常採血", "異常時は入院切替あり"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "自己確認", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["入院導入", "2週間程度の予定入院", "入院中に薬剤調整と体調確認", "医療者が体調確認", "院内採血", "体調により入院延長あり"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["外来導入", "最初6週間は週2回通院", "7週目以降も定期通院・採血", "家族・支援者が体調確認", "簡易チェック", "通常採血", "電話相談後に翌日受診"], "b": ["外来導入", "最初6週間は週1回通院", "7週目以降も定期通院・採血", "訪問看護あり", "詳細チェック", "採血場所を選べる", "異常時は入院切替あり"]}];
 const answers = {};
 let idx = 0;
+const stepImages = {
+  clozapine_info: 'assets/clozapine_info.png',
+  eligibility: 'assets/clozapine_info.png',
+  current: 'assets/clozapine_info.png',
+  inpatient: 'assets/inpatient_start.png',
+  outpatient2: 'assets/outpatient_visit.png',
+  outpatient1: 'assets/outpatient_visit.png',
+  home_nurse: 'assets/outpatient_visit.png',
+  barriers: 'assets/monitoring.png',
+  facilitators: 'assets/monitoring.png',
+  recruit: 'assets/safety_study.png'
+};
 const clozapineIntro = `
   <h2>クロザピンについて</h2>
   <p>クロザピンは、ほかの抗精神病薬を十分に使っても症状や生活のしづらさが残る場合に使われることがある薬です。すべての方に必要な薬ではありませんが、治療がうまく進みにくい統合失調症の方では、症状や生活機能の改善が期待できることがあります。</p>
@@ -83,6 +106,10 @@ function render() {
   document.getElementById('back').style.visibility = idx === 0 ? 'hidden' : 'visible';
   document.getElementById('next').textContent = idx === steps.length - 1 ? '完了' : '次へ';
   let html = '<h2>'+s.title+'</h2>';
+  const img = stepImages[s.id] || (s.type === 'dce' ? 'assets/dce_compare.png' : null);
+  if (img) {
+    html += `<img class="visual" src="${img}" alt="">`;
+  }
   if (s.type === 'info') {
     html += s.html;
   } else if (s.type === 'radio') {
