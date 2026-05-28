@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>主治医アンケート関連 先行研究レポート</title>
+  <style>
+    :root {
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d8dee4;
+      --paper: #ffffff;
+      --soft: #f6f8fa;
+      --blue: #0b6bcb;
+      --blue-soft: #e8f2ff;
+      --green: #1f6f43;
+      --green-soft: #e8f5ec;
+      --orange: #9a3412;
+      --orange-soft: #fff1e8;
+      --purple: #5b4b8a;
+      --purple-soft: #f0edff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: #eef1f4;
+      line-height: 1.75;
+    }
+
+    header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 38px 24px 28px;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      background: var(--paper);
+      min-height: 100vh;
+      padding: 28px 34px 80px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 1120px;
+      margin: 0 auto 10px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      max-width: 1120px;
+      margin: 0 auto;
+      color: var(--muted);
+    }
+
+    h2 {
+      margin: 42px 0 14px;
+      padding-top: 16px;
+      border-top: 2px solid var(--line);
+      font-size: 22px;
+    }
+
+    h3 {
+      margin: 26px 0 8px;
+      font-size: 18px;
+    }
+
+    p { margin: 0 0 12px; }
+    ul, ol { margin: 8px 0 16px 1.4em; padding: 0; }
+    li { margin: 4px 0; }
+
+    a { color: var(--blue); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 22px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--soft);
+      text-align: left;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      border: 1px solid var(--line);
+      margin: 18px 0 22px;
+    }
+
+    .meta div {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .meta div:nth-child(odd) {
+      background: var(--soft);
+      font-weight: 700;
+    }
+
+    .meta div:nth-last-child(-n+2) { border-bottom: 0; }
+
+    .callout {
+      border: 1px solid #b6d7ff;
+      background: var(--blue-soft);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+
+    .finding {
+      border: 1px solid #b8dfc2;
+      background: var(--green-soft);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+
+    .todo {
+      border: 1px solid #f4c7ad;
+      background: var(--orange-soft);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      margin: 0 5px 6px 0;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .tag.critical { background: var(--orange-soft); border-color: #f4c7ad; color: var(--orange); }
+    .tag.oa { background: var(--green-soft); border-color: #b8dfc2; color: var(--green); }
+    .tag.method { background: var(--blue-soft); border-color: #b6d7ff; color: var(--blue); }
+    .tag.jp { background: var(--purple-soft); border-color: #d8ceff; color: var(--purple); }
+
+    .paper {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 16px 18px;
+      margin: 18px 0;
+    }
+
+    .paper h3 { margin-top: 0; }
+
+    .toc {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 14px 18px;
+      margin: 18px 0 26px;
+    }
+
+    @media print {
+      body { background: #fff; }
+      header { border-bottom: 0; }
+      main { max-width: none; padding: 0 18mm 18mm; }
+      .paper, .callout, .finding, .todo, table { break-inside: avoid; }
+      h2, h3 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div style="max-width:1120px;margin:12px auto;padding:10px 14px;border-left:4px solid #d76f30;background:#fff8f2;color:#26323f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;font-size:14px;line-height:1.6;">公開レビュー版です。出版社PDF/TXT本文は著作権・契約上の理由でGitHub Pagesには置いていません。本文確認はPubMed、PMC、DOI、出版社ページ、または研究チーム内の共有資料を参照してください。</div>
+  <header>
+    <h1>主治医アンケート関連 先行研究レポート</h1>
+    <p class="subtitle">クロザピン外来導入の潜在ニーズ調査、患者単位の主治医評価、未導入理由、医師・患者ギャップに関する文献候補</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="meta">
+        <div>作成日</div>
+        <div>2026年5月28日</div>
+        <div>対象DB</div>
+        <div>PubMed、J-STAGE</div>
+        <div>関連ファイル</div>
+        <div><a href="2026-05-28_臨床家・当事者調査プロトコル計画書.html">臨床家・当事者調査プロトコル計画書</a> / <a href="2026-05-28_主治医アンケート関連_先行研究候補.md">Markdownメモ</a></div>
+        <div>ステータス</div>
+        <div>9本のabstractを確認。7本はfull textを確認可能（Open access 4本＋ユーザー提供PDF 3本）。Zheng 2022、Leung 2019はfull text提供待ち。</div>
+      </div>
+
+      <div class="callout">
+        <strong>結論:</strong> 既存研究は「クロザピンが過少使用されている」「医師は採血・副作用・患者アドヒアランスを障壁と考える」「TRS検討率が処方率と関連する」ことを示している。一方で、日本の基幹病院外来で、患者単位に「TRS/クロザピン適応相当か」「GAF改善が期待できるか」「入院導入・外来導入なら受け入れられそうか」を主治医に尋ね、患者本人の選好と照合する研究は不足している。ここが本研究のknowledge gapである。
+      </div>
+    </section>
+
+    <nav class="toc">
+      <strong>目次</strong>
+      <ol>
+        <li><a href="#scope">検索目的</a></li>
+        <li><a href="#synthesis">エビデンス統合</a></li>
+        <li><a href="#priority">優先文献一覧</a></li>
+        <li><a href="#core">中核文献</a></li>
+        <li><a href="#clinician">臨床家の態度・障壁調査</a></li>
+        <li><a href="#jstage">J-STAGE候補</a></li>
+        <li><a href="#implications">研究設計への示唆</a></li>
+        <li><a href="#saved">保存済みフルテキスト</a></li>
+        <li><a href="#request">フルテキスト依頼リスト</a></li>
+      </ol>
+    </nav>
+
+    <section id="scope">
+      <h2>検索目的</h2>
+      <p>臨床家・当事者調査プロトコルにおける潜在ニーズ調査、特に以下の設計に使える先行研究を収集した。</p>
+      <ul>
+        <li>基幹病院外来におけるクロザピン適応相当患者のスクリーニング</li>
+        <li>患者単位の主治医評価</li>
+        <li>クロザピン未導入理由</li>
+        <li>入院導入・外来導入の受け入れ見込み</li>
+        <li>医師の経験年数、クロザピン導入経験、現在の処方患者数による回答差</li>
+        <li>医師推定と患者本人回答のギャップ</li>
+      </ul>
+    </section>
+
+    <section id="synthesis">
+      <h2>エビデンス統合</h2>
+      <h3>8本のabstractからわかること</h3>
+      <table>
+        <tr><th>論点</th><th>わかること</th><th>主な根拠</th></tr>
+        <tr>
+          <td>クロザピンは有効だが過少使用</td>
+          <td>複数国の調査で、TRSに対するクロザピンは推奨されているにもかかわらず、導入が遅れ、他剤増量や抗精神病薬併用が先行しやすい。</td>
+          <td>Correll 2019、Daod 2019、Gee 2014、Zheng 2022、Leung 2019</td>
+        </tr>
+        <tr>
+          <td>医師・臨床家側の一般的障壁</td>
+          <td>頻回採血、患者の採血拒否・アドヒアランス懸念、副作用・医学的合併症、処方負担感、外来支援リソース不足が繰り返し挙げられている。</td>
+          <td>Gee 2014、Zheng 2022、Daod 2019、Leung 2019</td>
+        </tr>
+        <tr>
+          <td>一般的障壁と患者単位の非導入理由はずれる</td>
+          <td>一般論では採血が最大障壁に見えても、個別患者では「安定している」「重症すぎる」「組織・標準診療上の制約」などが非処方理由になる。</td>
+          <td>Jakobsen 2023</td>
+        </tr>
+        <tr>
+          <td>患者本人の見方は医師推定とずれ得る</td>
+          <td>Clozapine-naive TRS外来患者の受容性は、入院、採血、副作用、現状維持への希望、個別化された導入計画の有無に左右される。医師が想定する障壁だけでは不十分。</td>
+          <td>Jakobsen 2025、scoping review</td>
+        </tr>
+        <tr>
+          <td>日本ではTRS検討そのものが重要</td>
+          <td>TRS検討率とクロザピン処方率は関連し、TRSを診断・検討しない施設ではクロザピン処方に至りにくい可能性がある。</td>
+          <td>Yasui-Furukori 2021</td>
+        </tr>
+      </table>
+
+      <h3>6本のfull textからわかること</h3>
+      <table>
+        <tr><th>文献</th><th>full textからの設計上の要点</th></tr>
+        <tr>
+          <td>Jakobsen 2023</td>
+          <td>電子カルテで外来患者をスクリーニングし、clozapine-eligible yet clozapine-naive患者について、担当cliniciansに患者単位で非処方理由を尋ねている。今回も「一般的障壁」だけでなく、患者ごとの未導入理由を聞く必要がある。</td>
+        </tr>
+        <tr>
+          <td>Correll 2019</td>
+          <td>精神科医が自身の患者レコードを入力する方式で、TRS患者の背景、症状負担、治療歴、治療選択因子を集めている。患者単位フォーム、医師背景、治療歴の同時収集の方法論的根拠になる。</td>
+        </tr>
+        <tr>
+          <td>Jakobsen 2025</td>
+          <td>患者本人のclozapine開始への受容性を混合研究で評価しており、医師が障壁と考える要素と患者本人の判断が一致しない可能性を示す。医師推定と患者回答のギャップを調べる根拠になる。</td>
+        </tr>
+        <tr>
+          <td>Yasui-Furukori 2021</td>
+          <td>日本の施設でTRS検討率とクロザピン処方率が関連。潜在ニーズ調査で「TRS/クロザピン適応相当を明示的に評価する」こと自体が意義を持つ。</td>
+        </tr>
+        <tr>
+          <td>Gee 2014</td>
+          <td>144名の臨床スタッフ調査。多くはガイドラインに比較的詳しいが、患者の忍容性懸念、採血モニタリング拒否、医学的合併症が主要障壁。専任スタッフやday hospital的導入支援が処方促進策として挙がる。</td>
+        </tr>
+        <tr>
+          <td>Daod 2019</td>
+          <td>295名の精神科医調査。約半数のみがガイドライン通りに導入し、約3分の1は3剤以上失敗後まで遅らせる。専門リソースの存在が必ずしも早期導入と一致しない点は、単なる体制整備だけでは不十分という示唆になる。</td>
+        </tr>
+      </table>
+
+      <h3>Knowledge Gap to Be Addressed</h3>
+      <div class="finding">
+        <strong>本研究が埋めるギャップ:</strong>
+        <ul>
+          <li>日本の基幹病院外来における、クロザピン適応相当患者の潜在数が十分に可視化されていない。</li>
+          <li>TRS/クロザピン適応相当患者について、主治医が患者単位で「GAF改善期待」「入院導入受容見込み」「外来導入受容見込み」を評価した研究が乏しい。</li>
+          <li>医師が推定する導入受容性と、患者本人の入院・外来導入に対する選好のギャップが十分に検討されていない。</li>
+          <li>日本固有の入院導入要件、CPMS、採血負担を踏まえ、来年度の安全性検証研究の候補者抽出に直結する調査設計が不足している。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="priority">
+      <h2>優先文献一覧</h2>
+      <table>
+        <tr>
+          <th>#</th>
+          <th>文献</th>
+          <th>用途</th>
+          <th>重要度</th>
+          <th>入手</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>Jakobsen et al. 2023<br><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10746712/">Non-prescribing of clozapine for outpatients</a><br><a href="Jakobsen_2023_non_prescribing_clozapine_literature_note.html">詳細リテラチャーノート</a></td>
+          <td>外来患者スクリーニング、患者単位の主治医評価、非処方理由</td>
+          <td><span class="tag critical">最重要</span></td>
+          <td><span class="tag oa">Open access</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Jakobsen et al. 2023<br><a href="https://doi.org/10.1080/08039488.2022.2160878">Danish quality assessment audit</a><br><a href="Jakobsen_2023_Danish_quality_assessment_audit_literature_note.html">詳細リテラチャーノート</a></td>
+          <td>外来処方監査、APP/クロザピン使用率、クロザピン提案受諾・拒否、monitoring関連障壁</td>
+          <td><span class="tag critical">最重要</span></td>
+          <td>ユーザー提供PDF</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Correll et al. 2019<br><a href="https://pubmed.ncbi.nlm.nih.gov/31727015/">TRS patient records survey of 204 US psychiatrists</a><br><a href="Correll_2019_TRS_patient_records_literature_note.html">詳細リテラチャーノート</a><br><a href="Correll_2019_TRS_survey_questionnaire_JA.html">調査票日本語訳</a></td>
+          <td>精神科医による患者レコード入力、TRS患者特徴、治療選択因子</td>
+          <td><span class="tag critical">最重要</span></td>
+          <td><span class="tag oa">Open access</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Jakobsen et al. 2025<br><a href="https://pubmed.ncbi.nlm.nih.gov/40107686/">Clozapine-naive outpatient patient perspectives</a><br><a href="Jakobsen_2025_patient_perspectives_clozapine_literature_note.html">詳細リテラチャーノート</a><br><a href="Jakobsen_2025_BMJOpen_interview_guide_JA.html">インタビューガイド日本語訳</a></td>
+          <td>患者本人の受容性、入院・採血・副作用への反応、医師推定とのギャップ</td>
+          <td><span class="tag critical">最重要</span></td>
+          <td><span class="tag oa">Open access</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Yasui-Furukori et al. 2021<br><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8919118/">TRS examination rate and clozapine prescription rate</a></td>
+          <td>日本でTRS診断検討率がクロザピン処方率と関連する背景</td>
+          <td><span class="tag critical">最重要</span></td>
+          <td><span class="tag oa">Open access</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Gee et al. 2014<br><a href="https://pubmed.ncbi.nlm.nih.gov/24004162/">Practitioner attitudes to clozapine initiation</a></td>
+          <td>臨床スタッフの障壁認識、day hospital/専任スタッフによる導入支援</td>
+          <td><span class="tag">高</span></td>
+          <td>保存済みPDF</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Zheng et al. 2022<br><a href="https://pubmed.ncbi.nlm.nih.gov/35584194/">Singapore/Hong Kong clinician attitudes</a></td>
+          <td>外来リソース・事務支援・頻回採血・医学的合併症の障壁</td>
+          <td><span class="tag">高</span></td>
+          <td>提供待ち</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Daod et al. 2019<br><a href="https://pubmed.ncbi.nlm.nih.gov/30913436/">Nationwide psychiatrist survey</a></td>
+          <td>精神科医の導入タイミング、ガイドライン理解、処方遅延</td>
+          <td><span class="tag">高</span></td>
+          <td>保存済みPDF</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Leung et al. 2019<br><a href="https://pubmed.ncbi.nlm.nih.gov/31107831/">Prescriber knowledge/perception survey</a></td>
+          <td>経験年数、知識、処方負担感、教育ニーズ</td>
+          <td><span class="tag">中-高</span></td>
+          <td>提供待ち</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="core">
+      <h2>中核文献</h2>
+
+      <article class="paper">
+        <h3>1. Jakobsen et al. 2023 - Non-prescribing of clozapine for outpatients</h3>
+        <p>
+          <span class="tag critical">最重要</span>
+          <span class="tag oa">Open access</span>
+          <span class="tag method">患者単位主治医評価</span>
+        </p>
+        <table>
+          <tr><th>論文</th><td>Non-prescribing of clozapine for outpatients with schizophrenia in real-world settings: The clinicians' perspectives</td></tr>
+          <tr><th>PMID / PMCID</th><td>38135678 / PMC10746712</td></tr>
+          <tr><th>DOI</th><td>10.1038/s41537-023-00423-3</td></tr>
+          <tr><th>リンク</th><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10746712/">PMC</a> / <a href="https://www.nature.com/articles/s41537-023-00423-3">Nature</a> / <a href="Jakobsen_2023_non_prescribing_clozapine_literature_note.html">詳細リテラチャーノート</a></td></tr>
+        </table>
+        <p>外来統合失調症患者206名を電子カルテからスクリーニングし、clozapine-eligible かつ clozapine-naive の患者について、患者単位で担当 clinicians に非処方理由と促進因子を尋ねた研究。GAF、CGI、患者単位の主治医評価、血液検査負担、患者が安定している/重すぎるという判断など、今回の調査票設計に直接使える。</p>
+        <ul>
+          <li>潜在ニーズ調査の患者単位主治医評価の根拠</li>
+          <li>「一般的な障壁」ではなく「個別患者での非導入理由」を聞く必要性</li>
+          <li>医師推定と患者視点のギャップを検討する根拠</li>
+        </ul>
+      </article>
+
+      <article class="paper">
+        <h3>2. Jakobsen et al. 2023 - Danish quality assessment audit</h3>
+        <p>
+          <span class="tag critical">最重要</span>
+          <span class="tag method">診療録監査</span>
+        </p>
+        <table>
+          <tr><th>論文</th><td>Antipsychotic prescribing practices for outpatients with schizophrenia and reasons for non-clozapine treatment - Data from a Danish quality assessment audit</td></tr>
+          <tr><th>DOI</th><td>10.1080/08039488.2022.2160878</td></tr>
+          <tr><th>リンク</th><td><a href="https://doi.org/10.1080/08039488.2022.2160878">DOI</a> / <a href="Jakobsen_2023_Danish_quality_assessment_audit_literature_note.html">詳細リテラチャーノート</a> / <a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">保存PDF</a></td></tr>
+        </table>
+        <p>デンマークの外来統合失調症患者668名を対象とした診療録監査。APP 43.0%、クロザピン使用19.6%。5年間でクロザピン新規導入25名、拒否9名が記録されており、Jakobsen 2025の「多くの患者はクロザピン提案を受け入れる」という背景データになる。</p>
+        <ul>
+          <li>クロザピン提案受諾・拒否の実地データ</li>
+          <li>monitoring requirements関連拒否の具体的内訳</li>
+          <li>採血そのものではなく、モニタリングの広範さ・遵守・交通・実務負担に分解する根拠</li>
+        </ul>
+      </article>
+
+      <article class="paper">
+        <h3>3. Correll et al. 2019 - US psychiatrist survey of TRS patient records</h3>
+        <p>
+          <span class="tag critical">最重要</span>
+          <span class="tag oa">Open access</span>
+          <span class="tag method">患者レコード入力</span>
+        </p>
+        <table>
+          <tr><th>論文</th><td>Patient characteristics, burden and pharmacotherapy of treatment-resistant schizophrenia: results from a survey of 204 US psychiatrists</td></tr>
+          <tr><th>PMID / PMCID</th><td>31727015 / PMC6857350</td></tr>
+          <tr><th>DOI</th><td>10.1186/s12888-019-2318-x</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/31727015/">PubMed</a> / <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6857350/">PMC</a> / <a href="Correll_2019_TRS_patient_records_literature_note.html">詳細リテラチャーノート</a> / <a href="Correll_2019_TRS_survey_questionnaire_JA.html">調査票日本語訳</a></td></tr>
+        </table>
+        <p>204名の米国精神科医がオンライン調査で、TRS患者2例と非TRS患者1例の患者記録を入力した研究。TRS患者の特徴、症状負担、治療歴、治療選択因子を収集している。今回の「主治医が担当患者ごとに特徴・GAF改善期待・導入受容見込みを回答する」設計の方法論的先行研究として有用。</p>
+        <ul>
+          <li>主治医による患者単位レコード入力方式</li>
+          <li>医師背景と患者特徴の同時収集</li>
+          <li>TRS患者の特徴記述と治療選択因子</li>
+        </ul>
+      </article>
+
+      <article class="paper">
+        <h3>4. Jakobsen et al. 2025 - Clozapine-naive outpatient patient perspectives</h3>
+        <p>
+          <span class="tag critical">最重要</span>
+          <span class="tag oa">Open access</span>
+          <span class="tag method">患者本人調査</span>
+        </p>
+        <table>
+          <tr><th>論文</th><td>Perspectives of clozapine-naive outpatients with treatment-resistant schizophrenia on clozapine commencement: a mixed-methods convergent study</td></tr>
+          <tr><th>PMID / PMCID</th><td>40107686 / PMC12001365</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/40107686/">PubMed</a> / <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12001365/">PMC</a> / <a href="Jakobsen_2025_patient_perspectives_clozapine_literature_note.html">リテラチャーノート</a> / <a href="Jakobsen_2025_BMJOpen_interview_guide_JA.html">インタビューガイド日本語訳</a></td></tr>
+        </table>
+        <p>Clozapine-eligible だが clozapine-naive の外来患者本人に、クロザピン開始への受容性、入院、採血、副作用などの障壁を質問した混合研究。患者本人の回答と医師推定のギャップを検討するための中核文献。N=18と小さいが、50%が今提案されたらクロザピンを受け入れると回答した。PROMはWHO-5、Brief INSPIRE-O、DAI-10を使用している。患者に提示したクロザピン情報と障壁質問のスケールは、Gee 2017の患者調査をもとにしている。</p>
+        <ul>
+          <li>当事者調査項目</li>
+          <li>入院導入と外来導入の選好</li>
+          <li>医師が想定する障壁と患者本人の障壁の比較</li>
+          <li>日本語版が明確で短いPROMとして、WHO-5が最も導入しやすい</li>
+        </ul>
+      </article>
+
+      <article class="paper">
+        <h3>5. Yasui-Furukori et al. 2021 - TRS examination rate and clozapine prescription rate in Japan</h3>
+        <p>
+          <span class="tag critical">最重要</span>
+          <span class="tag oa">Open access</span>
+          <span class="tag jp">日本</span>
+        </p>
+        <table>
+          <tr><th>論文</th><td>Association between the examination rate of treatment-resistant schizophrenia and the clozapine prescription rate in a nationwide dissemination and implementation study</td></tr>
+          <tr><th>PMCID</th><td>PMC8919118</td></tr>
+          <tr><th>DOI</th><td>10.1002/npr2.12218</td></tr>
+          <tr><th>リンク</th><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8919118/">PMC</a> / <a href="https://www.ncnp.go.jp/topics/2021/20211203p.html">NCNP発表</a></td></tr>
+        </table>
+        <p>日本のEGUIDEプロジェクト。49病院1852名の退院時処方調査で、TRS診断検討記載率とクロザピン処方率の関連を検討している。日本ではTRS診断検討率そのもののばらつきがクロザピン低処方と関連する、という本研究の問題設定に直結する。</p>
+        <ul>
+          <li>日本でTRS診断・クロザピン適応検討を明示的に行う必要性</li>
+          <li>潜在ニーズ調査の背景</li>
+          <li>主治医アンケートでTRS/クロザピン適応相当を確認する根拠</li>
+        </ul>
+      </article>
+    </section>
+
+    <section id="clinician">
+      <h2>臨床家の態度・障壁調査</h2>
+
+      <article class="paper">
+        <h3>6. Gee et al. 2017 - Patient attitudes to clozapine initiation</h3>
+        <p>
+          <span class="tag">高</span>
+          <span class="tag method">full text確認済み</span>
+        </p>
+        <table>
+          <tr><th>PMID</th><td>28704228</td></tr>
+          <tr><th>DOI</th><td>10.1097/YIC.0000000000000188</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/28704228/">PubMed</a> / <a href="Gee_2017_patient_attitudes_clozapine_initiation_literature_note.html">詳細リテラチャーノート</a></td></tr>
+          <tr><th>保存PDF</th><td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">Gee_2017_patient_attitudes_clozapine_initiation.pdf</a></td></tr>
+        </table>
+        <p>クロザピン適格だが未使用の急性期入院患者を対象に、クロザピン説明文を読んだうえで受容性、採血、副作用、入院導入の障壁を尋ねた患者調査。Jakobsen 2025が患者説明文と定量質問スケールの出典として参照している。対象は「入院経験患者」ではなく調査時点で急性期病棟に入院中の患者であるため、外来通院中患者へ一般化する際は注意が必要である。</p>
+        <p><strong>主な結果:</strong> 61名が参加し、54%がクロザピンを聞いたことがあり、30%（17/57）が今提案されたら服用すると回答した。開始前採血は32%、定期採血は41%、副作用は43%、入院導入は49%が「これを理由にクロザピンを試さない」と回答した。67%は入院より自宅開始がよいと回答した。</p>
+        <p><strong>使い所:</strong> 当事者調査の説明文、障壁評価尺度、入院導入と外来/自宅導入の選好質問の原型。</p>
+      </article>
+
+      <article class="paper">
+        <h3>7. Gee et al. 2014 - Practitioner attitudes to clozapine initiation</h3>
+        <p>
+          <span class="tag">高</span>
+          <span class="tag method">full text確認済み</span>
+        </p>
+        <table>
+          <tr><th>PMID</th><td>24004162</td></tr>
+          <tr><th>DOI</th><td>10.1111/acps.12193</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/24004162/">PubMed</a> / <a href="Gee_2014_practitioner_attitudes_clozapine_literature_note.html">詳細リテラチャーノート</a></td></tr>
+          <tr><th>保存PDF</th><td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">Gee_2014_Practitioner_attitudes_clozapine_initiation.pdf</a></td></tr>
+        </table>
+        <p>South London and Maudsley NHS Foundation Trustで臨床スタッフ144名に調査。患者の忍容性懸念、採血モニタリング拒否、医学的合併症が主な障壁。clozapine initiation専任スタッフやday hospital placementが処方促進因子として挙がる。</p>
+        <p><strong>full textからの追加示唆:</strong> ガイドライン知識の不足だけでは過少使用を説明しにくい。薬局スタッフの58%（7/12）、医療スタッフの47%（25/53）、その他専門職の38%（10/27）は、担当患者の5分の1超がクロザピン適格だが未投与と考えていた。調査票では、知識・経験だけでなく、患者の採血拒否をどの程度予測するか、医学的合併症をどの程度障壁とみなすか、専任スタッフ・日中導入枠・外来導入チームがあれば導入判断が変わるかを聞くべきである。</p>
+        <p><strong>Discussionからの示唆:</strong> 地域・外来でのクロザピン開始は安全かつ有効に行えるとされる一方、初期7-14日の頻回モニタリングは地域チームに大きな資源負担をかける。専任スタッフ、day hospital的導入枠、訪問看護、外来導入チームは、外来導入レジメンの実装条件として評価すべきである。また、臨床家は非処方理由を患者の採血拒否や副作用不安に帰属しがちだが、服用中患者の評価はしばしば肯定的であり、患者本人の実際の懸念と専門職側の推定はずれ得る。</p>
+        <p><strong>使い所:</strong> 入院導入・外来導入・day hospital的支援の比較、臨床家が患者側障壁をどう推定するか。</p>
+      </article>
+
+      <article class="paper">
+        <h3>8. Zheng et al. 2022 - Singapore/Hong Kong clinician attitudes</h3>
+        <table>
+          <tr><th>PMID</th><td>35584194</td></tr>
+          <tr><th>DOI</th><td>10.4088/JCP.21m14231</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/35584194/">PubMed</a></td></tr>
+        </table>
+        <p>Singapore/Hong Kongの精神科臨床家261名のオンライン調査。頻回採血、忍容性、医学的合併症、外来リソース・事務支援の不足が障壁。外来リソースの必要性を評価している点が今回の外来導入研究に近い。</p>
+        <p><strong>使い所:</strong> 外来導入の体制・administrative support、医師経験・clozapine initiation経験との関連。</p>
+      </article>
+
+      <article class="paper">
+        <h3>9. Daod et al. 2019 - Nationwide psychiatrist survey</h3>
+        <p>
+          <span class="tag">高</span>
+          <span class="tag method">full text確認済み</span>
+        </p>
+        <table>
+          <tr><th>PMID</th><td>30913436</td></tr>
+          <tr><th>DOI</th><td>10.1016/j.psychres.2019.03.029</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/30913436/">PubMed</a></td></tr>
+          <tr><th>保存PDF</th><td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">Daod_2019_Psychiatrists_attitude_clozapine.pdf</a></td></tr>
+        </table>
+        <p>イスラエル全国の精神科医295名調査。約半数はガイドライン通りに導入すると回答する一方、3剤以上失敗後まで遅らせる医師もいる。患者アドヒアランス、副作用、採血モニタリングが障壁。</p>
+        <p><strong>full textからの追加示唆:</strong> 専門リソースの有無だけで導入が早まるとは限らず、医師自身の導入基準、経験、リスク認識が重要である。今回の調査では、経験年数だけでなく、過去の導入件数、現在の処方患者数、何剤失敗後に導入を考えるか、血液検査・副作用・患者アドヒアランスをどの程度重視するかを同時に尋ねる必要がある。</p>
+        <p><strong>使い所:</strong> 医師経験・ガイドライン理解・実際の導入タイミングの乖離、主治医判断のばらつき。</p>
+      </article>
+
+      <article class="paper">
+        <h3>10. Leung et al. 2019 - Prescriber knowledge/perception survey</h3>
+        <table>
+          <tr><th>PMID</th><td>31107831</td></tr>
+          <tr><th>DOI</th><td>10.1097/YIC.0000000000000269</td></tr>
+          <tr><th>リンク</th><td><a href="https://pubmed.ncbi.nlm.nih.gov/31107831/">PubMed</a></td></tr>
+        </table>
+        <p>米国・カナダ10施設の精神科処方者・trainee 211名。clozapine知識・認識を評価し、多くがclozapine prescribingを負担と感じていた。経験年数に関わらず教育が必要という示唆。</p>
+        <p><strong>使い所:</strong> 医師の経験年数・知識・処方負担感の項目設計、経験年数で回答差を見る根拠。</p>
+      </article>
+
+      <div class="callout">
+        <strong>レビュー文献:</strong>
+        <ul>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6327301/">Barriers to using clozapine in treatment-resistant schizophrenia: systematic review</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10545051/">Clozapine prescribing barriers in the management of treatment-resistant schizophrenia: A systematic review</a></li>
+          <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11751990/">What is the current scope of research assessing patients' and clinicians' perspectives on clozapine treatment? A comprehensive scoping review</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="jstage">
+      <h2>J-STAGE候補</h2>
+      <p>J-STAGEでは、今回の主治医アンケートに直接対応する全国調査・患者単位主治医アンケートは現時点で見つからなかった。日本語文献は、国内の導入ハードル、CPMS・採血負担、施設経験の背景資料として使うのが現実的である。</p>
+
+      <table>
+        <tr><th>文献</th><th>リンク</th><th>用途</th></tr>
+        <tr>
+          <td>豐田ほか 2019<br>当院のクロザピン使用に関する報告</td>
+          <td><a href="https://www.jstage.jst.go.jp/article/jjghp/31/4/31_440/_article/-char/ja">J-STAGE</a><br>DOI: 10.11258/jjghp.31.440</td>
+          <td>CPMS登録や18週間入院が導入ハードルとなる国内背景。施設経験、地域差・施設間差。</td>
+        </tr>
+        <tr>
+          <td>佐久間ほか 2024<br>CPMSイエロー基準と採血負担</td>
+          <td><a href="https://www.jstage.jst.go.jp/article/jjghp/36/3/36_241/_article/-char/ja">J-STAGE</a><br>DOI: 10.11258/jjghp.36.241</td>
+          <td>頻回採血負担によるクロザピン中止希望。患者・家族・医療スタッフの負担。</td>
+        </tr>
+        <tr>
+          <td>菊地ほか 2020<br>好中球減少後のクロザピン再投与症例</td>
+          <td><a href="https://www.jstage.jst.go.jp/article/jjghp/32/4/32_417/_article/-char/ja">J-STAGE</a><br>DOI: 10.11258/jjghp.32.417</td>
+          <td>安全性懸念と治療利益のバランス。医学的合併症を障壁と考える背景。</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="implications">
+      <h2>研究設計への示唆</h2>
+      <div class="finding">
+        <strong>1. 患者単位の主治医評価を採用する根拠は十分ある。</strong>
+        <p>Jakobsen et al. 2023 と Correll et al. 2019 が特に近い。一般論ではなく、個別患者について主治医が判断する設計にすることで、来年度の安全性検証研究の候補者抽出に直結しやすい。</p>
+      </div>
+      <div class="finding">
+        <strong>2. 「この患者ではなぜ未導入か」を聞くべき。</strong>
+        <p>一般的障壁として血液検査が挙がっても、個別患者で最重要な非処方理由は「安定している」「重すぎる」など別の理由になり得る。今回も、一般的障壁と患者単位の未導入理由を分けるのがよい。</p>
+      </div>
+      <div class="finding">
+        <strong>3. 患者本人調査は必須に近い。</strong>
+        <p>患者本人の受け止めは、医師・臨床家が想定する障壁とずれる可能性がある。今回の「医師と患者の回答ギャップ」を示すには、当事者調査を同一計画書内に入れる意義がある。</p>
+      </div>
+      <div class="finding">
+        <strong>4. 国内文脈では、TRS診断検討率とクロザピン処方率の関連を背景に置く。</strong>
+        <p>Yasui-Furukori et al. 2021 / NCNP発表は、日本で「TRSかどうかを検討すること」自体がクロザピン普及の前段階であることを示している。今回の潜在ニーズ調査はこの課題を外来レベルで具体化する位置づけになる。</p>
+      </div>
+      <div class="finding">
+        <strong>5. J-STAGE文献は国内障壁の背景資料として使う。</strong>
+        <p>直接の主治医アンケート先行研究ではないが、18週間入院、CPMS、採血負担、施設差、導入後中断など、日本特有の背景を説明する根拠として有用。</p>
+      </div>
+      <div class="finding">
+        <strong>6. 今回の調査票には「患者単位」と「医師単位」の両方の項目が必要。</strong>
+        <p>患者単位では、TRS/クロザピン適応相当、GAF、改善期待、入院導入・外来導入の受け入れ見込み、未導入理由を尋ねる。医師単位では、経験年数、導入件数、現在の処方患者数、導入タイミング、採血・副作用・アドヒアランスへの懸念、外来支援体制への期待を尋ねる。</p>
+      </div>
+      <div class="finding">
+        <strong>7. 来年度の安全性検証研究に接続するには、単なる意識調査では足りない。</strong>
+        <p>本研究は「外来導入に賛成か」ではなく、「この患者は候補になり得るか」「どの導入方法なら受け入れられそうか」まで患者単位で記録する必要がある。これにより、潜在ニーズ推定と被験者候補抽出の両方に使える。</p>
+      </div>
+    </section>
+
+    <section id="saved">
+      <h2>保存済みフルテキスト</h2>
+      <p>ユーザー提供のPDFは、プロジェクトの参考資料フォルダに保存し、検索用テキストも抽出した。</p>
+      <table>
+        <tr><th>文献</th><th>PDF</th><th>抽出テキスト</th></tr>
+        <tr>
+          <td>Gee et al. 2014</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+        <tr>
+          <td>Gee et al. 2017</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+        <tr>
+          <td>Daod et al. 2019</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+        <tr>
+          <td>Taylor et al. 2000</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+        <tr>
+          <td>Angermeyer et al. 2001</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+        <tr>
+          <td>Hodge &amp; Jespersen 2008</td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">PDF</a></td>
+          <td><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">TXT</a></td>
+        </tr>
+      </table>
+      <p>保存先索引: <a href="../../04_参考資料/調査資料/2026-05-28_主治医アンケート関連文献/README.md">README.md</a></p>
+    </section>
+
+    <section id="request">
+      <h2>フルテキスト依頼リスト</h2>
+      <p>以下はフルテキストがあると、調査票項目や尺度、選択肢の作り方まで参照できる。</p>
+      <ol>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/35584194/">Zheng et al. 2022, Utility and Barriers to Clozapine Use</a></li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/31107831/">Leung et al. 2019, Addressing clozapine under-prescribing and barriers to initiation</a></li>
+      </ol>
+      <div class="todo">
+        <strong>次の作業:</strong> 残り2本のフルテキストPDFを受領したら、同じ参考資料フォルダに保存し、各論文から調査票項目、選択肢、障壁カテゴリ、医師背景項目を抽出する。
+      </div>
+    </section>
+  </main>
+</body>
+</html>

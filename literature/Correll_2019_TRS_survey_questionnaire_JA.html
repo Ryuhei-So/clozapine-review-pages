@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Correll 2019 調査票 日本語訳</title>
+  <style>
+    :root {
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d8dee4;
+      --paper: #fff;
+      --soft: #f6f8fa;
+      --blue: #0b6bcb;
+      --blue-soft: #e8f2ff;
+      --green: #1f6f43;
+      --green-soft: #e8f5ec;
+      --orange: #9a3412;
+      --orange-soft: #fff1e8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: #eef1f4;
+      line-height: 1.75;
+    }
+    header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 38px 24px 28px;
+    }
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: var(--paper);
+      min-height: 100vh;
+      padding: 28px 34px 80px;
+    }
+    h1, h2, h3, h4 { line-height: 1.35; letter-spacing: 0; }
+    h1 { max-width: 1080px; margin: 0 auto 10px; font-size: 30px; }
+    .subtitle { max-width: 1080px; margin: 0 auto; color: var(--muted); }
+    h2 { margin: 42px 0 14px; padding-top: 16px; border-top: 2px solid var(--line); font-size: 22px; }
+    h3 { margin: 26px 0 8px; font-size: 18px; }
+    h4 { margin: 18px 0 6px; font-size: 15px; }
+    p { margin: 0 0 12px; }
+    ul, ol { margin: 8px 0 16px 1.4em; padding: 0; }
+    li { margin: 4px 0; }
+    a { color: var(--blue); }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; font-size: 14px; }
+    th, td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; }
+    th { background: var(--soft); text-align: left; }
+    .meta { display: grid; grid-template-columns: 170px 1fr; border: 1px solid var(--line); margin: 18px 0 22px; }
+    .meta div { padding: 9px 12px; border-bottom: 1px solid var(--line); }
+    .meta div:nth-child(odd) { background: var(--soft); font-weight: 700; }
+    .meta div:nth-last-child(-n+2) { border-bottom: 0; }
+    .note, .use, .warn {
+      border: 1px solid;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .note { background: var(--blue-soft); border-color: #b6d7ff; }
+    .use { background: var(--green-soft); border-color: #b8dfc2; }
+    .warn { background: var(--orange-soft); border-color: #f4c7ad; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+    .q h4 { margin-top: 0; }
+    .small { color: var(--muted); font-size: 13px; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      margin: 0 5px 6px 0;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .pill.source { background: var(--blue-soft); color: var(--blue); border-color: #b6d7ff; }
+    .pill.use { background: var(--green-soft); color: var(--green); border-color: #b8dfc2; }
+    @media print {
+      body { background: #fff; }
+      header { border-bottom: 0; }
+      main { max-width: none; padding: 0 18mm 18mm; }
+      table, .q, .note, .use, .warn { break-inside: avoid; }
+      h2, h3, h4 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div style="max-width:1120px;margin:12px auto;padding:10px 14px;border-left:4px solid #d76f30;background:#fff8f2;color:#26323f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;font-size:14px;line-height:1.6;">公開レビュー版です。出版社PDF/TXT本文は著作権・契約上の理由でGitHub Pagesには置いていません。本文確認はPubMed、PMC、DOI、出版社ページ、または研究チーム内の共有資料を参照してください。</div>
+  <header>
+    <h1>Correll 2019 調査票 日本語訳</h1>
+    <p class="subtitle">Patient characteristics, burden and pharmacotherapy of treatment-resistant schizophrenia: supplementary survey questionnaire</p>
+  </header>
+  <main>
+    <section>
+      <div class="meta">
+        <div>原論文</div>
+        <div>Correll CU, Brevig T, Brain C. Patient characteristics, burden and pharmacotherapy of treatment-resistant schizophrenia: results from a survey of 204 US psychiatrists. BMC Psychiatry. 2019.</div>
+        <div>PMID / DOI</div>
+        <div>31727015 / 10.1186/s12888-019-2318-x</div>
+        <div>原資料</div>
+        <div><a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">Supplementary questionnaire PDF</a> / <a href="#pdf-not-published" title="PDF/TXTは公開レビュー版には含めていません">抽出テキスト</a></div>
+        <div>用途</div>
+        <div>主治医アンケート、患者単位レコードフォーム、TRS患者特徴・治療歴・治療選択因子の項目設計</div>
+      </div>
+      <p>
+        <span class="pill source">ユーザー提供PDFの和訳</span>
+        <span class="pill use">調査票設計用</span>
+      </p>
+      <div class="warn">
+        <strong>注:</strong> これは調査票作成の参考にするための日本語訳・構造化版である。原文の逐語的な再掲ではなく、研究計画に使いやすいよう質問単位で整理している。
+      </div>
+    </section>
+
+    <section>
+      <h2>全体構成</h2>
+      <ol>
+        <li>スクリーニング: 精神科医としての適格性、診療量、TRS患者数、最近処方した抗精神病薬</li>
+        <li>患者レコードフォーム: TRS患者2例、非TRS統合失調症患者1例について詳細入力</li>
+        <li>患者背景: 年齢、性別、就労、婚姻、住居、支援者との接触、支援者の治療意思決定への関与</li>
+        <li>疾患・治療歴: 発症年齢、診断年齢、TRS分類年齢、TRS発症パターン、入院歴、自殺企図、薬物治療歴、用量、治療期間、アドヒアランス</li>
+        <li>治療変更理由: 効果不十分、副作用、アドヒアランス、剤形変更、患者・家族の希望、病識、スティグマなど</li>
+        <li>症状・機能・併存症: 陽性症状、陰性症状、認知症状、機能領域への影響、精神・身体併存症</li>
+        <li>TRS治療選択: クロザピン未使用理由、クロザピン使用理由、TRS患者全体における単剤/多剤、治療満足度、2剤失敗後の治療選択順位</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>スクリーニング項目</h2>
+      <div class="q">
+        <h4>SQ1 主たる診療科</h4>
+        <p>成人精神科、小児精神科、プライマリケア、神経内科、その他から選択。</p>
+      </div>
+      <div class="q">
+        <h4>SQ2 精神科医としての経験年数</h4>
+        <p>資格取得後、精神科医として診療している年数を入力。</p>
+      </div>
+      <div class="q">
+        <h4>SQ3 製薬企業との雇用関係</h4>
+        <p>過去5年以内に製薬企業の給与支払い対象だったか。講演・治験関与は除外。</p>
+      </div>
+      <div class="q">
+        <h4>SQ4 専門医・専門医相当資格</h4>
+        <p>専門領域でboard certifiedまたはboard eligibleか。</p>
+      </div>
+      <div class="q">
+        <h4>SQ5 臨床診療に費やす時間割合</h4>
+        <p>研究・教育ではなく臨床診療に費やす専門時間の割合。</p>
+      </div>
+      <div class="q">
+        <h4>SQ7 診療している統合失調症患者数</h4>
+        <p>過去6か月に診療した統合失調症患者数、平均月あたりの新患・継続患者数、入院患者・外来患者の割合を入力。</p>
+      </div>
+      <div class="q">
+        <h4>SQ8 主に統合失調症患者を診る場所</h4>
+        <p>診療所/クリニック、地域病院、大学病院、地域精神保健センター、その他。</p>
+      </div>
+      <div class="q">
+        <h4>SQ9 TRS患者数とTRS定義</h4>
+        <p>過去6か月に管理した統合失調症患者のうち、TRS患者数を入力。さらに、自身の臨床実践におけるTRSの定義を自由記述。</p>
+      </div>
+      <div class="q">
+        <h4>SQ10 最近3か月に処方した抗精神病薬</h4>
+        <p>経口非定型、LAI非定型、経口定型、LAI定型、その他、該当なしから複数選択。クロザピン、LAI、定型/非定型の処方経験を確認する。</p>
+      </div>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 医師背景として、精神科経験年数、月あたりの統合失調症患者数、外来/入院比率、TRS患者数、TRS定義、最近のクロザピン/LAI処方経験を取るとよい。
+      </div>
+    </section>
+
+    <section>
+      <h2>患者レコードフォームの導入</h2>
+      <p>回答者は3名の患者について回答する。半数の回答者は「自身がTRSと判断する患者2例」、もう半数は「十分期間・十分量・アドヒアランス下で少なくとも2剤の抗精神病薬に十分改善しない患者2例」を選ぶ。全回答者は、臨床判断上TRSではない統合失調症患者1例も入力する。</p>
+      <p>回答者には、可能であれば治療歴をよく知る継続患者を選び、カルテを参照して正確に回答するよう求める。</p>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> こちらの計画でも、候補患者を主治医の記憶だけでなく診療録参照に基づいて入力してもらう設計が望ましい。TRS候補患者だけでなく、比較対象を置くかは検討余地がある。
+      </div>
+    </section>
+
+    <section>
+      <h2>患者背景</h2>
+      <table>
+        <tr><th>質問</th><th>日本語訳・内容</th><th>選択肢/入力</th></tr>
+        <tr><td>Q1</td><td>患者年齢</td><td>年齢を入力</td></tr>
+        <tr><td>Q2</td><td>患者性別</td><td>男性、女性</td></tr>
+        <tr><td>Q3a</td><td>就労状況</td><td>フルタイム就労、パートタイム就労、就学中、ボランティア、無職、不明</td></tr>
+        <tr><td>Q3b</td><td>婚姻状況</td><td>独身、既婚/長期関係、離婚、死別、不明</td></tr>
+        <tr><td>Q3c</td><td>住居・生活状況</td><td>一人暮らし、配偶者/家族と同居、友人等と同居、グループホーム/支援付き住居、住所不定/ホームレス、不明</td></tr>
+        <tr><td>Q3d</td><td>支援者との接触頻度</td><td>ケースワーカー/ACT、家族、配偶者、友人、NPO等について、接触なしから毎日まで</td></tr>
+        <tr><td>Q3e</td><td>支援者が治療意思決定に果たす役割</td><td>役割なし、限定的、重要、不可欠、不明</td></tr>
+        <tr><td>Q4</td><td>職業の種類</td><td>専門職、一般職、公的サービス、飲食/観光/娯楽、肉体労働、学生、その他、不明</td></tr>
+      </table>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 外来導入可否には、家族・支援者・訪問支援・ACT等の関与が効く。患者背景では単に同居者の有無ではなく、支援者の接触頻度と治療意思決定への関与を取る価値がある。
+      </div>
+    </section>
+
+    <section>
+      <h2>患者の疾患歴・治療歴</h2>
+      <table>
+        <tr><th>質問</th><th>日本語訳・内容</th><th>選択肢/入力</th></tr>
+        <tr><td>Q5a</td><td>統合失調症症状の初発年齢</td><td>年齢、不明</td></tr>
+        <tr><td>Q5b</td><td>統合失調症と診断された年齢</td><td>年齢、不明</td></tr>
+        <tr><td>Q5ci</td><td>この患者は、回答者の臨床経験・理解に照らしてTRSか</td><td>はい、いいえ</td></tr>
+        <tr><td>Q5cii</td><td>TRSと分類された年齢</td><td>年齢、不明</td></tr>
+        <tr><td>Q5d</td><td>TRSの発症・分類パターン</td><td>初回治療からTRS、初回再発からTRS、複数治療に反応後5年以内にTRS、5年超でTRS、不明</td></tr>
+        <tr><td>Q6a</td><td>統合失調症による入院歴</td><td>入院なし、1回入院、2回以上入院、現在初回入院中、現在入院中かつ過去入院あり、不明</td></tr>
+        <tr><td>Q6b</td><td>統合失調症による総入院回数</td><td>回数、不明</td></tr>
+        <tr><td>Q6c</td><td>自殺企図回数</td><td>回数、不明</td></tr>
+      </table>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 発症年齢、診断年齢、TRS化のタイミング、入院回数は、stably ill/unwellやクロザピン導入遅延の議論に直結する。今回の調査では「直近入院からの月数」も追加してよい。
+      </div>
+    </section>
+
+    <section>
+      <h2>薬物治療歴</h2>
+      <h3>Q7 治療レジメン</h3>
+      <p>現在の治療、1つ前の治療、2つ前の治療について、抗精神病薬を時系列で選択する。多剤併用の場合は複数選択する。選択肢は、経口非定型、LAI非定型、経口定型、LAI定型、その他、不明、当該ラインで治療なし。</p>
+
+      <h3>Q7ai-Q7aiii 用量情報</h3>
+      <p>現在、1つ前、2つ前の各レジメンについて、各薬剤の開始量、最大処方量、現在量または主たる用量、最大量までの増量期間を入力する。</p>
+
+      <h3>Q7b 治療期間</h3>
+      <p>現在、1つ前、2つ前のレジメンについて、治療期間を年・月・週で入力する。</p>
+
+      <h3>Q8 アドヒアランス</h3>
+      <table>
+        <tr><th>質問</th><th>内容</th></tr>
+        <tr><td>Q8a</td><td>各レジメンについて、臨床的に関連する期間中、患者が治療にアドヒアしていた時間割合を%で入力。</td></tr>
+        <tr><td>Q8b</td><td>アドヒアランスの確認方法: 患者自己申告、家族/介護者/看護師からの報告、処方記録/薬局確認、錠数確認、薬物血中濃度、その他、確認なし、不明。</td></tr>
+        <tr><td>Q8c</td><td>アドヒアランス改善のために試みたこと: 服薬管理、LAI提案、LAI使用、CBT等心理的介入、その他、なし、不明。</td></tr>
+      </table>
+
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 厳密に全レジメンの用量・期間を取ると負担が大きい。日本版では、クロザピン適応判定に必要な「十分量・十分期間で試した抗精神病薬数」と「LAI使用」「アドヒアランス確認方法」に絞るのが現実的。
+      </div>
+    </section>
+
+    <section>
+      <h2>治療変更理由</h2>
+      <h3>Q9 治療変更の理由</h3>
+      <p>1つ前から現在への変更、2つ前から1つ前への変更について、主な理由を最大3つ選択する。</p>
+      <ul>
+        <li>前治療の副作用</li>
+        <li>症状軽減効果が不十分</li>
+        <li>治療への無反応</li>
+        <li>保険・費用上の問題</li>
+        <li>異なる投与方法・用量設定を希望</li>
+        <li>患者が治療計画通りに服薬しなかった</li>
+        <li>別剤形が必要だった（例: LAI）</li>
+        <li>疾患症状・病態の変化</li>
+        <li>アドヒアランスとは無関係の症状再燃</li>
+        <li>患者または介護者の希望</li>
+        <li>患者または介護者の薬物治療への否定的態度</li>
+        <li>精神科薬物療法へのスティグマ</li>
+        <li>病識または治療必要性の認識不足</li>
+        <li>その他、不明</li>
+      </ul>
+
+      <h3>Q10-Q11 副作用・効果不十分の詳細</h3>
+      <p>治療変更理由に副作用が含まれる場合、副作用の種類を選択する。錐体外路症状、鎮静、プロラクチン/性機能、体重増加、代謝系、起立性低血圧、その他など。</p>
+      <p>効果不十分が含まれる場合、十分に制御されなかった症状を、陽性症状、陰性症状、認知症状、その他から選択し、それぞれの重症度を評価する。</p>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> クロザピン未導入理由の選択肢にも、効果不十分、副作用、服薬不良、剤形、患者/家族の希望、病識、スティグマを入れるとよい。ただし本研究では「クロザピンを積極検討しない理由」に焦点を合わせ、主要因1つ＋副要因複数に整理する。
+      </div>
+    </section>
+
+    <section>
+      <h2>現在の症状・機能・併存症</h2>
+      <h3>Q14 現在経験している症状</h3>
+      <table>
+        <tr><th>領域</th><th>症状例</th></tr>
+        <tr><td>陽性症状</td><td>妄想、概念のまとまりのなさ、幻覚行動、興奮/焦燥、敵意/攻撃性</td></tr>
+        <tr><td>陰性症状</td><td>感情鈍麻、情動的引きこもり、関係性の乏しさ、社会的引きこもり</td></tr>
+        <tr><td>認知症状</td><td>認知機能障害</td></tr>
+        <tr><td>その他</td><td>その他症状、なし</td></tr>
+      </table>
+      <p>陽性症状、陰性症状、認知症状について、現在の重症度を「ごく軽微、軽度、中等度、中等度重度、重度、極度」から評価する。</p>
+
+      <h3>Q15 機能領域への影響</h3>
+      <p>現在の症状が、社会的に有用な活動（仕事・学業）、対人関係、セルフケア、迷惑行為・攻撃的行動に与える影響を、なし、軽度、中等度、著明、重度、非常に重度で評価する。</p>
+
+      <h3>Q16 長期予後改善のために最も除去したい症状</h3>
+      <p>現在の陽性症状・陰性症状のうち、長期予後を改善するために最も重要だと考える症状を1つ選ぶ。</p>
+
+      <h3>Q17 重度で機能障害を伴う症状の頻度</h3>
+      <p>陽性症状、陰性症状、認知症状それぞれについて、年数回、数か月に1回、月1回程度、月3-4回、週2-3回、毎日から選ぶ。</p>
+
+      <h3>Q18 併存症</h3>
+      <table>
+        <tr><th>精神科的併存症・問題</th><td>身体疾患への確信、不安、罪責感、奇妙な姿勢/作法、うつ、認知機能障害、衝動制御不良、強迫、物質使用、自殺念慮、不眠、その他、なし、不明</td></tr>
+        <tr><th>身体併存症・リスク</th><td>糖尿病、高血圧、肥満、心血管疾患、脂質異常症、メタボリック症候群、喫煙、甲状腺機能障害、COPD/喘息、睡眠時無呼吸、慢性疼痛、がん、その他、なし、不明</td></tr>
+      </table>
+
+      <h3>Q19 経過への満足度</h3>
+      <p>診断以降の症状、行動、QOLの全体的改善について、医師がどの程度満足しているかを1から10で評価する。</p>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 症状はGAFだけでなく、陽性・陰性・認知症状と機能領域への影響を分けて聞くと、クロザピンで改善を期待する対象が明確になる。今回の主治医アンケートでは簡略版として、精神病症状CGI、GAF、最も改善したい症状、現在の治療満足度を取るのがよい。
+      </div>
+    </section>
+
+    <section>
+      <h2>TRS・クロザピン関連項目</h2>
+      <table>
+        <tr><th>質問</th><th>日本語訳・内容</th></tr>
+        <tr><td>Q20a</td><td>TRSと判断されるまでに、何回の異なる抗精神病薬治療失敗があったか。非アドヒアランス、忍容性、用量不足、期間不足、物質使用などによる失敗も含む。</td></tr>
+        <tr><td>Q20b</td><td>十分な治療試行に限ると、何回の異なる抗精神病薬治療失敗後にTRSと判断されたか。十分な治療試行とは、十分量・十分期間、アドヒアランス確認、CNS作用性違法薬物を使用していないことを含む。</td></tr>
+        <tr><td>Q21a</td><td>TRSでクロザピン未使用の場合、該当理由を選択: 臨床的理由で不適格、社会的/実務的理由で不適格、採血モニタリング遵守への懸念、過去に推奨したが患者が拒否、その他、該当なし。</td></tr>
+        <tr><td>Q21b</td><td>TRSでクロザピン使用ありの場合、該当理由を選択: 患者が希望、家族/重要他者が希望、他の薬物治療選択肢が不適/除外、その他、該当なし。</td></tr>
+      </table>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 「全失敗数」と「十分な治療試行に限った失敗数」を分ける設計は有用。クロザピン未使用理由は、今回の研究ではさらに細分化し、主要因1つ＋副要因複数で取る。
+      </div>
+    </section>
+
+    <section>
+      <h2>医師単位のTRS治療方針</h2>
+      <table>
+        <tr><th>質問</th><th>日本語訳・内容</th></tr>
+        <tr><td>Q22a</td><td>担当TRS患者のうち、抗精神病薬単剤、抗精神病薬多剤併用、その他の割合。</td></tr>
+        <tr><td>Q22b</td><td>単剤治療中TRS患者で、定型単剤、非定型単剤、その他の割合。</td></tr>
+        <tr><td>Q22c</td><td>多剤併用中TRS患者で、定型同士、非定型同士、定型＋非定型、その他の割合。LAIは薬剤タイプに応じて分類。</td></tr>
+        <tr><td>Q23</td><td>TRS治療/管理の文脈で、全体的満足度が高い抗精神病薬上位5つを順位づける。</td></tr>
+        <tr><td>Q24</td><td>2回の抗精神病薬治療失敗がある統合失調症患者に対し、どの治療選択肢をどの順番で使うかを順位づける。現在薬の増量、2剤目追加、3剤目追加、気分安定薬追加、抗うつ薬追加、抗不安薬追加、LAI提案、クロザピン提案、非クロザピン非定型へ切替、定型へ切替。</td></tr>
+        <tr><td>Q25</td><td>統合失調症管理における「十分な改善」をどう定義するか自由記述。</td></tr>
+      </table>
+      <div class="use">
+        <strong>今回研究への示唆:</strong> 医師単位で、2剤失敗後にクロザピンを何番目に考えるか、現在のTRS患者で単剤/多剤併用がどれくらいか、「十分な改善」をどう定義するかを聞くと、患者単位評価の解釈がしやすい。
+      </div>
+    </section>
+
+    <section>
+      <h2>今回研究に採用すべき項目</h2>
+      <h3>そのまま参考になる項目</h3>
+      <ul>
+        <li>医師の診療量、TRS患者数、TRS定義</li>
+        <li>患者背景: 就労、住居、支援者接触頻度、治療意思決定への支援者関与</li>
+        <li>発症年齢、診断年齢、TRS化年齢、TRS化パターン</li>
+        <li>入院歴、入院回数、自殺企図</li>
+        <li>過去の抗精神病薬試行数、十分な治療試行数</li>
+        <li>アドヒアランス確認方法、LAI提案/使用</li>
+        <li>現在症状、症状重症度、機能領域への影響</li>
+        <li>精神・身体併存症</li>
+        <li>クロザピン未使用理由</li>
+        <li>2剤失敗後の治療選択順位</li>
+      </ul>
+      <h3>日本版では簡略化すべき項目</h3>
+      <ul>
+        <li>現在・1つ前・2つ前の全薬剤用量と増量期間は負担が大きい。クロザピン適応判定に必要な抗精神病薬名、最大量、期間、アドヒアランス確認に絞る。</li>
+        <li>全症状の詳細なPANSS風評価は長い。精神病症状CGI、GAF、最も改善したい症状、機能領域への影響に圧縮する。</li>
+        <li>就労・婚姻・住居は必要だが、職種分類は簡略化してよい。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

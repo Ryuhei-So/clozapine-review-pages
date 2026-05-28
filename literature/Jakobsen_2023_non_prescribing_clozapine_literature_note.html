@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jakobsen 2023 リテラチャーノート</title>
+  <style>
+    :root {
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d8dee4;
+      --paper: #fff;
+      --soft: #f6f8fa;
+      --blue: #0b6bcb;
+      --blue-soft: #e8f2ff;
+      --green: #1f6f43;
+      --green-soft: #e8f5ec;
+      --orange: #9a3412;
+      --orange-soft: #fff1e8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: #eef1f4;
+      line-height: 1.75;
+    }
+
+    header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 38px 24px 28px;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--paper);
+      min-height: 100vh;
+      padding: 28px 34px 80px;
+    }
+
+    h1, h2, h3 { line-height: 1.35; letter-spacing: 0; }
+    h1 { max-width: 1040px; margin: 0 auto 10px; font-size: 30px; }
+    .subtitle { max-width: 1040px; margin: 0 auto; color: var(--muted); }
+    h2 { margin: 40px 0 14px; padding-top: 16px; border-top: 2px solid var(--line); font-size: 22px; }
+    h3 { margin: 24px 0 8px; font-size: 18px; }
+    p { margin: 0 0 12px; }
+    ul, ol { margin: 8px 0 16px 1.4em; padding: 0; }
+    li { margin: 4px 0; }
+    a { color: var(--blue); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 22px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    th { background: var(--soft); text-align: left; }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      border: 1px solid var(--line);
+      margin: 18px 0 22px;
+    }
+
+    .meta div {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .meta div:nth-child(odd) {
+      background: var(--soft);
+      font-weight: 700;
+    }
+
+    .meta div:nth-last-child(-n+2) { border-bottom: 0; }
+
+    .callout, .finding, .todo {
+      border: 1px solid;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+    }
+
+    .callout { background: var(--blue-soft); border-color: #b6d7ff; }
+    .finding { background: var(--green-soft); border-color: #b8dfc2; }
+    .todo { background: var(--orange-soft); border-color: #f4c7ad; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      margin: 0 5px 6px 0;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .tag.core { background: var(--orange-soft); border-color: #f4c7ad; color: var(--orange); }
+    .tag.oa { background: var(--green-soft); border-color: #b8dfc2; color: var(--green); }
+    .tag.method { background: var(--blue-soft); border-color: #b6d7ff; color: var(--blue); }
+
+    blockquote {
+      margin: 14px 0;
+      padding: 10px 14px;
+      border-left: 4px solid var(--line);
+      background: var(--soft);
+      color: #3d444d;
+    }
+
+    @media print {
+      body { background: #fff; }
+      header { border-bottom: 0; }
+      main { max-width: none; padding: 0 18mm 18mm; }
+      table, .callout, .finding, .todo { break-inside: avoid; }
+      h2, h3 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div style="max-width:1120px;margin:12px auto;padding:10px 14px;border-left:4px solid #d76f30;background:#fff8f2;color:#26323f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;font-size:14px;line-height:1.6;">公開レビュー版です。出版社PDF/TXT本文は著作権・契約上の理由でGitHub Pagesには置いていません。本文確認はPubMed、PMC、DOI、出版社ページ、または研究チーム内の共有資料を参照してください。</div>
+  <header>
+    <h1>Jakobsen 2023 リテラチャーノート</h1>
+    <p class="subtitle">Non-prescribing of clozapine for outpatients with schizophrenia in real-world settings: The clinicians' perspectives</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="meta">
+        <div>文献</div>
+        <div>Jakobsen MI, et al. Non-prescribing of clozapine for outpatients with schizophrenia in real-world settings: The clinicians' perspectives.</div>
+        <div>PMID / PMCID</div>
+        <div>38135678 / PMC10746712</div>
+        <div>DOI</div>
+        <div>10.1038/s41537-023-00423-3</div>
+        <div>リンク</div>
+        <div><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10746712/">PMC</a> / <a href="https://www.nature.com/articles/s41537-023-00423-3">Nature</a></div>
+        <div>今回の位置づけ</div>
+        <div>潜在ニーズ調査、患者単位主治医評価、未導入理由、医師・患者ギャップの設計における中核文献</div>
+      </div>
+
+      <p>
+        <span class="tag core">中核文献</span>
+        <span class="tag oa">Open access</span>
+        <span class="tag method">患者単位評価</span>
+      </p>
+
+      <div class="callout">
+        <strong>要点:</strong> この論文は、外来のclozapine-eligible yet clozapine-naive患者について、臨床家がなぜクロザピンを処方していないのかを患者単位で調べている。今回の研究で目指す「基幹病院外来にいるクロザピン適応相当患者をあぶり出し、主治医が入院導入・外来導入の受容見込みを評価する」設計にかなり近い。
+      </div>
+    </section>
+
+    <section>
+      <h2>Table 1 から使える項目</h2>
+      <p>Table 1は、患者・医師のベースラインデータ項目の参考になる。</p>
+
+      <h3>患者側項目</h3>
+      <table>
+        <tr><th>項目</th><th>今回研究での使い方</th></tr>
+        <tr><td>性別</td><td>患者背景として収集。</td></tr>
+        <tr><td>年齢</td><td>年齢層または連続値として収集。</td></tr>
+        <tr><td>入院歴</td><td>重症度、治療抵抗性、外来導入の実現可能性の背景情報として収集。</td></tr>
+        <tr><td>入院回数</td><td>再発・急性増悪・医療資源利用の指標。クロザピンによる入院減少が期待される患者の特徴づけに使える。</td></tr>
+        <tr><td>直近の精神科入院から観察日までの月数</td><td>直近の不安定性と現在の安定度を区別する指標。最近入院している患者と、長期間入院なしで「stably ill」と見なされている患者を分けられる。</td></tr>
+        <tr><td>過去に試された十分量の定期処方抗精神病薬数</td><td>反応性不良の判定、クロザピン適応相当の根拠として重要。</td></tr>
+        <tr><td>過去に適切に試された抗精神病薬数</td><td>十分量・十分期間の条件を満たす治療歴として記録。</td></tr>
+        <tr><td>LAI抗精神病薬を現在使用中か</td><td>アドヒアランス、治療抵抗性評価、既存治療の工夫の指標。</td></tr>
+        <tr><td>カルテ上の過去のclozapine拒否記載</td><td>未導入理由、患者本人の受容性、医師推定との比較に使える。</td></tr>
+        <tr><td>clozapine拒否記載から観察日までの年数</td><td>過去の拒否を現在の拒否と同一視しないために重要。再提案の余地を評価できる。</td></tr>
+      </table>
+
+      <h3>医師側項目</h3>
+      <table>
+        <tr><th>項目</th><th>今回研究での使い方</th></tr>
+        <tr><td>性別</td><td>医師背景。必須ではないが、先行研究との比較可能性はある。</td></tr>
+        <tr><td>スタッフクラス</td><td>専攻医・スタッフ・指導医等の区分として収集候補。</td></tr>
+        <tr><td>クロザピン投与経験</td><td>本文ではスタッフクラス全員が経験ありとされており、今回研究では経験の有無だけでなく、導入件数・現在処方患者数まで聞くのがよい。</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Table 2 から使える項目</h2>
+      <table>
+        <tr><th>項目</th><th>解釈・今回研究への示唆</th></tr>
+        <tr>
+          <td>CGI</td>
+          <td>GAFだけでは、精神病症状以外の理由による機能低下を拾う可能性がある。精神病症状の重症度を反映するCGIを併用すると、「機能は低いが精神病症状の改善余地が乏しい」患者と「精神病症状が重くクロザピンで改善余地がある」患者を区別しやすい。</td>
+        </tr>
+        <tr>
+          <td>GAF</td>
+          <td>反応性不良の操作的定義に含まれるため必須。現在GAFだけでなく、クロザピン導入後に期待されるGAF改善の主治医評価を追加する。</td>
+        </tr>
+        <tr>
+          <td>Well-treated</td>
+          <td>単に症状が軽いという意味ではなく、「重症で機能が低くても、臨床家がこれ以上の改善を見込みにくい、または安定していると判断している状態」として使われている。今回研究では「現在の治療で十分治療されていると思うか」「その理由」を明示的に聞く必要がある。</td>
+        </tr>
+      </table>
+
+      <div class="finding">
+        <strong>調査票への反映:</strong> 患者単位フォームには、GAFに加えてCGIを入れる価値がある。さらに「現在の治療でwell-treated/as well-treated as possibleと考えるか」を聞くことで、クロザピン適応相当でも主治医が処方を積極検討しない理由を把握できる。
+      </div>
+    </section>
+
+    <section>
+      <h2>Table 3 から使える項目</h2>
+      <p>Table 3は、なぜクロザピンを処方しないのかの選択肢として参考になる。今回の調査票では、まず「この患者にクロザピン処方を積極的に検討したいか」を聞き、Noまたは保留の場合に、主要因1つと副要因複数を選ばせる設計がよい。</p>
+
+      <h3>推奨する質問構造</h3>
+      <ol>
+        <li>この患者はクロザピン適応相当と考えるか。</li>
+        <li>クロザピンによりGAF改善が期待できるか。</li>
+        <li>現時点でクロザピン処方を積極的に検討したいか。</li>
+        <li>No/保留の場合、処方を積極的に検討しない主要因を1つ選ぶ。</li>
+        <li>副要因を複数選択可で選ぶ。</li>
+        <li>入院導入なら受け入れられそうか。</li>
+        <li>外来導入なら受け入れられそうか。</li>
+      </ol>
+
+      <h3>理由カテゴリ案</h3>
+      <ul>
+        <li>現在の治療で安定している、またはwell-treated/as well-treated as possibleと判断する</li>
+        <li>重症・慢性化しており、クロザピンで得られる改善が乏しいと考える</li>
+        <li>患者本人が拒否しそう、または過去に拒否した</li>
+        <li>採血モニタリングを受け入れられない可能性が高い</li>
+        <li>入院導入を受け入れられない可能性が高い</li>
+        <li>副作用・身体合併症のリスクが高い</li>
+        <li>服薬・通院・連絡体制のアドヒアランスが不十分</li>
+        <li>家族・支援者・地域支援体制が不足している</li>
+        <li>医療機関側の体制、外来枠、検査体制、夜間休日対応が不十分</li>
+        <li>その他</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Phase 2 インタビューからの概念メモ</h2>
+      <p>Phase 2の質的インタビューで特に重要なのは、臨床家が「安定」と「予後」を理由に、クロザピンを延期・回避する構造である。</p>
+
+      <h3>“Lost cause” / beyond clozapine treatment</h3>
+      <p>重症期間が長い患者について、臨床家が「クロザピンでも得るものが少ない」と判断し、現実的な予後説明や安全確保の名目で導入を避けることがある。これは、今回研究で「GAF改善が期待できるか」を主治医に直接尋ねる重要な理由になる。</p>
+
+      <h3>“Stably ill” / too well-treated for clozapine</h3>
+      <p>論文では、かなり高い症状重症度・低い機能水準であっても、患者が一定の生活リズムや主観的安定を得ている場合、臨床家が「安定している」「今が最善」とみなし、クロザピン導入を避ける構造が示されている。</p>
+
+      <blockquote>
+        “stably unwell”
+      </blockquote>
+
+      <p>この表現は示唆深い。何とかしようとしている途中の ill / unwell は、まだ stably ill / stably unwell ではない。しかし、その状態が長期間続き、治療者・患者・支援者の側で「これ以上は大きく変わらない」「悪化しなければよい」と受け止められるようになると、ill / unwell が安定状態として再定義される。早い段階でクロザピンを適切に検討していれば、そのような固定化に至らなかった可能性がある。</p>
+
+      <p>この概念は今回研究に非常に重要である。単に「クロザピン適応相当か」を聞くだけではなく、主治医がその患者を「現在の治療で十分」「これ以上改善しない」「変薬で悪化するリスクが高い」と見ているかを分けて聞く必要がある。</p>
+
+      <h3>Subjective distress</h3>
+      <p>精神科医は、患者が主観的苦痛を訴えていないことをwell-treatedの重要な marker として扱うことがある。したがって、今回の患者単位評価では、主治医評価として「患者本人が現在の状態に困っている/変化を望んでいると思うか」を入れるとよい。</p>
+    </section>
+
+    <section>
+      <h2>Discussion からの重要な示唆</h2>
+      <p>Discussionでは、精神科医が安定性、予後、治療変更による悪化リスクを重視し、患者の安全とwell-beingを守るためにクロザピンを延期・回避する構造が述べられている。</p>
+
+      <div class="finding">
+        <strong>実臨床のclozapine eligibilityはガイドラインより狭い。</strong>
+        <p>医師は、ガイドライン上は適応相当であっても、実臨床では「主観的苦痛がある」「CGIが一定以上」「GAFが低い」「3剤以上試している」「ただし重症すぎず、長期化しすぎず、自分で安全管理できる」など、より狭く、時に矛盾する条件を置いている。</p>
+      </div>
+
+      <div class="finding">
+        <strong>外来導入研究への示唆:</strong>
+        <p>外来導入の潜在ニーズを見積もるには、単にTRS定義を満たす患者数だけでは足りない。主治医が「この患者は外来導入なら現実的に候補になる」と判断するか、その判断がどの条件に左右されるかを患者単位で把握する必要がある。</p>
+      </div>
+
+      <div class="finding">
+        <strong>医師・患者ギャップへの示唆:</strong>
+        <p>医師は患者の安全・安定を守る意図で導入を避けるが、患者本人は違う負担や希望を持っている可能性がある。したがって、主治医の受容見込み推定と患者本人の入院/外来導入への選好を比較する意義がある。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>今回研究への具体的な反映案</h2>
+      <h3>患者単位フォームに追加すべき項目</h3>
+      <table>
+        <tr><th>領域</th><th>項目案</th></tr>
+        <tr><td>重症度・機能</td><td>GAF、精神病症状CGI、主観的苦痛の有無、現在の生活安定度</td></tr>
+        <tr><td>入院・不安定性</td><td>入院歴、入院回数、直近の精神科入院から観察日までの月数</td></tr>
+        <tr><td>TRS/適応相当</td><td>反応性不良、耐容性不良、過去に十分量・十分期間で試した抗精神病薬数、LAI使用、過去のclozapine提案・拒否</td></tr>
+        <tr><td>改善期待</td><td>クロザピンでGAF改善が期待できるか、精神病症状改善が期待できるか、生活機能改善が期待できるか</td></tr>
+        <tr><td>検討意欲</td><td>この患者にクロザピン処方を積極的に検討したいか</td></tr>
+        <tr><td>未導入理由</td><td>主要因1つ、副要因複数。安定、予後不良、患者拒否、採血、入院困難、副作用、身体合併症、支援不足、医療体制など</td></tr>
+        <tr><td>導入方法</td><td>入院導入なら受け入れ見込み、外来導入なら受け入れ見込み</td></tr>
+      </table>
+
+      <h3>計画書への修正候補</h3>
+      <ul>
+        <li>主要評価項目に「クロザピン処方を積極的に検討したい患者の割合」を追加する。</li>
+        <li>副次評価項目に「well-treated/as well-treated as possibleと判断された患者の特徴」を追加する。</li>
+        <li>患者単位の未導入理由は、主要因と副要因を分けて収集する。</li>
+        <li>GAFだけでなく精神病症状CGIを収集する。</li>
+        <li>医師・患者ギャップを見る場合、患者本人にも「現在の治療で安定していると思うか」「変薬を希望するか」を尋ねる。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
