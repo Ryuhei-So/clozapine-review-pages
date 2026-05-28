@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="430" viewBox="0 0 820 430">
+<style>text{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif;fill:#17222b}.title{font-size:20px;font-weight:700}.head{font-size:15px;font-weight:700}.cell{stroke:#fff;stroke-width:3}.num{font-size:26px;font-weight:700}.lab{font-size:14px}.note{font-size:13px;fill:#52616b}</style>
+<text x="410.0" y="34" text-anchor="middle" class="title">医師推定と患者本人回答のギャップ</text>
+<text x="375" y="74" text-anchor="middle" class="head">患者本人: 外来導入 前向き</text>
+<text x="605" y="74" text-anchor="middle" class="head">患者本人: 非受容/保留</text>
+<text x="130" y="150" text-anchor="middle" class="head">医師推定:<tspan x="130" dy="20">受け入れ見込みあり</tspan></text>
+<text x="130" y="280" text-anchor="middle" class="head">医師推定:<tspan x="130" dy="20">受け入れ見込みなし/不明</tspan></text>
+<rect x="260" y="92" width="230" height="130" class="cell" fill="#88b8c8"/>
+<text x="375.0" y="142" text-anchor="middle" class="num">31</text>
+<text x="375.0" y="170" text-anchor="middle" class="lab">38.3%</text>
+<text x="375.0" y="196" text-anchor="middle" class="lab">一致: 前向き</text>
+<rect x="490" y="92" width="230" height="130" class="cell" fill="#d9c3a5"/>
+<text x="605.0" y="142" text-anchor="middle" class="num">4</text>
+<text x="605.0" y="170" text-anchor="middle" class="lab">4.9%</text>
+<text x="605.0" y="196" text-anchor="middle" class="lab">医師が過大推定</text>
+<rect x="260" y="222" width="230" height="130" class="cell" fill="#cf6f57"/>
+<text x="375.0" y="272" text-anchor="middle" class="num">45</text>
+<text x="375.0" y="300" text-anchor="middle" class="lab">55.6%</text>
+<text x="375.0" y="326" text-anchor="middle" class="lab">ギャップ層</text>
+<rect x="490" y="222" width="230" height="130" class="cell" fill="#ece7dc"/>
+<text x="605.0" y="272" text-anchor="middle" class="num">1</text>
+<text x="605.0" y="300" text-anchor="middle" class="lab">1.2%</text>
+<text x="605.0" y="326" text-anchor="middle" class="lab">一致: 非受容/保留</text>
+<text x="260" y="384" class="note">ギャップ層: 医師は受け入れ見込みなし/不明と推定したが、患者本人は外来導入に前向き。</text>
+</svg>
