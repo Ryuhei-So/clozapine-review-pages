@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 430" role="img">
+<rect x="0" y="0" width="1080" height="430" fill="#fff"/>
+
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#5d6773"/></marker></defs>
+<rect x="40" y="45" width="260" height="70" rx="6" fill="#f5f7fa" stroke="#cfd6df"/>
+<text x="170" y="72" text-anchor="middle" font-size="16" font-weight="700">外来通院患者</text><text x="170" y="98" text-anchor="middle" font-size="15">n = 4,820</text>
+<line x1="300" y1="80" x2="395" y2="80" stroke="#5d6773" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="395" y="45" width="260" height="70" rx="6" fill="#f5f7fa" stroke="#cfd6df"/>
+<text x="525" y="72" text-anchor="middle" font-size="16" font-weight="700">統合失調症圏</text><text x="525" y="98" text-anchor="middle" font-size="15">n = 1,240</text>
+<line x1="655" y1="80" x2="750" y2="80" stroke="#5d6773" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="750" y="45" width="290" height="70" rx="6" fill="#f5f7fa" stroke="#cfd6df"/>
+<text x="895" y="72" text-anchor="middle" font-size="16" font-weight="700">クロザピン適応相当</text><text x="895" y="98" text-anchor="middle" font-size="15">n = 186</text>
+<line x1="895" y1="115" x2="895" y2="215" stroke="#5d6773" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="750" y="215" width="290" height="70" rx="6" fill="#e8f0f2" stroke="#b6cbd1"/>
+<text x="895" y="242" text-anchor="middle" font-size="16" font-weight="700">積極検討あり</text><text x="895" y="268" text-anchor="middle" font-size="15">n = 89</text>
+<rect x="40" y="230" width="310" height="95" rx="6" fill="#fff8ed" stroke="#dac2a3"/>
+<text x="195" y="258" text-anchor="middle" font-size="16" font-weight="700">クロザピン適応相当だが</text><text x="195" y="282" text-anchor="middle" font-size="16" font-weight="700">積極検討なし/保留</text><text x="195" y="308" text-anchor="middle" font-size="15">n = 97</text>
+<line x1="750" y1="250" x2="350" y2="278" stroke="#9b6a2f" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+
+</svg>

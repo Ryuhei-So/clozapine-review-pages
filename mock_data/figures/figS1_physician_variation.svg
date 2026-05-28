@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 720" role="img">
+<rect x="0" y="0" width="1080" height="720" fill="#fff"/>
+<text x="24" y="34" font-size="16" font-weight="700">図2の主要回答における医師間ばらつき</text>
+<text x="24" y="58" font-size="12" fill="#5d6773">各点は精神科医1名。横軸は医師ごとの該当割合。縦位置は点の重なりを避けるためのジッターで、順序や値の意味はない。</text>
+<text x="55" y="88" font-size="13" font-weight="700" fill="#17212b">クロザピン適応相当</text>
+<line x1="110.0" y1="106" x2="110.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="110.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="197.5" y1="106" x2="197.5" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="197.5" y="220" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="285.0" y1="106" x2="285.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="285.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="372.5" y1="106" x2="372.5" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="372.5" y="220" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="460.0" y1="106" x2="460.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="460.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="110" y1="200" x2="460" y2="200" stroke="#5d6773" stroke-width="1"/>
+<text x="110" y="115" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="197.5" cy="109.0" r="4.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="172.1" cy="146.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="211.3" cy="183.0" r="4.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="131.9" cy="130.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="171.5" cy="167.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="201.7" cy="114.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="159.2" cy="151.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="175.6" cy="188.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="124.2" cy="135.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="195.5" cy="172.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="122.5" cy="119.0" r="4.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="178.1" cy="156.0" r="4.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="144.4" cy="193.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="175.6" cy="140.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="151.7" cy="177.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="156.1" cy="124.0" r="4.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="176.2" cy="161.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="165.7" cy="198.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="159.0" cy="145.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="170.6" cy="182.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="176.9" cy="129.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="192.9" cy="166.0" r="4.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="161.5" cy="113.0" r="4.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="174.7" cy="150.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="224.1" cy="187.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="174.5" cy="134.0" r="4.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="157.1" cy="171.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="173.2" cy="118.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="162.0" cy="155.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="129.4" cy="192.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="153.8" cy="139.0" r="4.6" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="127.5" cy="176.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="132.9" cy="123.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="208.9" cy="160.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="132.4" cy="197.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="145.0" cy="144.0" r="4.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="197.5" cy="181.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="485" y="153" font-size="11" fill="#17212b">医師数 37</text>
+<text x="485" y="171" font-size="11" fill="#17212b">中央値 17%</text>
+<text x="575" y="88" font-size="13" font-weight="700" fill="#17212b">入院導入を勧めたい</text>
+<line x1="630.0" y1="106" x2="630.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="630.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="717.5" y1="106" x2="717.5" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="717.5" y="220" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="805.0" y1="106" x2="805.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="805.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="892.5" y1="106" x2="892.5" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="892.5" y="220" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="980.0" y1="106" x2="980.0" y2="200" stroke="#e0e5ea" stroke-width="1"/>
+<text x="980.0" y="220" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="630" y1="200" x2="980" y2="200" stroke="#5d6773" stroke-width="1"/>
+<text x="630" y="115" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="892.5" cy="109.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="717.5" cy="146.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="739.4" cy="183.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="783.1" cy="130.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="659.2" cy="167.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="783.1" cy="114.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="805.0" cy="151.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="855.0" cy="188.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="755.0" cy="135.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="739.4" cy="172.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="805.0" cy="119.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="1005" y="153" font-size="11" fill="#17212b">医師数 11</text>
+<text x="1005" y="171" font-size="11" fill="#17212b">中央値 44%</text>
+<text x="55" y="238" font-size="13" font-weight="700" fill="#17212b">入院導入の受け入れ見込みあり</text>
+<line x1="110.0" y1="256" x2="110.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="110.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="197.5" y1="256" x2="197.5" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="197.5" y="370" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="285.0" y1="256" x2="285.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="285.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="372.5" y1="256" x2="372.5" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="372.5" y="370" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="460.0" y1="256" x2="460.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="460.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="110" y1="350" x2="460" y2="350" stroke="#5d6773" stroke-width="1"/>
+<text x="110" y="265" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="153.8" cy="259.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="355.0" cy="296.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="241.2" cy="333.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="328.8" cy="280.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="221.4" cy="317.0" r="3.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="355.0" cy="264.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="241.2" cy="301.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="241.2" cy="338.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="485" y="303" font-size="11" fill="#17212b">医師数 8</text>
+<text x="485" y="321" font-size="11" fill="#17212b">中央値 38%</text>
+<text x="575" y="238" font-size="13" font-weight="700" fill="#17212b">外来導入を勧めたい</text>
+<line x1="630.0" y1="256" x2="630.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="630.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="717.5" y1="256" x2="717.5" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="717.5" y="370" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="805.0" y1="256" x2="805.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="805.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="892.5" y1="256" x2="892.5" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="892.5" y="370" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="980.0" y1="256" x2="980.0" y2="350" stroke="#e0e5ea" stroke-width="1"/>
+<text x="980.0" y="370" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="630" y1="350" x2="980" y2="350" stroke="#5d6773" stroke-width="1"/>
+<text x="630" y="265" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="892.5" cy="259.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="717.5" cy="296.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="855.0" cy="333.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="659.2" cy="280.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="739.4" cy="317.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="741.4" cy="264.0" r="3.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="834.2" cy="301.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="783.1" cy="338.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="926.7" cy="285.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="955.0" cy="322.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="882.8" cy="269.0" r="3.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="783.1" cy="306.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="755.0" cy="343.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="775.8" cy="290.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="717.5" cy="327.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="855.0" cy="274.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="755.0" cy="311.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="1005" y="303" font-size="11" fill="#17212b">医師数 17</text>
+<text x="1005" y="321" font-size="11" fill="#17212b">中央値 44%</text>
+<text x="55" y="388" font-size="13" font-weight="700" fill="#17212b">外来導入の受け入れ見込みあり</text>
+<line x1="110.0" y1="406" x2="110.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="110.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="197.5" y1="406" x2="197.5" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="197.5" y="520" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="285.0" y1="406" x2="285.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="285.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="372.5" y1="406" x2="372.5" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="372.5" y="520" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="460.0" y1="406" x2="460.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="460.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="110" y1="500" x2="460" y2="500" stroke="#5d6773" stroke-width="1"/>
+<text x="110" y="415" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="285.0" cy="409.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="355.0" cy="446.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="285.0" cy="483.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="416.2" cy="430.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="328.8" cy="467.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="416.2" cy="414.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="241.2" cy="451.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="346.2" cy="488.0" r="4.6" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="328.8" cy="435.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="241.2" cy="472.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="435.0" cy="419.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="335.0" cy="456.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="416.2" cy="493.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="416.2" cy="440.0" r="3.0" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="355.0" cy="477.0" r="3.1" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="485" y="453" font-size="11" fill="#17212b">医師数 15</text>
+<text x="485" y="471" font-size="11" fill="#17212b">中央値 68%</text>
+<text x="575" y="388" font-size="13" font-weight="700" fill="#17212b">積極検討あり</text>
+<line x1="630.0" y1="406" x2="630.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="630.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="717.5" y1="406" x2="717.5" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="717.5" y="520" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="805.0" y1="406" x2="805.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="805.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="892.5" y1="406" x2="892.5" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="892.5" y="520" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="980.0" y1="406" x2="980.0" y2="500" stroke="#e0e5ea" stroke-width="1"/>
+<text x="980.0" y="520" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="630" y1="500" x2="980" y2="500" stroke="#5d6773" stroke-width="1"/>
+<text x="630" y="415" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="834.2" cy="409.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="775.8" cy="446.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="855.0" cy="483.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="834.2" cy="430.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="783.1" cy="467.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="709.5" cy="414.0" r="3.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="775.8" cy="451.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="826.9" cy="488.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="835.4" cy="435.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="805.0" cy="472.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="766.1" cy="419.0" r="3.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="739.4" cy="456.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="755.0" cy="493.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="834.2" cy="440.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="834.2" cy="477.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="805.0" cy="424.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="805.0" cy="461.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="1005" y="453" font-size="11" fill="#17212b">医師数 17</text>
+<text x="1005" y="471" font-size="11" fill="#17212b">中央値 50%</text>
+<text x="55" y="538" font-size="13" font-weight="700" fill="#17212b">過去の拒否記載あり</text>
+<line x1="110.0" y1="556" x2="110.0" y2="650" stroke="#e0e5ea" stroke-width="1"/>
+<text x="110.0" y="670" text-anchor="middle" font-size="10" fill="#5d6773">0</text>
+<line x1="197.5" y1="556" x2="197.5" y2="650" stroke="#e0e5ea" stroke-width="1"/>
+<text x="197.5" y="670" text-anchor="middle" font-size="10" fill="#5d6773">25</text>
+<line x1="285.0" y1="556" x2="285.0" y2="650" stroke="#e0e5ea" stroke-width="1"/>
+<text x="285.0" y="670" text-anchor="middle" font-size="10" fill="#5d6773">50</text>
+<line x1="372.5" y1="556" x2="372.5" y2="650" stroke="#e0e5ea" stroke-width="1"/>
+<text x="372.5" y="670" text-anchor="middle" font-size="10" fill="#5d6773">75</text>
+<line x1="460.0" y1="556" x2="460.0" y2="650" stroke="#e0e5ea" stroke-width="1"/>
+<text x="460.0" y="670" text-anchor="middle" font-size="10" fill="#5d6773">100</text>
+<line x1="110" y1="650" x2="460" y2="650" stroke="#5d6773" stroke-width="1"/>
+<text x="110" y="565" font-size="10" fill="#8a94a3">縦方向はジッター</text>
+<circle cx="197.5" cy="559.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="197.5" cy="596.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="185.0" cy="633.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="139.2" cy="580.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="131.9" cy="617.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="221.4" cy="564.0" r="3.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="139.2" cy="601.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="131.9" cy="638.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="148.0" cy="585.0" r="4.7" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="135.0" cy="622.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="207.2" cy="569.0" r="3.5" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="131.9" cy="606.0" r="3.4" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="235.0" cy="643.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="197.5" cy="590.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="197.5" cy="627.0" r="3.2" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="235.0" cy="574.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<circle cx="135.0" cy="611.0" r="3.3" fill="#2f6f7e" fill-opacity="0.72" stroke="#fff" stroke-width="0.7"/>
+<text x="485" y="603" font-size="11" fill="#17212b">医師数 17</text>
+<text x="485" y="621" font-size="11" fill="#17212b">中央値 21%</text>
+<text x="520" y="695" text-anchor="middle" font-size="12" fill="#5d6773">各パネルの横軸: 医師ごとの該当割合, %。縦軸は定義しない。</text>
+</svg>
