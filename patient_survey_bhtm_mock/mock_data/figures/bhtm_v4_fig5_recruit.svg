@@ -11,13 +11,13 @@
 <text x="240" y="30" class="title">図5. 安全性検証研究の説明希望</text>
 <text x="228" y="119.2" text-anchor="end" class="label">説明を聞きたい</text>
 <rect x="240" y="77.7" width="536.0" height="61.2" fill="#2f7d8c"/>
-<text x="784.0" y="119.2" class="num">117</text>
+<text x="784.0" y="119.2" class="num">118</text>
 <text x="228" y="228.6" text-anchor="end" class="label">わからない</text>
-<rect x="240" y="187.0" width="201.6" height="61.2" fill="#2f7d8c"/>
-<text x="449.6" y="228.6" class="num">44</text>
+<rect x="240" y="187.0" width="218.0" height="61.2" fill="#2f7d8c"/>
+<text x="466.0" y="228.6" class="num">48</text>
 <text x="228" y="337.9" text-anchor="end" class="label">今は希望しない</text>
-<rect x="240" y="296.3" width="87.0" height="61.2" fill="#2f7d8c"/>
-<text x="335.0" y="337.9" class="num">19</text>
+<rect x="240" y="296.3" width="63.6" height="61.2" fill="#2f7d8c"/>
+<text x="311.6" y="337.9" class="num">14</text>
 <line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
 <text x="508.0" y="424" text-anchor="middle" class="axis">人数</text>
 </svg>

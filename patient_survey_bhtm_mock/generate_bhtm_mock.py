@@ -51,17 +51,21 @@ VERSIONS = {
         "focus": "科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。",
         "improvements": [
             "主要アウトカムを“入院非受容/外来受容”と“外来導入burden threshold”に固定。",
-            "安全性検証研究の説明希望は最後に置き、わからないを許容。",
+            "安全性検証研究の説明希望はこの短縮質問票から外し、受容閾値の測定を優先。",
             "医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。",
         ],
     },
 }
 
 THRESHOLDS = [
-    ("L4", "週3回通院でも受容"),
-    ("L3", "週2回通院なら受容"),
-    ("L2", "週1回通院なら受容"),
-    ("L1", "週1回+支援つきなら受容"),
+    ("V3N2", "週3回通院+週2回訪問看護なら受容"),
+    ("V3N0", "週3回通院なら受容"),
+    ("V2N3", "週2回通院+週3回訪問看護なら受容"),
+    ("V2N1", "週2回通院+週1回訪問看護なら受容"),
+    ("V1N4", "週1回通院+週4回訪問看護なら受容"),
+    ("V1N2", "週1回通院+週2回訪問看護なら受容"),
+    ("V1N1", "週1回通院+週1回訪問看護なら受容"),
+    ("V1N0", "週1回通院なら受容"),
     ("NONE", "外来導入も非受容/保留"),
 ]
 
@@ -123,15 +127,23 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
 
         score = RNG.random()
         if not outpatient_now and not outpatient_worse:
-            th = "NONE" if score < 0.62 else "L1"
-        elif score < 0.16 + 0.10 * unmet:
-            th = "L4"
-        elif score < 0.37 + 0.12 * unmet:
-            th = "L3"
+            th = "NONE" if score < 0.62 else "V1N0"
+        elif score < 0.08 + 0.04 * unmet:
+            th = "V3N2"
+        elif score < 0.16 + 0.07 * unmet:
+            th = "V3N0"
+        elif score < 0.26 + 0.09 * unmet:
+            th = "V2N3"
+        elif score < 0.40 + 0.11 * unmet:
+            th = "V2N1"
+        elif score < 0.54 + 0.10 * unmet:
+            th = "V1N4"
         elif score < 0.68 + 0.10 * unmet:
-            th = "L2"
-        elif score < 0.89:
-            th = "L1"
+            th = "V1N2"
+        elif score < 0.82:
+            th = "V1N1"
+        elif score < 0.92:
+            th = "V1N0"
         else:
             th = "NONE"
         max_burden = dict(THRESHOLDS)[th]
@@ -153,7 +165,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             }
         )
         physician_expect = RNG.random() < (0.30 + 0.20 * unmet - 0.10 * past_refusal)
-        patient_accept_outpatient = th in {"L4", "L3", "L2", "L1"}
+        patient_accept_outpatient = th != "NONE"
         gap.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -221,7 +233,17 @@ def stacked_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
     left, top, right, bottom = 190, 68, 42, 80
     plot_w = width - left - right
     row_h = 76
-    colors = {"L4": "#0f766e", "L3": "#2f7d8c", "L2": "#78aab4", "L1": "#c7dbe0", "NONE": "#d8dee4"}
+    colors = {
+        "V3N2": "#004d40",
+        "V3N0": "#00695c",
+        "V2N3": "#0f766e",
+        "V2N1": "#2f7d8c",
+        "V1N4": "#5f9ea8",
+        "V1N2": "#8bbbc3",
+        "V1N1": "#b7d5da",
+        "V1N0": "#d7e8eb",
+        "NONE": "#d8dee4",
+    }
     parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
     for i, (group, counts) in enumerate(rows.items()):
         y = top + i * row_h
@@ -237,11 +259,14 @@ def stacked_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
                     parts.append(f'<text x="{x+w/2:.1f}" y="{y+23}" text-anchor="middle" class="inside">{val}</text>')
             x += w
         parts.append(f'<text x="{left+plot_w+8}" y="{y+23}" class="num">n={total}</text>')
-    lx, ly = left, height - 46
+    lx, ly = left, height - 58
     for key, label in THRESHOLDS:
         parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[key]}"/>')
         parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(label)}</text>')
-        lx += 158
+        lx += 170
+        if lx > width - 180:
+            lx = left
+            ly += 22
     parts.append("</svg>")
     path.write_text("\n".join(parts), encoding="utf-8")
 
@@ -400,8 +425,6 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         visible.append("fig3")
     if version >= 3:
         visible.append("fig4")
-    if version >= 4:
-        visible.append("fig5")
     if version >= 5:
         visible.append("fig6")
     reasons = {
@@ -409,7 +432,6 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig2": "Hauber & Coulter 2020のThreshold Techniqueに対応する中核図。個人ごとの受容閾値を分布として示し、外来導入レジメンの負担をどこまで下げる必要があるかを示す。",
         "fig3": "対象集団をTRS適格候補と広い未使用外来患者に分けることで、来年度安全性検証研究の潜在対象者と、一般的な潜在ニーズを分けて議論できる。",
         "fig4": "Barrett 2005が扱ったように、治療選好には副作用だけでなく通院・生活調整などの実務負担が効く。DCEではなくBHTMにしても、最大負担を1項目だけ取ることで患者負担を抑えつつ改善点を拾う。",
-        "fig5": "安全性検証研究のリクルート可能性を、選好調査の最後に低圧で確認する。'わからない'を許容し、強い同意取得ではなく説明希望として扱う。",
         "fig6": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
     }
     links = """
@@ -476,7 +498,7 @@ def questionnaire_html(version: int) -> str:
         <p class="eyebrow">患者調査BHTM インタラクティブ質問票 {version}</p>
         <h1>{v['label']}</h1>
       </div>
-      <div class="progress"><span id="stepNow">1</span>/<span id="stepTotal">8</span></div>
+      <div class="progress"><span id="stepNow">1</span>/<span id="stepTotal">7</span></div>
     </header>
 
     <main class="phone-frame">
@@ -484,7 +506,7 @@ def questionnaire_html(version: int) -> str:
         <img class="hero" src="{ASSET_PREFIX}/clozapine_info.png" alt="">
         <h2>この調査について</h2>
         <p>この画面はダミーです。回答は保存されません。クロザピンを外来で始める方法について、どの条件なら前向きに考えられるかを伺います。</p>
-        <button class="primary" onclick="next()">次へ</button>
+        <button class="primary full" onclick="next()">次へ</button>
       </section>
 
       <section class="step" data-step="1">
@@ -492,77 +514,57 @@ def questionnaire_html(version: int) -> str:
         <h2>クロザピンについて</h2>
         <p>クロザピンは、複数の抗精神病薬で十分に良くならない統合失調症に使われる薬です。症状や生活のしづらさが改善する可能性があります。</p>
         <p>一方で、血液検査や体調確認が必要です。発熱、胸痛、息切れ、強い便秘などがあれば早めに相談し、必要に応じて入院に切り替えます。</p>
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="next()">理解しました</button></div>
+        <div class="nav"><button class="primary" onclick="next()">理解しました</button><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="2">
-        <h2>対象確認</h2>
-        <label class="choice"><input type="radio" name="clozapine_history" value="no"> 現在クロザピンを使用しておらず、過去にも使用したことはない</label>
-        <label class="choice"><input type="radio" name="clozapine_history" value="yes"> 現在使用中、または過去に使用したことがある</label>
-        <div id="excludeMsg" class="notice hidden">この調査では、クロザピン使用中または使用歴のある方は対象外です。</div>
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="nextEligibility()">次へ</button></div>
+        <h2>現在の治療への感じ方</h2>
+        <p>現在の治療について、いちばん近いものを選んでください。</p>
+        <label class="choice"><input type="radio" name="current_need" value="low"> 症状による困りごとは少ない</label>
+        <label class="choice"><input type="radio" name="current_need" value="some"> 症状による困りごとや生活のしづらさがいくらか残っている</label>
+        <label class="choice"><input type="radio" name="current_need" value="large"> 症状による困りごとや生活のしづらさが大きい</label>
+        <div id="scenarioBox" class="notice hidden"></div>
+        <div class="nav"><button class="primary" onclick="nextNeed()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="3">
-        <h2>現在の治療への感じ方</h2>
-        <p>現在の治療について、いちばん近いものを選んでください。</p>
-        <label class="choice"><input type="radio" name="current_need" value="good"> 今の治療で困りごとは少なく、治療を大きく変えたいとは思わない</label>
-        <label class="choice"><input type="radio" name="current_need" value="stable_unmet"> 大きく悪化はしていないが、症状や生活のしづらさが残っており、もっと良くなりたい</label>
-        <label class="choice"><input type="radio" name="current_need" value="worse"> 今の治療では困りごとが大きく、治療の見直しを前向きに考えたい</label>
-        <label class="choice"><input type="radio" name="current_need" value="unsure"> わからない</label>
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="next()">次へ</button></div>
+        <img class="hero" src="{ASSET_PREFIX}/inpatient_start.png" alt="">
+        <h2>入院して始める場合</h2>
+        <p class="scenarioText"></p>
+        <p>主治医から「クロザピンを始めるなら、入院して体調確認をしながら始める」と勧められたとします。</p>
+        <p class="question">クロザピン服用を前向きに考えたいですか？</p>
+        {yes_no_choices("inpatient_accept")}
+        <div class="nav"><button class="primary" onclick="next()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="4">
-        <img class="hero" src="{ASSET_PREFIX}/inpatient_start.png" alt="">
-        <h2>入院して始める場合</h2>
-        <p>今の状態で主治医から「クロザピンを始めるなら、まず2〜4週間程度入院して体調確認をしながら始める」と提案された場合、どう感じますか？</p>
-        {acceptance_choices("inpatient_now")}
-        <p class="subq">今より症状や生活のしづらさが強くなった場合はどうですか？</p>
-        {acceptance_choices("inpatient_worse")}
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="next()">次へ</button></div>
-      </section>
-
-      <section class="step" data-step="5">
-        <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
-        <h2>外来で始める場合</h2>
-        <p>同じ効果と安全確認の考え方で、入院せず外来通院で始められる場合、どう感じますか？ 7週目以降も定期通院と採血は続きます。</p>
-        {acceptance_choices("outpatient_now")}
-        <p class="subq">今より症状や生活のしづらさが強くなった場合はどうですか？</p>
-        {acceptance_choices("outpatient_worse")}
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="next()">次へ</button></div>
-      </section>
-
-      <section class="step" data-step="6">
         <img class="hero" src="{ASSET_PREFIX}/monitoring.png" alt="">
-        <h2>外来導入の条件</h2>
-        <p id="ttLead">外来で始める場合、どの条件なら前向きに考えられるかを順番に確認します。</p>
+        <h2>外来で始める条件</h2>
+        <p class="scenarioText"></p>
+        <p id="ttLead">主治医から、入院せず外来でクロザピンを始める方法を勧められたとします。難しければ、次に少し負担を軽くした条件を表示します。</p>
         <div id="ttCard" class="tt-card"></div>
-        <div class="nav"><button onclick="ttBack()">前へ</button><button onclick="ttNo()">難しい</button><button class="primary" onclick="ttYes()">前向きに考えられる</button></div>
+        <p class="question">この条件なら、クロザピン服用を前向きに考えたいですか？</p>
+        <div class="nav tt-nav"><button class="primary" onclick="ttYes()">はい</button><button onclick="ttNo()">いいえ</button><button onclick="ttBack()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="7">
-        <h2>一番大きい負担</h2>
-        <p>外来導入で一番大きい負担になりそうなものを1つ選んでください。</p>
+      <section class="step optional" data-step="5">
+        <h2>前向きに考えにくい理由</h2>
+        <p>どの外来条件でも前向きに考えにくい場合、いちばん大きい理由を1つ選んでください。</p>
         <label class="choice"><input type="radio" name="biggest_burden" value="visits"> 通院回数</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="blood"> 採血</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="side_effects"> 副作用への不安</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="admission"> 入院に切り替わる可能性</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="life"> 家族・仕事・生活の調整</label>
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="next()">次へ</button></div>
+        <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="8">
-        <img class="hero" src="{ASSET_PREFIX}/safety_study.png" alt="">
-        <h2>安全性検証研究について</h2>
-        <p>条件が合えば、来年度の外来導入安全性検証研究について説明を聞きたいですか？</p>
-        <label class="choice"><input type="radio" name="safety_interest" value="yes"> 説明を聞きたい</label>
-        <label class="choice"><input type="radio" name="safety_interest" value="unsure"> わからない</label>
-        <label class="choice"><input type="radio" name="safety_interest" value="no"> 今は希望しない</label>
+      <section class="step" data-step="6">
+        <h2>回答ありがとうございました</h2>
+        <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
           <strong>外来導入の受容閾値:</strong> <span id="thresholdSummary">未回答</span>
         </div>
-        <div class="nav"><button onclick="prev()">前へ</button><button class="primary" onclick="finish()">完了</button></div>
+        <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
       </section>
     </main>
   </div>
@@ -582,50 +584,80 @@ def acceptance_choices(name: str) -> str:
         </div>"""
 
 
+def yes_no_choices(name: str) -> str:
+    return f"""
+        <div class="seg two">
+          <label><input type="radio" name="{name}" value="yes"> はい</label>
+          <label><input type="radio" name="{name}" value="no"> いいえ</label>
+        </div>"""
+
+
 def questionnaire_js(final: bool, compact: bool) -> str:
     return r"""
 const steps = Array.from(document.querySelectorAll('.step'));
 let current = 0;
 const ttLevels = [
-  {code:'L4', title:'外来・高頻度確認', body:'最初6週間は週3回通院。診察、採血、体温・脈拍などを確認します。毎日、自宅で体調を確認します。'},
-  {code:'L3', title:'外来・標準確認', body:'最初6週間は週2回通院。診察、採血、体調確認を行います。毎日、自宅で体調を確認します。'},
-  {code:'L2', title:'外来・低頻度確認', body:'最初6週間は週1回通院。7週目以降も定期通院と採血を続けます。異常時はすぐ相談します。'},
-  {code:'L1', title:'外来・支援つき低頻度確認', body:'最初6週間は週1回通院。訪問看護または電話支援が入り、体調確認や連絡を手伝います。採血場所は可能な範囲で相談します。'}
+  {code:'V3N2', title:'週5回の確認', body:'最初6週間は、週3回通院し、週2回訪問看護を受けます。'},
+  {code:'V3N0', title:'週3回の確認', body:'最初6週間は、週3回通院します。訪問看護はありません。'},
+  {code:'V2N3', title:'週5回の確認', body:'最初6週間は、週2回通院し、週3回訪問看護を受けます。'},
+  {code:'V2N1', title:'週3回の確認', body:'最初6週間は、週2回通院し、週1回訪問看護を受けます。'},
+  {code:'V1N4', title:'週5回の確認', body:'最初6週間は、週1回通院し、週4回訪問看護を受けます。'},
+  {code:'V1N2', title:'週3回の確認', body:'最初6週間は、週1回通院し、週2回訪問看護を受けます。'},
+  {code:'V1N1', title:'週2回の確認', body:'最初6週間は、週1回通院し、週1回訪問看護を受けます。'},
+  {code:'V1N0', title:'週1回の確認', body:'最初6週間は、週1回通院します。訪問看護はありません。'}
 ];
 let ttIndex = 0;
 let ttHistory = [];
 let threshold = null;
+let assumedState = null;
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
-  if(current === 6) renderTT();
+  document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
+  if(current === 4) renderTT();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
-function prev(){ if(current > 0){ current--; renderStep(); } }
-function nextEligibility(){
-  const val = document.querySelector('input[name="clozapine_history"]:checked')?.value;
-  const msg = document.getElementById('excludeMsg');
-  if(val === 'yes'){ msg.classList.remove('hidden'); return; }
-  msg.classList.add('hidden'); next();
+function prev(){
+  if(current === 6 && threshold !== 'NONE'){ current = 4; renderStep(); return; }
+  if(current > 0){ current--; renderStep(); }
+}
+function nextNeed(){
+  const val = document.querySelector('input[name="current_need"]:checked')?.value;
+  const box = document.getElementById('scenarioBox');
+  if(!val){ box.textContent = 'いちばん近いものを選んでください。'; box.classList.remove('hidden'); return; }
+  if(val === 'low'){
+    assumedState = Math.random() < 0.5 ? 'some' : 'large';
+    box.textContent = scenarioText();
+    box.classList.remove('hidden');
+  } else {
+    assumedState = val;
+    box.classList.add('hidden');
+  }
+  next();
+}
+function scenarioText(){
+  if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';
+  if(assumedState === 'large') return '以下では「症状による困りごとや生活のしづらさが大きい」状態で、主治医からクロザピンを勧められたと想像してください。';
+  return '以下では、主治医からクロザピンを勧められた場面を想像してください。';
 }
 function renderTT(){
   const card = document.getElementById('ttCard');
   const level = ttLevels[ttIndex];
-  card.innerHTML = `<p class="pill">${level.code}</p><h3>${level.title}</h3><p>${level.body}</p><p class="small">すべての条件で、発熱・胸痛・息切れ・強い便秘などがあれば早めに相談し、必要時は入院へ切り替えます。</p>`;
+  card.innerHTML = `<p class="pill">条件 ${ttIndex + 1}/${ttLevels.length}</p><h3>${level.title}</h3><p>${level.body}</p><p class="small">7週目以降も定期通院と採血は続きます。発熱・胸痛・息切れ・強い便秘などがあれば早めに相談し、必要時は入院へ切り替えます。</p>`;
 }
 function ttYes(){
   threshold = ttLevels[ttIndex].code;
-  document.getElementById('thresholdSummary').textContent = `${threshold}: ${ttLevels[ttIndex].title}`;
-  current = 7; renderStep();
+  document.getElementById('thresholdSummary').textContent = `${ttLevels[ttIndex].title}: ${ttLevels[ttIndex].body}`;
+  current = 6; renderStep();
 }
 function ttNo(){
   ttHistory.push(ttIndex);
   if(ttIndex < ttLevels.length-1){ ttIndex++; renderTT(); return; }
   threshold = 'NONE';
   document.getElementById('thresholdSummary').textContent = '外来導入も非受容/保留';
-  current = 7; renderStep();
+  current = 5; renderStep();
 }
 function ttBack(){
   if(ttHistory.length){ ttIndex = ttHistory.pop(); renderTT(); return; }
@@ -665,16 +697,17 @@ def questionnaire_css() -> str:
     .phone-frame{max-width:460px;margin:0 auto;padding:10px}
     .step{display:none;background:white;border:1px solid #d8dee4;border-radius:10px;padding:14px;margin:0 0 14px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
     .step.active{display:block}.hero{width:100%;border-radius:8px;margin-bottom:12px;background:#e7edf1}
-    h2{font-size:19px;margin:4px 0 10px}h3{font-size:18px;margin:4px 0}.subq{font-weight:700;margin-top:16px}.small{font-size:13px;color:#52616b}
+    h2{font-size:19px;margin:4px 0 10px}h3{font-size:18px;margin:4px 0}.subq,.question{font-weight:700;margin-top:16px}.small{font-size:13px;color:#52616b}
     .choice,.seg label{display:block;border:1px solid #cbd5df;border-radius:8px;padding:12px;margin:8px 0;background:#fbfcfd;font-weight:600}
-    input{margin-right:8px}.seg{display:grid;gap:0}
+    input{margin-right:8px}.seg{display:grid;gap:0}.seg.two{grid-template-columns:1fr 1fr;gap:8px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
-    .nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.nav .primary:last-child{grid-column:auto}
+    .full{width:100%}
+    .nav{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}.nav .primary{order:-1}
     .notice{border-left:4px solid #c2410c;background:#fff7ed;padding:10px;margin:10px 0}.hidden{display:none}
     .tt-card{border:2px solid #2f7d8c;border-radius:12px;padding:14px;background:#f3f8f9}.pill{display:inline-block;background:#2f7d8c;color:white;border-radius:999px;padding:2px 10px;font-weight:700;margin:0 0 4px}
     .summary{background:#eef6f7;border:1px solid #b8d6dc;border-radius:8px;padding:10px;margin-top:14px}
-    @media (max-width:420px){.phone-frame{padding:6px}.step{border-radius:0;border-left:0;border-right:0}.nav{grid-template-columns:1fr}button{width:100%}}
+    @media (max-width:420px){.phone-frame{padding:6px}.step{border-radius:0;border-left:0;border-right:0}button{width:100%}.seg.two{grid-template-columns:1fr}}
     """
 
 
@@ -705,4 +738,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
