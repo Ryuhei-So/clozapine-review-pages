@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>患者調査 図表モック v4: DCE/DCMと医師患者ギャップを追加</title>
+  <style>
+    body { margin:0; background:#f4f7f9; color:#17222b; font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif; line-height:1.75; }
+    header { background:#234b5a; color:white; padding:28px max(18px, calc((100vw - 980px)/2)); }
+    main { max-width:980px; margin:0 auto; padding:24px 18px 48px; }
+    section { background:white; border:1px solid #d8e1e8; border-radius:8px; padding:18px; margin:18px 0; }
+    h1 { margin:0 0 8px; font-size:28px; }
+    h2 { margin:0 0 12px; font-size:21px; }
+    h3 { margin:18px 0 6px; font-size:17px; }
+    img { max-width:100%; height:auto; display:block; margin:10px auto; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; font-size:14px; }
+    caption { text-align:left; font-weight:700; margin-bottom:6px; }
+    th,td { border-bottom:1px solid #e1e7ec; padding:8px; text-align:left; vertical-align:top; }
+    th { background:#eef4f7; }
+    .note { background:#f8fbfc; border-left:4px solid #2f7f92; padding:10px 12px; }
+    .links a { color:#21677a; margin-right:10px; }
+    .version-nav a { display:inline-block; padding:6px 10px; border:1px solid #b9cad3; border-radius:999px; margin:4px; color:#1d5b6c; text-decoration:none; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>患者調査 図表モック v4: DCE/DCMと医師患者ギャップを追加</h1>
+  <p>患者選好を離散選択モデルで推定し、医師判断とのずれを示す。</p>
+</header>
+<main>
+  <section class="version-nav">
+    <strong>各版:</strong>
+    <a href="patient_survey_v1_figures_mock.html">v1</a><a href="patient_survey_v2_figures_mock.html">v2</a><a href="patient_survey_v3_figures_mock.html">v3</a><a href="patient_survey_v4_figures_mock.html">v4</a><a href="patient_survey_v5_figures_mock.html">v5</a>
+    <a href="patient_survey_v4_questionnaire.html">この版の質問票</a>
+    <a href="index.html">患者調査モック index</a>
+  </section>
+  <section>
+    <h2>この版での改善意図</h2>
+    <ul><li>DCE選択データから条件付きロジット相当のDCM係数を推定するモックを追加した。</li><li>医師が「受け入れない」と見込むが患者は外来導入を前向きに考える層を図示した。</li></ul>
+  </section>
+  <section>
+    <h2>図1. 対象者フロー</h2>
+    <img src="mock_data/figures/patient_v4_flow.svg" alt="対象者フロー">
+    <p class="note"><strong>配置理由:</strong> クロザピン使用中・使用歴ありを除外し、広い未使用外来患者と適応相当・未導入候補を分けることで、DCEの主解析集団と安全性検証研究の潜在対象者を区別する。</p>
+    <p class="links">関連: <a href="../literature/Jakobsen_2025_patient_perspectives_clozapine_literature_note.html">Jakobsen 2025ノート</a><a href="https://pubmed.ncbi.nlm.nih.gov/40107686/">PubMed</a></p>
+  </section>
+  <section>
+    <table><caption>表1. 回答者背景</caption><tr><th>項目</th><th>広い未使用外来患者</th><th>適応相当・未導入候補</th></tr>
+<tr><td>人数</td><td>199</td><td>81</td></tr>
+<tr><td>年齢, 中央値 (IQR)</td><td>45 (38-54)</td><td>45 (38-54)</td></tr>
+<tr><td>女性, n (%)</td><td>79 (39.7)</td><td>26 (32.1)</td></tr>
+<tr><td>罹病期間, 中央値 (IQR)</td><td>12 (8-17)</td><td>11 (8-16)</td></tr>
+<tr><td>過去入院回数, 中央値 (IQR)</td><td>2 (1-3)</td><td>2 (1-3)</td></tr>
+<tr><td>mGAF-Function, 中央値 (IQR)</td><td>48 (39-58)</td><td>39 (31-43)</td></tr>
+<tr><td>適切に試された抗精神病薬数, 中央値 (IQR)</td><td>3 (2-4)</td><td>4 (3-5)</td></tr>
+<tr><td>安定しているがもっと良くなりたい, n (%)</td><td>116 (58.3)</td><td>61 (75.3)</td></tr>
+</table>
+    <p class="note"><strong>配置理由:</strong> 回答者背景は、患者選好が疾患重症度や適応相当性によって異なる可能性を解釈するために必要である。主治医調査側の患者特徴と対応づけられる変数を中心に置く。</p>
+  </section>
+  <section>
+    <h2>図2. 入院導入と外来導入の受容性クロス分類</h2>
+    <img src="mock_data/figures/patient_v4_cross.svg" alt="受容性クロス分類">
+    <p class="note"><strong>配置理由:</strong> 当局向けの中核結果。入院導入では非受容/保留だが、外来導入なら受容/前向きとなる層を明示し、入院要件が治療アクセスを妨げている可能性を示す。</p>
+    <p class="links">関連: <a href="../literature/Gee_2017_patient_attitudes_clozapine_initiation_literature_note.html">Gee 2017ノート</a><a href="../literature/Jakobsen_2025_patient_perspectives_clozapine_literature_note.html">Jakobsen 2025ノート</a></p>
+  </section>
+  <section>
+    <h2>図3. 導入方法別の受容性</h2>
+    <img src="mock_data/figures/patient_v4_acceptance.svg" alt="導入方法別受容性">
+    <p class="note"><strong>配置理由:</strong> 入院導入、外来週2回、外来週1回、訪問看護付き外来を同じ尺度で比較し、どの条件で受容性が上がるかを直感的に示す。</p>
+  </section>
+  <section>
+    <h2>図4. DCE/DCMによるレジメン属性の選好</h2>
+    <img src="mock_data/figures/patient_v4_dce.svg" alt="DCE係数">
+    <p class="note"><strong>配置理由:</strong> Vignette比較で政策的な受容性差を示したうえで、DCE/DCMにより通院頻度、訪問看護、毎日チェック、採血場所、異常時入院切替などのトレードオフを定量化する。DCEは広い未使用外来患者で主解析、適応相当候補では探索的に扱う。</p>
+  </section>
+  <section>
+    <h2>図5. レジメン構成要素別の障壁</h2>
+    <img src="mock_data/figures/patient_v4_barriers.svg" alt="障壁">
+    <p class="note"><strong>配置理由:</strong> レジメン案のコメントで論点となった週2回通院、毎日チェック、支援者確認、発熱時対応、異常時入院切替、便秘・眠気・体重増加を、患者本人の負担として確認する。</p>
+  </section>
+  <section>
+    <h2>図6. 安全性検証研究への情報提供・参加検討意向</h2>
+    <img src="mock_data/figures/patient_v4_recruit.svg" alt="安全性検証研究への意向">
+    <p class="note"><strong>配置理由:</strong> 来年度の安全性検証研究に向け、実際のリクルートにつなげられる候補者数を見積もる。ただし本調査では参加同意ではなく、今後の説明希望・相談希望として扱う。</p>
+  </section>
+  <section>
+    <h2>図7. 医師判断との接続</h2>
+    <p class="note"><strong>配置理由:</strong> 主治医調査では患者受け入れ見込みを医師が推定する。患者調査では本人回答を取得し、医師が「受け入れない」と見込むが患者本人は外来導入を前向きに考える層を可視化する。患者単位で対応づけられる場合は、医師判断へのフィードバック資料になる。</p>
+    <p>v4ではこの図を本文候補として扱う。</p>
+  </section>
+</main>
+</body>
+</html>

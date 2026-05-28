@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="228" viewBox="0 0 880 228">
+<style>text{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif;fill:#17222b}.axis{stroke:#99a8b3}.bar{fill:#2f7f92}.grid{stroke:#e2e8ee}.small{font-size:13px}.label{font-size:15px}.title{font-size:20px;font-weight:700}</style>
+<text x="300" y="32" text-anchor="middle" class="title">安全性検証研究への情報提供・参加検討意向</text>
+<line x1="300.0" y1="50" x2="300.0" y2="196" class="grid"/>
+<text x="300.0" y="218" text-anchor="middle" class="small">0%</text>
+<line x1="427.5" y1="50" x2="427.5" y2="196" class="grid"/>
+<text x="427.5" y="218" text-anchor="middle" class="small">21%</text>
+<line x1="555.0" y1="50" x2="555.0" y2="196" class="grid"/>
+<text x="555.0" y="218" text-anchor="middle" class="small">42%</text>
+<line x1="682.5" y1="50" x2="682.5" y2="196" class="grid"/>
+<text x="682.5" y="218" text-anchor="middle" class="small">63%</text>
+<line x1="810.0" y1="50" x2="810.0" y2="196" class="grid"/>
+<text x="810.0" y="218" text-anchor="middle" class="small">84%</text>
+<text x="288" y="88" text-anchor="end" class="label">安全性検証研究の説明を聞きたい</text>
+<rect x="300" y="68" width="443.5" height="28" rx="2" class="bar"/>
+<text x="751.5" y="87" class="label">73.4%</text>
+<text x="288" y="134" text-anchor="end" class="label">条件が合えば参加を検討</text>
+<rect x="300" y="114" width="244.7" height="28" rx="2" class="bar"/>
+<text x="552.7" y="133" class="label">40.5%</text>
+<text x="288" y="180" text-anchor="end" class="label">主治医と相談したい</text>
+<rect x="300" y="160" width="443.5" height="28" rx="2" class="bar"/>
+<text x="751.5" y="179" class="label">73.4%</text>
+</svg>

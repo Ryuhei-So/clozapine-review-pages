@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="398" viewBox="0 0 900 398">
+<style>text{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif;fill:#17222b}.title{font-size:20px;font-weight:700}.lab{font-size:14px}.axis{stroke:#8fa0aa}.ci{stroke:#2f7f92;stroke-width:3}.dot{fill:#2f7f92}.zero{stroke:#b7c3cb;stroke-dasharray:4 4}.num{font-size:13px}</style>
+<text x="450.0" y="34" text-anchor="middle" class="title">DCE/DCM: レジメン属性の選好係数</text>
+<line x1="469.3" y1="50" x2="469.3" y2="350" class="zero"/>
+<line x1="330.0" y1="352" x2="330.0" y2="360" class="axis"/>
+<text x="330.0" y="380" text-anchor="middle" class="num">-1</text>
+<line x1="469.3" y1="352" x2="469.3" y2="360" class="axis"/>
+<text x="469.3" y="380" text-anchor="middle" class="num">+0</text>
+<line x1="608.6" y1="352" x2="608.6" y2="360" class="axis"/>
+<text x="608.6" y="380" text-anchor="middle" class="num">+1</text>
+<text x="270" y="75" text-anchor="end" class="lab">外来導入</text>
+<line x1="663.2" y1="70" x2="669.7" y2="70" class="ci"/>
+<circle cx="666.5" cy="70" r="6" class="dot"/>
+<text x="750" y="75" class="num">+1.42 [+1.39, +1.44]</text>
+<text x="270" y="123" text-anchor="end" class="lab">最初6週間が週1回通院</text>
+<line x1="521.7" y1="118" x2="526.6" y2="118" class="ci"/>
+<circle cx="524.1" cy="118" r="6" class="dot"/>
+<text x="750" y="123" class="num">+0.39 [+0.38, +0.41]</text>
+<text x="270" y="171" text-anchor="end" class="lab">訪問看護・電話支援あり</text>
+<line x1="569.6" y1="166" x2="578.4" y2="166" class="ci"/>
+<circle cx="574.0" cy="166" r="6" class="dot"/>
+<text x="750" y="171" class="num">+0.75 [+0.72, +0.78]</text>
+<text x="270" y="219" text-anchor="end" class="lab">毎日の確認が簡易</text>
+<line x1="504.6" y1="214" x2="526.0" y2="214" class="ci"/>
+<circle cx="515.3" cy="214" r="6" class="dot"/>
+<text x="750" y="219" class="num">+0.33 [+0.25, +0.41]</text>
+<text x="270" y="267" text-anchor="end" class="lab">採血場所を選べる</text>
+<line x1="521.3" y1="262" x2="527.0" y2="262" class="ci"/>
+<circle cx="524.1" cy="262" r="6" class="dot"/>
+<text x="750" y="267" class="num">+0.39 [+0.37, +0.41]</text>
+<text x="270" y="315" text-anchor="end" class="lab">異常時は入院切替あり</text>
+<line x1="391.0" y1="310" x2="397.9" y2="310" class="ci"/>
+<circle cx="394.4" cy="310" r="6" class="dot"/>
+<text x="750" y="315" class="num">-0.54 [-0.56, -0.51]</text>
+</svg>

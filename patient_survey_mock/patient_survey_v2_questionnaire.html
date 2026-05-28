@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>患者調査 インタラクティブ質問票 v2: 対象集団を2層化</title>
+  <style>
+    body { margin:0; background:#eef3f6; color:#17222b; font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif; line-height:1.65; }
+    header { background:#274f5d; color:white; padding:20px; }
+    main { max-width:760px; margin:0 auto; padding:16px; }
+    .card { background:white; border:1px solid #d7e1e8; border-radius:9px; padding:16px; margin:12px 0; }
+    .hidden { display:none; }
+    h1 { font-size:23px; margin:0 0 6px; }
+    h2 { font-size:18px; margin:0 0 10px; }
+    .choice { display:block; border:1px solid #cad7df; border-radius:8px; padding:12px; margin:8px 0; background:#fbfdfe; }
+    .choice input { margin-right:8px; transform:scale(1.15); }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .alt { border:1px solid #cbd7df; border-radius:8px; padding:10px; }
+    .alt h3 { margin:0 0 6px; font-size:16px; }
+    .alt ul { margin:0; padding-left:20px; }
+    button { width:100%; border:0; border-radius:8px; padding:13px 15px; background:#2f7f92; color:white; font-weight:700; font-size:16px; margin-top:10px; }
+    button.secondary { background:#eaf1f4; color:#244d5a; border:1px solid #c5d3dc; }
+    .progress { font-size:13px; color:#52616b; margin-bottom:8px; }
+    .note { background:#f6fafb; border-left:4px solid #2f7f92; padding:10px; font-size:14px; }
+    pre { white-space:pre-wrap; background:#f5f7f9; border:1px solid #d8e1e8; border-radius:8px; padding:10px; font-size:12px; }
+    @media (max-width: 640px) { main { padding:10px; } .row { grid-template-columns:1fr; } .card { padding:14px; } }
+  </style>
+</head>
+<body>
+<header>
+  <h1>患者調査 インタラクティブ質問票 v2: 対象集団を2層化</h1>
+  <p>デモ版です。回答は保存・送信されません。</p>
+</header>
+<main>
+  <section class="card">
+    <h2>この版での改善意図</h2>
+    <ul><li>クロザピン使用中・使用歴ありを除外する導線を明確化した。</li><li>Primary sampleを適応相当・未導入候補、secondary/preference sampleを広い未使用外来患者として分けた。</li></ul>
+    <button onclick="start()">回答を開始</button>
+    <button class="secondary" onclick="location.href='patient_survey_v2_figures_mock.html'">この版の図表モックを見る</button>
+  </section>
+  <section id="wizard" class="card hidden">
+    <div class="progress" id="progress"></div>
+    <div id="step"></div>
+    <button id="back" class="secondary" onclick="back()">前へ</button>
+    <button id="next" onclick="next()">次へ</button>
+  </section>
+  <section id="result" class="card hidden">
+    <h2>回答サマリー</h2>
+    <p class="note">実装時はここで送信または研究用ID付き保存へつなげます。このデモではブラウザ内表示のみです。</p>
+    <pre id="json"></pre>
+    <button onclick="location.reload()">最初から</button>
+  </section>
+</main>
+<script>
+const dceTasks = [{"a": ["外来導入", "週1回通院", "訪問看護あり", "簡易チェック", "採血場所を選べる", "異常時は入院切替あり"], "b": ["入院導入", "週2回通院", "家族確認", "詳細チェック", "通常採血", "電話相談後に翌日受診"]}, {"a": ["外来導入", "週2回通院", "訪問看護あり", "詳細チェック", "通常採血", "異常時は入院切替あり"], "b": ["外来導入", "週1回通院", "自己確認", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["入院導入", "病棟内管理", "医療者確認", "詳細チェック", "院内採血", "異常時は入院継続"], "b": ["外来導入", "週1回通院", "訪問看護あり", "簡易チェック", "採血場所を選べる", "電話相談後に翌日受診"]}, {"a": ["外来導入", "週2回通院", "家族確認", "簡易チェック", "通常採血", "電話相談後に翌日受診"], "b": ["外来導入", "週1回通院", "訪問看護あり", "詳細チェック", "採血場所を選べる", "異常時は入院切替あり"]}, {"a": ["外来導入", "週1回通院", "訪問看護あり", "簡易チェック", "採血場所を選べる", "異常時は入院切替あり"], "b": ["入院導入", "週2回通院", "家族確認", "詳細チェック", "通常採血", "電話相談後に翌日受診"]}];
+const answers = {};
+let idx = 0;
+const steps = [
+  {id:'eligibility', title:'対象確認', type:'radio', q:'現在クロザピンを使用中、または過去に使用したことがありますか？', opts:['ない','ある','わからない']},
+  {id:'current', title:'現在の治療への認識', type:'radio', q:'現在の治療で「安定しているが、本当はもっと良くなりたい」という感覚に近いですか？', opts:['かなり近い','やや近い','どちらともいえない','あまり近くない','近くない']},
+  {id:'inpatient', title:'Vignette 1: 入院導入', type:'radio', q:'クロザピンを入院して開始する方法を、どの程度受け入れられますか？', opts:['受けたい','前向きに考えたい','迷う','あまり受けたくない','受けたくない']},
+  {id:'outpatient2', title:'Vignette 2: 外来導入 週2回', type:'radio', q:'最初6週間は週2回通院しながら外来で開始する方法を、どの程度受け入れられますか？', opts:['受けたい','前向きに考えたい','迷う','あまり受けたくない','受けたくない']},
+  {id:'outpatient1', title:'Vignette 3: 外来導入 週1回', type:'radio', q:'最初6週間は週1回通院しながら外来で開始する方法を、どの程度受け入れられますか？', opts:['受けたい','前向きに考えたい','迷う','あまり受けたくない','受けたくない']},
+  {id:'home_nurse', title:'Vignette 4: 外来導入 + 支援', type:'radio', q:'週1回外来に訪問看護または電話支援が加わる場合、どの程度受け入れられますか？', opts:['受けたい','前向きに考えたい','迷う','あまり受けたくない','受けたくない']},
+  {id:'barriers', title:'障壁', type:'checks', q:'クロザピン外来導入で負担が大きいと思うものを選んでください。', opts:['入院導入','週2回通院','毎日の体温・症状チェック','家族・支援者による毎日確認','発熱時の連絡・追加受診','異常時の入院切替','週1回採血','便秘','眠気','体重増加']},
+  {id:'facilitators', title:'受け入れやすくなる条件', type:'checks', q:'あれば受け入れやすくなる条件を選んでください。', opts:['外来導入','週1回通院','訪問看護','採血場所を選べる','経験者の話を聞ける','24時間相談先','家族・支援者への説明','便秘・体重増加への予防支援']},
+  {id:'recruit', title:'安全性検証研究', type:'radio', q:'条件が合えば、来年度の外来導入安全性検証研究について説明を聞きたいですか？', opts:['聞きたい','少し聞いてみたい','迷う','あまり聞きたくない','聞きたくない']},
+];
+dceTasks.forEach((task, i) => steps.push({id:'dce_'+(i+1), title:'DCE '+(i+1)+'/'+dceTasks.length, type:'dce', task}));
+
+function start() { document.querySelector('main > section').classList.add('hidden'); document.getElementById('wizard').classList.remove('hidden'); render(); }
+function render() {
+  const s = steps[idx];
+  document.getElementById('progress').textContent = (idx+1) + ' / ' + steps.length;
+  document.getElementById('back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('next').textContent = idx === steps.length - 1 ? '完了' : '次へ';
+  let html = '<h2>'+s.title+'</h2>';
+  if (s.type === 'radio') {
+    html += '<p>'+s.q+'</p>' + s.opts.map(o => `<label class="choice"><input type="radio" name="${s.id}" value="${o}" ${answers[s.id]===o?'checked':''}>${o}</label>`).join('');
+  } else if (s.type === 'checks') {
+    html += '<p>'+s.q+'</p>' + s.opts.map(o => `<label class="choice"><input type="checkbox" name="${s.id}" value="${o}" ${(answers[s.id]||[]).includes(o)?'checked':''}>${o}</label>`).join('');
+  } else if (s.type === 'dce') {
+    html += '<p>どちらの開始方法なら、より受け入れやすいですか？</p><div class="row">';
+    ['a','b'].forEach(k => {
+      const lab = k.toUpperCase();
+      html += `<label class="alt"><input type="radio" name="${s.id}" value="${lab}" ${answers[s.id]===lab?'checked':''}><h3>方法 ${lab}</h3><ul>${s.task[k].map(x=>'<li>'+x+'</li>').join('')}</ul></label>`;
+    });
+    html += '</div>';
+  }
+  document.getElementById('step').innerHTML = html;
+}
+function collect() {
+  const s = steps[idx];
+  if (s.type === 'radio' || s.type === 'dce') {
+    const el = document.querySelector(`input[name="${s.id}"]:checked`);
+    if (!el) return false;
+    answers[s.id] = el.value;
+  } else {
+    answers[s.id] = Array.from(document.querySelectorAll(`input[name="${s.id}"]:checked`)).map(x=>x.value);
+  }
+  return true;
+}
+function next() {
+  if (!collect()) { alert('回答を選んでください。'); return; }
+  if (answers.eligibility === 'ある') {
+    alert('本調査本体ではクロザピン使用中・使用歴ありの方は除外予定です。デモでは続行できます。');
+  }
+  if (idx < steps.length - 1) { idx++; render(); } else { finish(); }
+}
+function back() { collect(); if (idx > 0) { idx--; render(); } }
+function finish() {
+  document.getElementById('wizard').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const inpatientNo = ['迷う','あまり受けたくない','受けたくない'].includes(answers.inpatient);
+  const outpatientYes = ['受けたい','前向きに考えたい'].includes(answers.outpatient1) || ['受けたい','前向きに考えたい'].includes(answers.home_nurse);
+  answers.policy_core = inpatientNo && outpatientYes ? '入院導入では非受容/保留だが外来導入なら前向き' : 'その他';
+  document.getElementById('json').textContent = JSON.stringify(answers, null, 2);
+}
+</script>
+</body>
+</html>

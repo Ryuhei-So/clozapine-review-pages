@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="550" viewBox="0 0 880 550">
+<style>text{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",Arial,sans-serif;fill:#17222b}.axis{stroke:#99a8b3}.bar{fill:#2f7f92}.grid{stroke:#e2e8ee}.small{font-size:13px}.label{font-size:15px}.title{font-size:20px;font-weight:700}</style>
+<text x="300" y="32" text-anchor="middle" class="title">障壁となるレジメン要素</text>
+<line x1="300.0" y1="50" x2="300.0" y2="518" class="grid"/>
+<text x="300.0" y="540" text-anchor="middle" class="small">0%</text>
+<line x1="427.5" y1="50" x2="427.5" y2="518" class="grid"/>
+<text x="427.5" y="540" text-anchor="middle" class="small">22%</text>
+<line x1="555.0" y1="50" x2="555.0" y2="518" class="grid"/>
+<text x="555.0" y="540" text-anchor="middle" class="small">43%</text>
+<line x1="682.5" y1="50" x2="682.5" y2="518" class="grid"/>
+<text x="682.5" y="540" text-anchor="middle" class="small">65%</text>
+<line x1="810.0" y1="50" x2="810.0" y2="518" class="grid"/>
+<text x="810.0" y="540" text-anchor="middle" class="small">86%</text>
+<text x="288" y="88" text-anchor="end" class="label">副作用: 便秘</text>
+<rect x="300" y="68" width="26.6" height="28" rx="2" class="bar"/>
+<text x="334.6" y="87" class="label">4.5%</text>
+<text x="288" y="134" text-anchor="end" class="label">毎日の体温・症状チェック</text>
+<rect x="300" y="114" width="41.4" height="28" rx="2" class="bar"/>
+<text x="349.4" y="133" class="label">7.0%</text>
+<text x="288" y="180" text-anchor="end" class="label">週1回採血</text>
+<rect x="300" y="160" width="44.4" height="28" rx="2" class="bar"/>
+<text x="352.4" y="179" class="label">7.5%</text>
+<text x="288" y="226" text-anchor="end" class="label">家族・支援者による毎日確認</text>
+<rect x="300" y="206" width="56.2" height="28" rx="2" class="bar"/>
+<text x="364.2" y="225" class="label">9.5%</text>
+<text x="288" y="272" text-anchor="end" class="label">副作用: 眠気</text>
+<rect x="300" y="252" width="59.8" height="28" rx="2" class="bar"/>
+<text x="367.8" y="271" class="label">10.1%</text>
+<text x="288" y="318" text-anchor="end" class="label">発熱時の連絡・追加受診</text>
+<rect x="300" y="298" width="89.4" height="28" rx="2" class="bar"/>
+<text x="397.4" y="317" class="label">15.1%</text>
+<text x="288" y="364" text-anchor="end" class="label">副作用: 体重増加</text>
+<rect x="300" y="344" width="127.9" height="28" rx="2" class="bar"/>
+<text x="435.9" y="363" class="label">21.6%</text>
+<text x="288" y="410" text-anchor="end" class="label">異常時の入院切替</text>
+<rect x="300" y="390" width="157.5" height="28" rx="2" class="bar"/>
+<text x="465.5" y="409" class="label">26.6%</text>
+<text x="288" y="456" text-anchor="end" class="label">最初6週間の週2回通院</text>
+<rect x="300" y="436" width="178.8" height="28" rx="2" class="bar"/>
+<text x="486.8" y="455" class="label">30.2%</text>
+<text x="288" y="502" text-anchor="end" class="label">入院導入</text>
+<rect x="300" y="482" width="443.5" height="28" rx="2" class="bar"/>
+<text x="751.5" y="501" class="label">74.9%</text>
+</svg>
