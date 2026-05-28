@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>患者調査BHTM 図表モック 5</title>
+  <style>
+    body{margin:0;background:#f4f6f8;color:#1f2933;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7}
+    header{background:#24323d;color:white;padding:30px 36px}
+    header h1{margin:0 0 6px;font-size:28px}
+    header p{margin:0;color:#d5dde3}
+    main{max-width:1080px;margin:0 auto;padding:24px 18px 56px}
+    section{background:white;border:1px solid #d8dee4;border-radius:8px;padding:20px 24px;margin:18px 0}
+    h2{margin-top:0;border-bottom:2px solid #eef2f6;padding-bottom:6px}
+    table{border-collapse:collapse;width:100%}
+    th,td{border:1px solid #d8dee4;padding:8px 10px;text-align:left}
+    th{background:#eef2f6}
+    img{max-width:100%;height:auto;display:block;margin:0 auto}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+    .links a{background:white;border:1px solid #cbd5df;border-radius:999px;padding:6px 12px;color:#245b67;text-decoration:none}
+    .figure-card .reason,.reason{border-left:4px solid #2f7d8c;background:#f3f8f9;padding:10px 12px}
+    </style>
+</head>
+<body>
+  <header>
+    <h1>患者調査BHTM 図表モック 5</h1>
+    <p>v5: 最終候補</p>
+  </header>
+  <main>
+    <nav class="links">
+      <a href="../literature/BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>
+      <a href="../literature/Hauber_Coulter_2020_threshold_technique_literature_note.html">Hauber & Coulter 2020</a>
+      <a href="../literature/Parikh_2023_HCC_threshold_technique_literature_note.html">Parikh 2023</a>
+      <a href="../literature/Barrett_2005_benefit_harm_tradeoff_literature_note.html">Barrett 2005</a>
+      <a href="../literature/ResearchNote_2018_smallest_worthwhile_effect_literature_note.html">Research Note 2018</a>
+    <a href="patient_survey_bhtm_v5_questionnaire.html">質問票を見る</a><a href="index.html">一覧へ</a></nav>
+    <section>
+      <h2>この版の考え方</h2>
+      <p>科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。</p>
+      <ul><li>主要アウトカムを“入院非受容/外来受容”と“外来導入burden threshold”に固定。</li><li>安全性検証研究の説明希望は最後に置き、わからないを許容。</li><li>医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。</li></ul>
+    </section>
+    <section>
+      <h2>Table 1. 回答者背景</h2>
+      <table><tr><th>項目</th><th>値</th></tr><tr><td>解析対象者</td><td>180</td></tr><tr><td>TRS適格候補</td><td>86 (47.8%)</td></tr><tr><td>広い未使用外来患者</td><td>94 (52.2%)</td></tr><tr><td>現在の治療で残る困りごとあり</td><td>104 (57.8%)</td></tr><tr><td>主観的困りごと/つらさあり</td><td>85 (47.2%)</td></tr></table>
+      <p class="reason">患者本人の受容性を解釈するため、対象集団、現在の困りごと、主観的つらさを最小限の背景情報として置く。</p>
+    </section>
+    <section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig1_vignette.svg" alt="fig1">
+          <p class="reason">Parikh 2023のように、有効性・重大安全性を固定したうえで投与/導入方法の直接選好を先に示す。ここでは、当局向けに重要な「入院なら難しいが外来なら前向き」というニーズを可視化する。</p>
+        </section>
+<section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig2_threshold.svg" alt="fig2">
+          <p class="reason">Hauber & Coulter 2020のThreshold Techniqueに対応する中核図。個人ごとの受容閾値を分布として示し、外来導入レジメンの負担をどこまで下げる必要があるかを示す。</p>
+        </section>
+<section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig3_threshold_by_group.svg" alt="fig3">
+          <p class="reason">対象集団をTRS適格候補と広い未使用外来患者に分けることで、来年度安全性検証研究の潜在対象者と、一般的な潜在ニーズを分けて議論できる。</p>
+        </section>
+<section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig4_burden.svg" alt="fig4">
+          <p class="reason">Barrett 2005が扱ったように、治療選好には副作用だけでなく通院・生活調整などの実務負担が効く。DCEではなくBHTMにしても、最大負担を1項目だけ取ることで患者負担を抑えつつ改善点を拾う。</p>
+        </section>
+<section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig5_recruit.svg" alt="fig5">
+          <p class="reason">安全性検証研究のリクルート可能性を、選好調査の最後に低圧で確認する。'わからない'を許容し、強い同意取得ではなく説明希望として扱う。</p>
+        </section>
+<section class="figure-card">
+          <img src="mock_data/figures/bhtm_v5_fig6_gap.svg" alt="fig6">
+          <p class="reason">患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。</p>
+        </section>
+  </main>
+</body>
+</html>

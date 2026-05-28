@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>クロザピン患者調査 BHTM/Threshold Technique 設計ノート</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.75; color: #1f2933; margin: 0; background: #f6f7f9; }
+    header { background: #263238; color: white; padding: 32px 40px; }
+    main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 56px; }
+    section { background: white; border: 1px solid #d8dee4; border-radius: 8px; padding: 22px 26px; margin: 18px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    h2 { border-bottom: 2px solid #eceff3; padding-bottom: 6px; margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #d8dee4; padding: 8px 10px; vertical-align: top; }
+    th { background: #eef2f6; text-align: left; }
+    .subtitle { color: #cfd8dc; margin: 0; }
+    .callout { border-left: 4px solid #607d8b; background: #f5f7f9; padding: 12px 14px; margin: 12px 0; }
+    .warn { border-left-color: #f57c00; background: #fff8e1; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>クロザピン患者調査 BHTM/Threshold Technique 設計ノート</h1>
+    <p class="subtitle">benefit/harm固定、外来導入burden threshold推定への読み替え</p>
+  </header>
+  <main>
+    <section>
+      <h2>結論</h2>
+      <div class="callout">
+        今回の患者調査は、DCEよりも <strong>Vignette比較 + Threshold Technique</strong> として整理する方がよい。BHTMという用語は背景として使えるが、方法論上は「benefitと重大harmを固定し、外来導入の初期負担パッケージに対する受容閾値を推定するThreshold Technique」と書くのが最も通りやすい。
+      </div>
+    </section>
+
+    <section>
+      <h2>根拠文献からの設計原則</h2>
+      <table>
+        <tr><th>原則</th><th>根拠</th><th>今回への反映</th></tr>
+        <tr><td>1回のseriesでは1つのkey attributeを動かす</td><td>Hauber & Coulter 2020、Research Note 2018</td><td>通院頻度、訪問看護、採血場所を別々にDCEのように動かすのではなく、外来導入「負担パッケージ」として順序化する。</td></tr>
+        <tr><td>burdenもkey attributeになりうる</td><td>Hauber & Coulter 2020、Parkinson TT study</td><td>入院期間、初期通院頻度、体調確認負担をburden thresholdとして扱う。</td></tr>
+        <tr><td>有効性・安全性を固定したmode preferenceを聞ける</td><td>Parikh 2023</td><td>まず「同じ効果・重大リスク説明のもと、入院導入と外来導入のどちらを受け入れやすいか」を聞く。</td></tr>
+        <tr><td>個人ごとの閾値が得られる</td><td>Hauber & Coulter 2020</td><td>安全性検証研究の潜在候補者抽出、医師判断とのギャップ提示に使う。</td></tr>
+        <tr><td>提示順/開始点に注意</td><td>Hauber & Coulter 2020</td><td>重い条件から軽い条件へ進める場合は順序効果を限界として明記。必要なら昇順/降順をpilotで比較。</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>推奨する質問票構成</h2>
+      <ol>
+        <li>クロザピンについて、患者向けに短く説明する。効果、重大副作用、採血・体調確認、入院導入と外来導入の違いをイラスト中心で提示する。</li>
+        <li>対象確認: クロザピン使用中・使用歴ありを除外。</li>
+        <li>現在の治療で残る困りごとと、治療見直し意向を分けて聞く。</li>
+        <li>Vignette比較: 今の状態で提案された場合、入院導入4週間をどの程度受け入れられるか。</li>
+        <li>Vignette比較: 同じ状況で外来導入ならどの程度受け入れられるか。</li>
+        <li>Threshold Technique: 外来導入を前提に、初期負担パッケージを重い方から軽い方へ提示し、初めて受け入れた水準をthresholdとして記録する。</li>
+        <li>意思決定支援ニーズ: 体験談、資料、家族説明、相談窓口など、TTで扱わない支援を補助的に聞く。</li>
+        <li>最後に安全性検証研究の説明希望を聞く。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>外来導入burden package案</h2>
+      <table>
+        <tr><th>水準</th><th>表示名</th><th>患者向け説明</th><th>判定</th></tr>
+        <tr><td>L4</td><td>外来・高頻度確認</td><td>最初6週間は週3回通院。診察、採血、体温・脈拍確認を行う。毎日、自宅で体調確認し、異常時はすぐ連絡する。</td><td>受け入れれば「高負担でも外来可」。拒否ならL3へ。</td></tr>
+        <tr><td>L3</td><td>外来・標準確認</td><td>最初6週間は週2回通院。診察、採血、体調確認を行う。毎日、自宅で体調確認し、異常時はすぐ連絡する。</td><td>受け入れればL3 threshold。拒否ならL2へ。</td></tr>
+        <tr><td>L2</td><td>外来・低頻度確認</td><td>最初6週間は週1回通院。7週目以降も定期通院・採血を続ける。自宅で体調確認し、異常時はすぐ連絡する。</td><td>受け入れればL2 threshold。拒否ならL1へ。</td></tr>
+        <tr><td>L1</td><td>外来・支援つき低頻度確認</td><td>最初6週間は週1回通院。訪問看護または電話支援が入り、体調確認や連絡を手伝う。採血場所は可能な範囲で相談する。</td><td>受け入れればL1 threshold。拒否なら「外来導入非受容」。</td></tr>
+      </table>
+      <div class="warn">
+        <strong>注意:</strong> L4からL1は「安全性の低下」ではなく「患者に見える負担の軽減」として提示する必要がある。すべての水準で、発熱・胸痛・息切れ・強い便秘などがあれば連絡し、必要時は入院切替できることを共通説明にする。
+      </div>
+    </section>
+
+    <section>
+      <h2>解析案</h2>
+      <table>
+        <tr><th>主要アウトカム</th><td>入院導入は非受容/保留だが、外来導入なら受容/前向きの割合。</td></tr>
+        <tr><th>TTアウトカム</th><td>外来導入burden threshold: L4, L3, L2, L1, 外来非受容。</td></tr>
+        <tr><th>記述</th><td>threshold分布を積み上げ棒グラフで示す。適応相当候補と広い未使用外来患者で層別。</td></tr>
+        <tr><th>モデル</th><td>順序ロジスティック回帰または二値化（L2以下で受容可 vs それ以外）による探索。サンプルサイズが小さい場合は記述中心。</td></tr>
+        <tr><th>ギャップ解析</th><td>患者本人のthresholdと主治医が想定する外来受容性/外来導入推奨のズレを対応づける。</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>文献リンク</h2>
+      <ul>
+        <li><a href="Hauber_Coulter_2020_threshold_technique_literature_note.html">Hauber & Coulter 2020 ノート</a></li>
+        <li><a href="Parikh_2023_HCC_threshold_technique_literature_note.html">Parikh 2023 ノート</a></li>
+        <li><a href="Barrett_2005_benefit_harm_tradeoff_literature_note.html">Barrett 2005 ノート</a></li>
+        <li><a href="ResearchNote_2018_smallest_worthwhile_effect_literature_note.html">Research Note 2018 ノート</a></li>
+        <li><a href="BHTM_threshold_methodology_candidates.md">方法論文候補メモ</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

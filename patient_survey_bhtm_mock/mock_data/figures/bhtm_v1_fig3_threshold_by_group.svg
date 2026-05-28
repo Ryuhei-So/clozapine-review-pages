@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="190" y="30" class="title">図3. 対象集団別のburden threshold</text>
+<text x="178" y="96" text-anchor="end" class="label">TRS適格候補</text>
+<rect x="190.0" y="68" width="116.5" height="36" fill="#0f766e"/>
+<text x="248.3" y="91" text-anchor="middle" class="inside">15</text>
+<rect x="306.5" y="68" width="209.7" height="36" fill="#2f7d8c"/>
+<text x="411.4" y="91" text-anchor="middle" class="inside">27</text>
+<rect x="516.2" y="68" width="170.9" height="36" fill="#78aab4"/>
+<text x="601.7" y="91" text-anchor="middle" class="inside">22</text>
+<rect x="687.1" y="68" width="101.0" height="36" fill="#c7dbe0"/>
+<text x="737.6" y="91" text-anchor="middle" class="inside">13</text>
+<rect x="788.1" y="68" width="69.9" height="36" fill="#d8dee4"/>
+<text x="823.0" y="91" text-anchor="middle" class="inside">9</text>
+<text x="866" y="91" class="num">n=86</text>
+<text x="178" y="172" text-anchor="end" class="label">広い未使用外来患者</text>
+<rect x="190.0" y="144" width="149.2" height="36" fill="#0f766e"/>
+<text x="264.6" y="167" text-anchor="middle" class="inside">21</text>
+<rect x="339.2" y="144" width="120.8" height="36" fill="#2f7d8c"/>
+<text x="399.6" y="167" text-anchor="middle" class="inside">17</text>
+<rect x="460.0" y="144" width="177.7" height="36" fill="#78aab4"/>
+<text x="548.9" y="167" text-anchor="middle" class="inside">25</text>
+<rect x="637.7" y="144" width="113.7" height="36" fill="#c7dbe0"/>
+<text x="694.6" y="167" text-anchor="middle" class="inside">16</text>
+<rect x="751.4" y="144" width="106.6" height="36" fill="#d8dee4"/>
+<text x="804.7" y="167" text-anchor="middle" class="inside">15</text>
+<text x="866" y="167" class="num">n=94</text>
+<rect x="190" y="334" width="14" height="14" fill="#0f766e"/>
+<text x="210" y="346" class="legend">週3回通院でも受容</text>
+<rect x="348" y="334" width="14" height="14" fill="#2f7d8c"/>
+<text x="368" y="346" class="legend">週2回通院なら受容</text>
+<rect x="506" y="334" width="14" height="14" fill="#78aab4"/>
+<text x="526" y="346" class="legend">週1回通院なら受容</text>
+<rect x="664" y="334" width="14" height="14" fill="#c7dbe0"/>
+<text x="684" y="346" class="legend">週1回+支援つきなら受容</text>
+<rect x="822" y="334" width="14" height="14" fill="#d8dee4"/>
+<text x="842" y="346" class="legend">外来導入も非受容/保留</text>
+</svg>

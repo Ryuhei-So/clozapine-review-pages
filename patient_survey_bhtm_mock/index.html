@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>患者調査BHTMモック</title><style>
+    body{margin:0;background:#f4f6f8;color:#1f2933;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7}
+    header{background:#24323d;color:white;padding:30px 36px}
+    header h1{margin:0 0 6px;font-size:28px}
+    header p{margin:0;color:#d5dde3}
+    main{max-width:1080px;margin:0 auto;padding:24px 18px 56px}
+    section{background:white;border:1px solid #d8dee4;border-radius:8px;padding:20px 24px;margin:18px 0}
+    h2{margin-top:0;border-bottom:2px solid #eef2f6;padding-bottom:6px}
+    table{border-collapse:collapse;width:100%}
+    th,td{border:1px solid #d8dee4;padding:8px 10px;text-align:left}
+    th{background:#eef2f6}
+    img{max-width:100%;height:auto;display:block;margin:0 auto}
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+    .links a{background:white;border:1px solid #cbd5df;border-radius:999px;padding:6px 12px;color:#245b67;text-decoration:none}
+    .figure-card .reason,.reason{border-left:4px solid #2f7d8c;background:#f3f8f9;padding:10px 12px}
+    </style></head><body><header><h1>患者調査BHTMモック</h1><p>5回ブラッシュアップ版の一覧</p></header><main><nav class="links"><a href="../literature/BHTM_threshold_technique_design_note.html">BHTM設計ノート</a><a href="../literature/Hauber_Coulter_2020_threshold_technique_literature_note.html">Hauber & Coulter 2020</a><a href="../literature/Parikh_2023_HCC_threshold_technique_literature_note.html">Parikh 2023</a><a href="../literature/Barrett_2005_benefit_harm_tradeoff_literature_note.html">Barrett 2005</a></nav><section>
+              <h2>v1: DCEからBHTM/TTへ置換した最小構成</h2>
+              <p>DCEをやめ、入院導入・外来導入のvignette比較と外来負担閾値だけに絞った初期案。</p>
+              <p><a href="patient_survey_bhtm_v1_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v1_questionnaire.html">質問票</a></p>
+            </section><section>
+              <h2>v2: benefit/harm固定と直接選好を分離</h2>
+              <p>Parikh 2023に合わせ、まず同じ効果・安全性説明のもとで入院/外来の直接受容性を聞き、その後にTTへ進む。</p>
+              <p><a href="patient_survey_bhtm_v2_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v2_questionnaire.html">質問票</a></p>
+            </section><section>
+              <h2>v3: adaptive TTとnon-tradingを実装</h2>
+              <p>受け入れたら重い側、拒否したら軽い側へ動くのではなく、患者負担を下げながら初めて受け入れる水準を記録する実装に整理。</p>
+              <p><a href="patient_survey_bhtm_v3_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v3_questionnaire.html">質問票</a></p>
+            </section><section>
+              <h2>v4: 患者の読みやすさを優先</h2>
+              <p>長文説明を避け、イラスト、短いカード、1画面1判断のウィザードへ近づけた版。</p>
+              <p><a href="patient_survey_bhtm_v4_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v4_questionnaire.html">質問票</a></p>
+            </section><section>
+              <h2>v5: 最終候補</h2>
+              <p>科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。</p>
+              <p><a href="patient_survey_bhtm_v5_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v5_questionnaire.html">質問票</a></p>
+            </section></main></body></html>

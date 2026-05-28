@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research Note 2018 SWE リテラチャーノート</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.75; color: #1f2933; margin: 0; background: #f6f7f9; }
+    header { background: #263238; color: white; padding: 32px 40px; }
+    main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 56px; }
+    section { background: white; border: 1px solid #d8dee4; border-radius: 8px; padding: 22px 26px; margin: 18px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    h2 { border-bottom: 2px solid #eceff3; padding-bottom: 6px; margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #d8dee4; padding: 8px 10px; vertical-align: top; }
+    th { background: #eef2f6; text-align: left; width: 28%; }
+    .subtitle { color: #cfd8dc; margin: 0; }
+    .meta { display: grid; grid-template-columns: 160px 1fr; gap: 6px 14px; }
+    .tag { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; margin-right: 6px; background: #e8f0fe; color: #174ea6; }
+    .core { background: #fff3cd; color: #7a4b00; }
+    .method { background: #fce8e6; color: #a50e0e; }
+    .callout { border-left: 4px solid #607d8b; background: #f5f7f9; padding: 12px 14px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Research Note 2018 リテラチャーノート</h1>
+    <p class="subtitle">The smallest worthwhile effect of a health intervention</p>
+  </header>
+  <main>
+    <section>
+      <div class="meta">
+        <div>文献</div>
+        <div>Research Note: The smallest worthwhile effect of a health intervention.</div>
+        <div>掲載誌</div>
+        <div>Journal of Physiotherapy. 2018;64:272-274.</div>
+        <div>DOI</div>
+        <div>10.1016/j.jphys.2018.07.008</div>
+        <div>リンク</div>
+        <div><a href="https://www.sciencedirect.com/science/article/pii/S1836955318301085">ScienceDirect</a></div>
+        <div>保存資料</div>
+        <div><a href="../../../references/BHTM_threshold_methodology/ResearchNote_2018_smallest_worthwhile_effect.pdf">PDF</a> / <a href="methodology_fulltext_txt/ResearchNote_2018_smallest_worthwhile_effect.txt">抽出TXT</a></div>
+      </div>
+      <p><span class="tag core">概念整理</span><span class="tag method">SWE/BHTM/DCE</span></p>
+      <div class="callout">
+        <strong>要点:</strong> SWE（smallest worthwhile effect）を、介入のbenefitがcost/harm/inconvenienceを上回るために必要な最小効果として整理する短い方法論ノート。BHTMとDCEの違いを簡潔に説明しており、研究計画書の方法論説明に使いやすい。
+      </div>
+    </section>
+
+    <section>
+      <h2>方法論の整理</h2>
+      <table>
+        <tr><th>SWEの性質</th><td>患者視点、特定の介入に紐づく、アウトカム値ではなく介入効果として表される必要がある。</td></tr>
+        <tr><th>BHTM</th><td>介入の期待効果、cost、harmを説明し、cost/harmを固定したままbenefitを上下させ、介入を選ぶ閾値を探る。</td></tr>
+        <tr><th>BHTMの限界</th><td>通常は1つの属性だけを動かす。実際の医療選択では複数属性が同時に効くため、個人差が大きくなりやすい。</td></tr>
+        <tr><th>DCE</th><td>複数属性を同時に変化させ、属性の相対価値を推定する。参加者・研究者双方の負担は大きい。</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>今回のクロザピン調査への示唆</h2>
+      <ul>
+        <li>「外来導入は患者にとってworthwhileか」を問うには、単なる満足度ではなく、benefit/harm/burdenを明示した選好調査が必要。</li>
+        <li>DCEは複数属性の相対重要度推定に有利だが、今回の主要目的が「どこまでの外来導入負担なら受け入れられるか」であれば、BHTM/TTの方が実装的。</li>
+        <li>今回の研究ではSWEではなく「smallest acceptable burden package」または「maximum acceptable initiation burden」として表現する方が自然。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

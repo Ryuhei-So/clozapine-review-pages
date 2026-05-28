@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="440" viewBox="0 0 820 440" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="240" y="30" class="title">図4. 外来導入で最大の負担と感じる項目</text>
+<text x="228" y="94.7" text-anchor="end" class="label">通院回数</text>
+<rect x="240" y="69.8" width="536.0" height="36.7" fill="#2f7d8c"/>
+<text x="784.0" y="94.7" class="num">55</text>
+<text x="228" y="160.3" text-anchor="end" class="label">入院になる可能性</text>
+<rect x="240" y="135.4" width="438.5" height="36.7" fill="#2f7d8c"/>
+<text x="686.5" y="160.3" class="num">45</text>
+<text x="228" y="225.9" text-anchor="end" class="label">副作用への不安</text>
+<rect x="240" y="201.0" width="302.1" height="36.7" fill="#2f7d8c"/>
+<text x="550.1" y="225.9" class="num">31</text>
+<text x="228" y="291.5" text-anchor="end" class="label">採血</text>
+<rect x="240" y="266.6" width="292.4" height="36.7" fill="#2f7d8c"/>
+<text x="540.4" y="291.5" class="num">30</text>
+<text x="228" y="357.1" text-anchor="end" class="label">家族・仕事・生活調整</text>
+<rect x="240" y="332.2" width="185.2" height="36.7" fill="#2f7d8c"/>
+<text x="433.2" y="357.1" class="num">19</text>
+<line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
+<text x="508.0" y="424" text-anchor="middle" class="axis">人数</text>
+</svg>

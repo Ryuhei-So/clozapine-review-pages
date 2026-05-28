@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parikh 2023 リテラチャーノート</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.75; color: #1f2933; margin: 0; background: #f6f7f9; }
+    header { background: #263238; color: white; padding: 32px 40px; }
+    main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 56px; }
+    section { background: white; border: 1px solid #d8dee4; border-radius: 8px; padding: 22px 26px; margin: 18px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    h2 { border-bottom: 2px solid #eceff3; padding-bottom: 6px; margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid #d8dee4; padding: 8px 10px; vertical-align: top; }
+    th { background: #eef2f6; text-align: left; width: 28%; }
+    .subtitle { color: #cfd8dc; margin: 0; }
+    .meta { display: grid; grid-template-columns: 160px 1fr; gap: 6px 14px; }
+    .tag { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: 12px; margin-right: 6px; background: #e8f0fe; color: #174ea6; }
+    .core { background: #fff3cd; color: #7a4b00; }
+    .method { background: #fce8e6; color: #a50e0e; }
+    .callout { border-left: 4px solid #607d8b; background: #f5f7f9; padding: 12px 14px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Parikh 2023 リテラチャーノート</h1>
+    <p class="subtitle">Risk thresholds for patients to switch between daily tablets and biweekly infusions</p>
+  </header>
+  <main>
+    <section>
+      <div class="meta">
+        <div>文献</div>
+        <div>Parikh ND, Girvan A, Coulter J, et al. Risk thresholds for patients to switch between daily tablets and biweekly infusions in second-line treatment for advanced hepatocellular carcinoma: a patient preference study.</div>
+        <div>掲載誌</div>
+        <div>BMC Cancer. 2023;23:66.</div>
+        <div>DOI</div>
+        <div>10.1186/s12885-022-10388-8</div>
+        <div>リンク</div>
+        <div><a href="https://bmccancer.biomedcentral.com/articles/10.1186/s12885-022-10388-8">Full text</a> / <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9851100/">PMC</a></div>
+        <div>保存資料</div>
+        <div><a href="../../../references/BHTM_threshold_methodology/Parikh_2023_HCC_threshold_technique.pdf">PDF</a> / <a href="methodology_fulltext_txt/Parikh_2023_HCC_threshold_technique.txt">抽出TXT</a></div>
+      </div>
+      <p><span class="tag core">近接実例</span><span class="tag method">modified TT</span></p>
+      <div class="callout">
+        <strong>要点:</strong> 同じ有効性・安全性という前提で、投与方法だけが異なる daily tablets vs biweekly infusion を直接選好として尋ね、その後にmodified Threshold TechniqueでAE risk thresholdを推定した研究。今回の「効果と重大リスクを固定し、開始方法・通院負担を動かす」設計に近い先例。
+      </div>
+    </section>
+
+    <section>
+      <h2>研究デザイン</h2>
+      <table>
+        <tr><th>対象</th><td>進行/転移性肝細胞癌患者150名。医師からリクルートされ、オンライン調査に回答。</td></tr>
+        <tr><th>直接選好質問1</th><td>有効性・安全性が同じで、投与方法だけが違う場合に、1日1回4錠の内服と2週ごと30-60分の点滴のどちらを選ぶかを質問。</td></tr>
+        <tr><th>TT series</th><td>最初の選好に応じて、リスク低下またはリスク増加を段階的に動かし、投与方法への選好を相殺するAE risk thresholdを推定。</td></tr>
+        <tr><th>直接選好質問2</th><td>実薬に近い有効性・安全性プロファイルを提示したうえで、再度選好を質問。</td></tr>
+        <tr><th>解析</th><td>直接選好は頻度とロジスティック回帰。TTはthreshold intervalを作成し、interval regressionで平均thresholdを推定。</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>主な結果</h2>
+      <ul>
+        <li>有効性・安全性が同じ場合、61.3%が点滴より内服を選んだ。</li>
+        <li>実際の安全性プロファイルを入れると、76.7%が点滴薬に近いプロファイルを選んだ。</li>
+        <li>投与経路の便利さだけでは、AEリスクの違いを相殺できない場合が多かった。</li>
+        <li>治療経験は投与方法選好に影響した。内服薬を多く経験している人は、内服への選好が相対的に弱い傾向があった。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>今回のクロザピン調査への示唆</h2>
+      <ul>
+        <li>「同じ効果・安全性なら、どちらの開始方法がよいか」を直接聞く設計は妥当。クロザピンでも、まず入院導入 vs 外来導入の直接選好を置ける。</li>
+        <li>有効性・重大副作用リスクを固定したうえで、通院頻度、入院期間、確認方法などのprocess/burdenを変える設計は説明可能。</li>
+        <li>ただし、Parikhでは直接選好とTT seriesを分けている。クロザピンでも「入院/外来の直接選好」と「外来負担パッケージのthreshold」は分ける方がよい。</li>
+        <li>threshold intervalを作る実装では、受け入れた最も重い条件と拒否した最も軽い条件の間を閾値区間として扱える。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
