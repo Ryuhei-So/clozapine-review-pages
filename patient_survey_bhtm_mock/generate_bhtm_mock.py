@@ -780,6 +780,25 @@ def mean_bar_svg(path: Path, title: str, labels: list[str], means: list[float], 
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def likert_distribution_svg(path: Path, title: str, labels: list[str], counts: list[int], xlab: str = "人数") -> None:
+    width, height = 880, 430
+    left, top, right, bottom = 280, 58, 54, 58
+    plot_w, plot_h = width - left - right, height - top - bottom
+    max_v = max(counts) if counts else 1
+    row_h = plot_h / len(labels)
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, (lab, val) in enumerate(zip(labels, counts)):
+        y = top + i * row_h + row_h * 0.20
+        w = plot_w * val / max_v
+        parts.append(f'<text x="{left-12}" y="{y+row_h*0.34:.1f}" text-anchor="end" class="label">{esc(lab)}</text>')
+        parts.append(f'<rect x="{left}" y="{y:.1f}" width="{w:.1f}" height="{row_h*0.50:.1f}" fill="#2f7d8c"/>')
+        parts.append(f'<text x="{left+w+8:.1f}" y="{y+row_h*0.34:.1f}" class="num">{val}</text>')
+    parts.append(f'<line x1="{left}" y1="{height-bottom}" x2="{width-right}" y2="{height-bottom}" stroke="#1f2933"/>')
+    parts.append(f'<text x="{left+plot_w/2}" y="{height-14}" text-anchor="middle" class="axis">{esc(xlab)}</text>')
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def svg_head(width: int, height: int) -> str:
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img">
 <style>
@@ -872,14 +891,31 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     )
     fig_paths["fig5"] = rel(p)
 
+    efficacy_counts = Counter(int(r["efficacy_sufficiency"]) for r in threshold)
+    efficacy_labels = [
+        "1. まったく十分ではない",
+        "2. あまり十分ではない",
+        "3. どちらともいえない",
+        "4. ある程度十分だと思う",
+        "5. 十分だと思う",
+    ]
+    p = FIG / f"bhtm_v{version}_fig6_efficacy_sufficiency.svg"
+    likert_distribution_svg(
+        p,
+        "図6. クロザピンの期待される有効性は試す理由として十分か",
+        efficacy_labels,
+        [efficacy_counts.get(i, 0) for i in range(1, 6)],
+    )
+    fig_paths["fig6"] = rel(p)
+
     effect_labels = [f"{label}（{frequency}）" for _, label, frequency, _ in SIDE_EFFECTS]
     effect_means = [
         sum(int(r[f"side_effect_{key}"]) for r in threshold) / len(threshold)
         for key, _, _, _ in SIDE_EFFECTS
     ]
-    p = FIG / f"bhtm_v{version}_fig6_side_effects.svg"
-    mean_bar_svg(p, "図6. 副作用別にみた服用判断への影響", effect_labels, effect_means)
-    fig_paths["fig6"] = rel(p)
+    p = FIG / f"bhtm_v{version}_fig7_side_effects.svg"
+    mean_bar_svg(p, "図7. 副作用別にみた服用判断への影響", effect_labels, effect_means)
+    fig_paths["fig7"] = rel(p)
 
     both = physician_only = patient_only = neither = 0
     for r in gap:
@@ -893,9 +929,9 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
             patient_only += 1
         else:
             neither += 1
-    p = FIG / f"bhtm_v{version}_fig7_gap.svg"
-    matrix_svg(p, "図7. 医師予測と患者本人の外来受容性", both, physician_only, patient_only, neither)
-    fig_paths["fig7"] = rel(p)
+    p = FIG / f"bhtm_v{version}_fig8_gap.svg"
+    matrix_svg(p, "図8. 医師予測と患者本人の外来受容性", both, physician_only, patient_only, neither)
+    fig_paths["fig8"] = rel(p)
 
     threshold_by_id = {r["participant_id"]: r for r in threshold}
     vignette_by_id = {r["participant_id"]: r for r in vignette}
@@ -941,9 +977,9 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     for label, exposed in physician_factor_specs:
         orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
         or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
-    p = FIG / f"bhtm_v{version}_fig8_underestimation_factors.svg"
-    forest_or_svg(p, "図8. 医師が外来導入受容性を過小評価しやすい患者・医師要因", or_rows)
-    fig_paths["fig8"] = rel(p)
+    p = FIG / f"bhtm_v{version}_fig9_underestimation_factors.svg"
+    forest_or_svg(p, "図9. 医師が外来導入受容性を過小評価しやすい患者・医師要因", or_rows)
+    fig_paths["fig9"] = rel(p)
     return fig_paths
 
 
@@ -1005,16 +1041,17 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
 
 def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: dict[str, str]) -> str:
     v = VERSIONS[version]
-    visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8"]
+    visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8", "fig9"]
     reasons = {
         "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "外来導入を受容しうる人について、通院に訪問看護を加えた総確認頻度をどこまで受け入れられるかを示す図。安全に必要な頻度は医師が判断する前提で、その頻度を患者が受容可能かを直接把握する。",
         "fig4": "先に確定した通院頻度thresholdごとに、訪問看護を加えた確認頻度thresholdを示す図。週3回通院を受容する人、週2回なら受容する人、週1回なら受容する人で、追加モニタリングへの許容度が異なるかを確認する。",
         "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
-        "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
-        "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
-        "fig8": "図7の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する患者要因と医師要因を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像と、見落としが起きやすい医師側の判断スタイルを探索的に記述する目的で置く。医師要因は臨床家調査と患者調査を主治医単位でリンクできる場合に解析する。",
+        "fig6": "クロザピンの期待される有効性が、患者本人にとって服用を試す理由としてどの程度十分と受け止められるかを示す図。副作用や通院負担だけでなく、そもそも提示されたbenefitが十分な価値として受け止められているかを確認する。",
+        "fig7": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
+        "fig8": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
+        "fig9": "図8の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する患者要因と医師要因を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像と、見落としが起きやすい医師側の判断スタイルを探索的に記述する目的で置く。医師要因は臨床家調査と患者調査を主治医単位でリンクできる場合に解析する。",
     }
     links = """
       <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>

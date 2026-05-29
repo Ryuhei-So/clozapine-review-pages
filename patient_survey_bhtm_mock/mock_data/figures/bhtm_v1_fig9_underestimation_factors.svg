@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1226" viewBox="0 0 1040 1226" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="310" y="30" class="title">図9. 医師が外来導入受容性を過小評価しやすい患者・医師要因</text>
+<line x1="310.0" y1="48" x2="310.0" y2="1172" stroke="#e5eaf0" stroke-width="1"/>
+<text x="310.0" y="1204" text-anchor="middle" class="axis">0.25</text>
+<line x1="435.0" y1="48" x2="435.0" y2="1172" stroke="#e5eaf0" stroke-width="1"/>
+<text x="435.0" y="1204" text-anchor="middle" class="axis">0.5</text>
+<line x1="560.0" y1="48" x2="560.0" y2="1172" stroke="#1f2933" stroke-width="1.4"/>
+<text x="560.0" y="1204" text-anchor="middle" class="axis">1</text>
+<line x1="685.0" y1="48" x2="685.0" y2="1172" stroke="#e5eaf0" stroke-width="1"/>
+<text x="685.0" y="1204" text-anchor="middle" class="axis">2</text>
+<line x1="810.0" y1="48" x2="810.0" y2="1172" stroke="#e5eaf0" stroke-width="1"/>
+<text x="810.0" y="1204" text-anchor="middle" class="axis">4</text>
+<text x="298" y="64" text-anchor="end" class="label">A. 患者要因</text>
+<line x1="310" y1="70" x2="810" y2="70" stroke="#d8dee4"/>
+<text x="298" y="106" text-anchor="end" class="label">現在の状態で回答</text>
+<line x1="407.5" y1="100" x2="623.8" y2="100" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="515.7" cy="100" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="105" class="num">0.78 (0.43-1.42)</text>
+<text x="932" y="105" class="axis">29/74</text>
+<text x="298" y="148" text-anchor="end" class="label">臨床家評価mGAF-F 40以下</text>
+<line x1="407.5" y1="142" x2="623.8" y2="142" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="515.7" cy="142" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="147" class="num">0.78 (0.43-1.42)</text>
+<text x="932" y="147" class="axis">29/74</text>
+<text x="298" y="190" text-anchor="end" class="label">現在治療で困りごとあり</text>
+<line x1="453.8" y1="184" x2="668.6" y2="184" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="561.2" cy="184" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="189" class="num">1.01 (0.56-1.83)</text>
+<text x="932" y="189" class="axis">45/105</text>
+<text x="298" y="232" text-anchor="end" class="label">主観的困りごと/つらさあり</text>
+<line x1="538.2" y1="226" x2="751.5" y2="226" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="644.8" cy="226" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="231" class="num">1.60 (0.89-2.89)</text>
+<text x="932" y="231" class="axis">42/86</text>
+<text x="298" y="274" text-anchor="end" class="label">入院導入は前向きに考えにくい</text>
+<line x1="459.0" y1="268" x2="672.7" y2="268" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="565.9" cy="268" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="273" class="num">1.03 (0.57-1.87)</text>
+<text x="932" y="273" class="axis">44/102</text>
+<text x="298" y="316" text-anchor="end" class="label">外来週1回通院なら受容</text>
+<line x1="664.3" y1="310" x2="810.0" y2="310" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="787.5" cy="310" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="315" class="num">3.53 (1.78-6.99)</text>
+<text x="932" y="315" class="axis">32/49</text>
+<text x="298" y="358" text-anchor="end" class="label">週5回確認まで受容</text>
+<line x1="758.7" y1="352" x2="810.0" y2="352" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="810.0" cy="352" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="357" class="num">6.74 (3.01-15.09)</text>
+<text x="932" y="357" class="axis">31/40</text>
+<text x="298" y="400" text-anchor="end" class="label">副作用懸念が強い（最大4以上）</text>
+<line x1="310.0" y1="394" x2="609.8" y2="394" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="440.2" cy="394" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="399" class="num">0.51 (0.20-1.32)</text>
+<text x="932" y="399" class="axis">66/161</text>
+<text x="298" y="442" text-anchor="end" class="label">有効性は十分（4以上）</text>
+<line x1="441.2" y1="436" x2="653.3" y2="436" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="547.3" cy="436" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="441" class="num">0.93 (0.52-1.68)</text>
+<text x="932" y="441" class="axis">36/86</text>
+<text x="298" y="484" text-anchor="end" class="label">過去拒否記載あり</text>
+<line x1="361.6" y1="478" x2="674.3" y2="478" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="517.9" cy="478" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="483" class="num">0.79 (0.33-1.88)</text>
+<text x="932" y="483" class="axis">9/24</text>
+<text x="298" y="526" text-anchor="end" class="label">日中活動あり</text>
+<line x1="491.7" y1="520" x2="706.2" y2="520" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="598.9" cy="520" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="525" class="num">1.24 (0.68-2.25)</text>
+<text x="932" y="525" class="axis">46/102</text>
+<text x="298" y="568" text-anchor="end" class="label">同居家族から支援あり</text>
+<line x1="440.8" y1="562" x2="696.0" y2="562" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="568.4" cy="562" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="567" class="num">1.05 (0.52-2.13)</text>
+<text x="932" y="567" class="axis">17/39</text>
+<text x="298" y="610" text-anchor="end" class="label">ケア役割あり</text>
+<line x1="425.5" y1="604" x2="706.7" y2="604" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="566.1" cy="604" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="609" class="num">1.03 (0.47-2.26)</text>
+<text x="932" y="609" class="axis">13/30</text>
+<text x="298" y="652" text-anchor="end" class="label">通院片道60分以上</text>
+<line x1="310.0" y1="646" x2="595.6" y2="646" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="446.2" cy="646" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="651" class="num">0.53 (0.23-1.22)</text>
+<text x="932" y="651" class="axis">9/30</text>
+<text x="298" y="694" text-anchor="end" class="label">訪問看護を現在利用</text>
+<line x1="356.2" y1="688" x2="595.1" y2="688" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="475.6" cy="688" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="693" class="num">0.63 (0.32-1.21)</text>
+<text x="932" y="693" class="axis">18/52</text>
+<text x="298" y="736" text-anchor="end" class="label">生活保護あり</text>
+<line x1="374.5" y1="730" x2="676.1" y2="730" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="525.3" cy="730" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="735" class="num">0.82 (0.36-1.90)</text>
+<text x="932" y="735" class="axis">10/26</text>
+<text x="298" y="778" text-anchor="end" class="label">経済的にかなり困る</text>
+<line x1="444.9" y1="772" x2="707.1" y2="772" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="576.0" cy="772" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="777" class="num">1.09 (0.53-2.26)</text>
+<text x="932" y="777" class="axis">16/36</text>
+<text x="298" y="820" text-anchor="end" class="label">B. 医師要因</text>
+<line x1="310" y1="826" x2="810" y2="826" stroke="#d8dee4"/>
+<text x="298" y="862" text-anchor="end" class="label">精神科経験15年以上</text>
+<line x1="397.2" y1="856" x2="614.3" y2="856" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="505.8" cy="856" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="861" class="num">0.74 (0.41-1.35)</text>
+<text x="932" y="861" class="axis">28/73</text>
+<text x="298" y="904" text-anchor="end" class="label">精神科専門医</text>
+<line x1="541.9" y1="898" x2="773.2" y2="898" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="657.6" cy="898" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="903" class="num">1.72 (0.90-3.26)</text>
+<text x="932" y="903" class="axis">57/121</text>
+<text x="298" y="946" text-anchor="end" class="label">精神保健指定医</text>
+<line x1="524.5" y1="940" x2="740.1" y2="940" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="632.3" cy="940" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="945" class="num">1.49 (0.82-2.72)</text>
+<text x="932" y="945" class="axis">48/102</text>
+<text x="298" y="988" text-anchor="end" class="label">クロザピン導入3例以上</text>
+<line x1="398.5" y1="982" x2="627.0" y2="982" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="512.8" cy="982" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="987" class="num">0.77 (0.41-1.45)</text>
+<text x="932" y="987" class="axis">51/125</text>
+<text x="298" y="1030" text-anchor="end" class="label">現在担当クロザピン患者3名以上</text>
+<line x1="443.5" y1="1024" x2="655.6" y2="1024" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="549.6" cy="1024" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="1029" class="num">0.94 (0.52-1.70)</text>
+<text x="932" y="1029" class="axis">40/95</text>
+<text x="298" y="1072" text-anchor="end" class="label">医師の外来導入推奨率が高い</text>
+<line x1="427.7" y1="1066" x2="642.5" y2="1066" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="535.1" cy="1066" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="1071" class="num">0.87 (0.48-1.58)</text>
+<text x="932" y="1071" class="axis">31/76</text>
+<text x="298" y="1114" text-anchor="end" class="label">stably unwell理由選択率が高い</text>
+<line x1="597.3" y1="1108" x2="810.0" y2="1108" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="706.8" cy="1108" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="1113" class="num">2.26 (1.23-4.14)</text>
+<text x="932" y="1113" class="axis">39/71</text>
+<text x="298" y="1156" text-anchor="end" class="label">患者拒否見込み理由選択率が高い</text>
+<line x1="424.7" y1="1150" x2="650.7" y2="1150" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="537.7" cy="1150" r="5.5" fill="#2f7d8c"/>
+<text x="828" y="1155" class="num">0.88 (0.47-1.65)</text>
+<text x="932" y="1155" class="axis">24/59</text>
+<text x="560.0" y="1218" text-anchor="middle" class="axis">Odds ratio（対数軸）</text>
+<text x="828" y="34" class="axis">OR (95% CI)</text>
+<text x="932" y="34" class="axis">該当者中の過小評価</text>
+</svg>
