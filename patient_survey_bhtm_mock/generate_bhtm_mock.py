@@ -50,9 +50,9 @@ VERSIONS = {
         "label": "v5: 最終候補",
         "focus": "科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。",
         "improvements": [
-            "主要アウトカムを“クロザピン服用自体の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
+            "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
             "通院のみ条件を拒否した場合は理由を記録し、安全面不安が含まれる場合だけ訪問看護追加モジュールへ進む。",
-            "訪問看護追加は全体受容率ではなく、安全面不安による拒否者での条件付き受容性として集計する。",
+            "通院頻度ごとに拒否理由を集計し、安全面不安を含む拒否者の中で訪問看護追加がどの程度受容性を改善するかを示す。",
             "医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。",
         ],
     },
@@ -148,6 +148,9 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         outpatient_now = RNG.random() < p_outpatient_now
         inpatient_worse = RNG.random() < p_inpatient_worse
         outpatient_worse = RNG.random() < p_outpatient_worse
+        method_inpatient_accept = inpatient_now
+        method_outpatient_accept = outpatient_now
+        clozapine_accept = method_inpatient_accept or method_outpatient_accept
         vignette.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -171,8 +174,8 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             side_effect_ratings[key] = min(5, max(1, int(round(RNG.normalvariate(base + 0.35 * past_refusal, 0.9)))))
         max_side_effect_impact = max(side_effect_ratings.values())
         score = RNG.random()
-        if not outpatient_now and not outpatient_worse:
-            th = "NONE" if score < 0.58 else "V1"
+        if not method_outpatient_accept:
+            th = "NONE"
         elif score < 0.18 + 0.06 * unmet - 0.04 * (max_side_effect_impact >= 4):
             th = "V3"
         elif score < 0.45 + 0.08 * unmet:
@@ -182,13 +185,14 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         else:
             th = "NONE"
         max_burden = dict(THRESHOLDS)[th]
-        clozapine_accept = outpatient_now or outpatient_worse or th != "NONE"
         rejected_visits = {
             "V3": [],
             "V2": ["V3"],
             "V1": ["V3", "V2"],
             "NONE": ["V3", "V2", "V1"],
         }[th]
+        if not method_outpatient_accept:
+            rejected_visits = []
         visit_reason_values: dict[str, str] = {}
         any_safety_concern = False
         first_safety_concern_visit = None
@@ -223,7 +227,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         support_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
         support_refusal_reasons: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
         support_base = first_safety_concern_visit or (th if th in {"V3", "V2", "V1"} else "V1")
-        support_eligible = clozapine_accept and first_safety_concern_visit is not None
+        support_eligible = method_outpatient_accept and first_safety_concern_visit is not None
         support_accept_any = False
         support_accept_condition = "none"
         support_final_refusal_reason = "not_asked"
@@ -287,7 +291,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             }
         )
         physician_expect = RNG.random() < (0.30 + 0.20 * unmet - 0.10 * past_refusal)
-        patient_accept_outpatient = clozapine_accept and (th != "NONE" or support_accept_any)
+        patient_accept_outpatient = method_outpatient_accept and (th != "NONE" or support_accept_any)
         gap.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -399,6 +403,107 @@ def paired_svg(path: Path, title: str, labels: list[str], inpatient: list[int], 
             parts.append(f'<text x="{left+w+8:.1f}" y="{y+dy+16}" class="num">{val}</text>')
     parts.append(f'<rect x="{left}" y="{height-34}" width="14" height="14" fill="#9aa6b2"/><text x="{left+20}" y="{height-22}" class="legend">入院導入</text>')
     parts.append(f'<rect x="{left+110}" y="{height-34}" width="14" height="14" fill="#2f7d8c"/><text x="{left+130}" y="{height-22}" class="legend">外来導入</text>')
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
+def method_pattern_svg(path: Path, title: str, counts: Counter) -> None:
+    labels = [
+        ("outpatient_only", "入院は難しいが外来なら前向き"),
+        ("both", "入院・外来のどちらも前向き"),
+        ("inpatient_only", "入院なら前向き"),
+        ("neither", "どちらも前向きに考えにくい"),
+    ]
+    bar_svg(path, title, [label for _, label in labels], [counts[key] for key, _ in labels], "人数")
+
+
+def visit_reason_by_frequency_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
+    width, height = 940, 430
+    left, top, right, bottom = 210, 66, 52, 86
+    plot_w = width - left - right
+    row_h = 72
+    colors = {"burden_only": "#2f7d8c", "safety_only": "#c47f4f", "both": "#7a9a3d"}
+    labels = [
+        ("burden_only", "通院負担のみ"),
+        ("safety_only", "安全面不安のみ"),
+        ("both", "通院負担+安全面不安"),
+    ]
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, (visit_key, visit_label) in enumerate([("v3", "週3回通院"), ("v2", "週2回通院"), ("v1", "週1回通院")]):
+        counts = rows.get(visit_key, Counter())
+        total = sum(counts.values())
+        y = top + i * row_h
+        parts.append(f'<text x="{left-12}" y="{y+27}" text-anchor="end" class="label">{esc(visit_label)}を拒否</text>')
+        x = left
+        if total == 0:
+            parts.append(f'<text x="{left}" y="{y+27}" class="axis">該当者なし</text>')
+            continue
+        for key, label in labels:
+            val = counts.get(key, 0)
+            w = plot_w * val / total if total else 0
+            if w > 0:
+                parts.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="38" fill="{colors[key]}"/>')
+                if w > 42:
+                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+25}" text-anchor="middle" class="inside">{val}</text>')
+            x += w
+        parts.append(f'<text x="{left+plot_w+8}" y="{y+25}" class="num">n={total}</text>')
+    lx, ly = left, height - 48
+    for key, label in labels:
+        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[key]}"/>')
+        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(label)}</text>')
+        lx += 210
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
+def support_acceptance_by_base_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
+    width, height = 1040, 460
+    left, top, right, bottom = 230, 66, 52, 118
+    plot_w = width - left - right
+    row_h = 72
+    colors = {
+        "V3N2": "#245b67",
+        "V2N1": "#2f7d8c",
+        "V2N3": "#5f9ea8",
+        "V1N1": "#0f766e",
+        "V1N2": "#8bbbc3",
+        "V1N4": "#b7d5da",
+        "none": "#d8dee4",
+    }
+    row_options = [
+        ("V3", "週3回通院で安全面不安", ["V3N2", "none"]),
+        ("V2", "週2回通院で安全面不安", ["V2N1", "V2N3", "none"]),
+        ("V1", "週1回通院で安全面不安", ["V1N1", "V1N2", "V1N4", "none"]),
+    ]
+    label_map = {key: label for key, label in SUPPORT_PACKAGES}
+    label_map["none"] = "受容に転じず"
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, (base, label, options) in enumerate(row_options):
+        counts = rows.get(base, Counter())
+        total = sum(counts.values())
+        y = top + i * row_h
+        parts.append(f'<text x="{left-12}" y="{y+27}" text-anchor="end" class="label">{esc(label)}</text>')
+        x = left
+        if total == 0:
+            parts.append(f'<text x="{left}" y="{y+27}" class="axis">該当者なし</text>')
+            continue
+        for key in options:
+            val = counts.get(key, 0)
+            w = plot_w * val / total if total else 0
+            if w > 0:
+                parts.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="38" fill="{colors[key]}"/>')
+                if w > 42:
+                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+25}" text-anchor="middle" class="inside">{val}</text>')
+            x += w
+        parts.append(f'<text x="{left+plot_w+8}" y="{y+25}" class="num">n={total}</text>')
+    lx, ly = left, height - 84
+    for key in ["V3N2", "V2N1", "V2N3", "V1N1", "V1N2", "V1N4", "none"]:
+        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[key]}"/>')
+        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(label_map[key])}</text>')
+        ly += 24
+        if ly > height - 24:
+            ly = height - 84
+            lx += 330
     parts.append("</svg>")
     path.write_text("\n".join(parts), encoding="utf-8")
 
@@ -526,56 +631,50 @@ def esc(s: str) -> str:
 def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[str, str]:
     fig_paths: dict[str, str] = {}
     participants = {r["participant_id"]: r for r in data["participants"]}
+    vignette = data["vignette_responses"]
     threshold = data["threshold_responses"]
     gap = data["physician_patient_gap"]
 
-    clozapine_counts = Counter(r["clozapine_accept"] for r in threshold)
+    method_counts = Counter()
+    for r in vignette:
+        inpatient = r["inpatient_now_accept"] == "1"
+        outpatient = r["outpatient_now_accept"] == "1"
+        if inpatient and outpatient:
+            method_counts["both"] += 1
+        elif inpatient:
+            method_counts["inpatient_only"] += 1
+        elif outpatient:
+            method_counts["outpatient_only"] += 1
+        else:
+            method_counts["neither"] += 1
     p = FIG / f"bhtm_v{version}_fig1_clozapine_accept.svg"
-    bar_svg(
-        p,
-        "図1. クロザピン服用自体の受容性",
-        ["前向きに考えたい", "前向きに考えにくい/保留"],
-        [clozapine_counts["1"], clozapine_counts["0"]],
-        "人数",
-    )
+    method_pattern_svg(p, "図1. 入院導入・外来導入の受容パターン", method_counts)
     fig_paths["fig1"] = rel(p)
 
-    total_counts = Counter(r["threshold"] for r in threshold)
+    outpatient_accept_ids = {r["participant_id"] for r in vignette if r["outpatient_now_accept"] == "1"}
+    total_counts = Counter(r["threshold"] for r in threshold if r["participant_id"] in outpatient_accept_ids)
     group_counts: dict[str, Counter] = {"全体": total_counts}
     p = FIG / f"bhtm_v{version}_fig2_threshold.svg"
-    stacked_svg(p, "図2. 外来導入burden thresholdの分布", group_counts)
+    stacked_svg(p, "図2. 外来導入を前向きに考える人でのburden threshold", group_counts)
     fig_paths["fig2"] = rel(p)
 
-    reason_counts = Counter()
+    reason_rows: dict[str, Counter] = {"v3": Counter(), "v2": Counter(), "v1": Counter()}
     for r in threshold:
-        patterns = {r.get(f"reason_pattern_{visit}") for visit in ["v3", "v2", "v1"]}
-        if "both" in patterns:
-            reason_counts["both"] += 1
-        elif "safety_only" in patterns:
-            reason_counts["safety_only"] += 1
-        elif "burden_only" in patterns:
-            reason_counts["burden_only"] += 1
+        for visit in ["v3", "v2", "v1"]:
+            if r.get(f"visit_rejected_{visit}") == "1":
+                reason_rows[visit][r.get(f"reason_pattern_{visit}")] += 1
     p = FIG / f"bhtm_v{version}_fig3_threshold_by_group.svg"
-    bar_svg(
-        p,
-        "図3. 通院のみ条件を拒否した理由",
-        ["通院負担のみ", "安全面不安のみ", "通院負担+安全面不安"],
-        [reason_counts["burden_only"], reason_counts["safety_only"], reason_counts["both"]],
-        "人数",
-    )
+    visit_reason_by_frequency_svg(p, "図3. 通院頻度別にみた拒否理由", reason_rows)
     fig_paths["fig3"] = rel(p)
 
     support_eligible_rows = [r for r in threshold if r["support_eligible"] == "1"]
-    support_accept_counts = Counter(r["support_accept_condition"] for r in support_eligible_rows)
-    support_accept_labels = [(key, label) for key, label in SUPPORT_PACKAGES] + [("none", "受容に転じず")]
+    support_by_base: dict[str, Counter] = {"V3": Counter(), "V2": Counter(), "V1": Counter()}
+    for r in support_eligible_rows:
+        base = r["support_base_visit"]
+        condition = r["support_accept_condition"] if r["support_accept_any"] == "1" else "none"
+        support_by_base[base][condition] += 1
     p = FIG / f"bhtm_v{version}_fig4_support_acceptance.svg"
-    bar_svg(
-        p,
-        "図4. 安全面不安による拒否者での訪問看護追加後の受容",
-        [label for _, label in support_accept_labels],
-        [support_accept_counts[key] for key, _ in support_accept_labels],
-        "人数",
-    )
+    support_acceptance_by_base_svg(p, "図4. 安全面不安を含む拒否者での訪問看護追加後の受容", support_by_base)
     fig_paths["fig4"] = rel(p)
 
     support_refusal_counts = Counter(
@@ -650,10 +749,10 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     v = VERSIONS[version]
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7"]
     reasons = {
-        "fig1": "外来導入レジメン以前に、クロザピン服用そのものを前向きに考えられるかを示す入口の図。Gee 2017やJakobsen 2025で示されたように、患者本人の受容性は医療者の想定より高い可能性があるため、まず服用自体の受容性を切り出す。",
-        "fig2": "通院頻度をprimary thresholdとして扱う中核図。訪問看護の有無はここでは動かさず、外来導入を受け入れるために必要な初期通院頻度を示す。",
-        "fig3": "通院のみ条件を拒否した理由を示す図。通院負担のみ、安全面不安のみ、両方の3分類で、負担軽減で解決する拒否と安全性補強で解決しうる拒否を区別する。",
-        "fig4": "安全面不安が理由に含まれる拒否者に限定し、訪問看護を追加した場合に受容へ転じるかを示す条件付き副次解析。全体受容率ではなく、安全性補強の実装可能性を示す図として位置づける。",
+        "fig1": "入院導入と外来導入の受容性を同じ前提で比較する中核図。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、特に“入院は難しいが外来なら前向き”という当局向けにも重要な潜在ニーズを可視化する。",
+        "fig2": "外来導入を前向きに考えた人に限定し、通院頻度をprimary thresholdとして扱う中核図。訪問看護の有無はここでは動かさず、外来導入を受け入れるために必要な初期通院頻度を示す。",
+        "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
+        "fig4": "各通院頻度で安全面不安を含む回答をした人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
         "fig5": "訪問看護を追加しても受容に転じない理由を示す図。訪問看護そのものへの抵抗、回数過多、なお残る安全面不安を分けることで、外来導入レジメン改善の方向を整理する。",
         "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
@@ -764,6 +863,30 @@ def questionnaire_html(version: int) -> str:
       </section>
 
       <section class="step" data-step="4">
+        <img class="hero" src="{ASSET_PREFIX}/inpatient_start.png" alt="">
+        <h2>入院して始める場合</h2>
+        <p class="scenarioText"></p>
+        <p>主治医から、入院してクロザピンを始める方法を勧められたとします。入院中に薬の調整、採血、体調確認を行います。</p>
+        <p class="small">入院期間は施設や状態により異なりますが、ここでは数週間程度の予定入院を想定してください。</p>
+        <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
+        {yes_no_choices("inpatient_accept")}
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="5">
+        <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
+        <h2>外来で始める場合</h2>
+        <p class="scenarioText"></p>
+        <p>主治医から、入院せず外来でクロザピンを始める方法を勧められたとします。通院、採血、体調確認を続けながら開始します。</p>
+        <p class="small">体調に異常があれば、必要時は入院へ切り替えます。</p>
+        <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
+        {yes_no_choices("outpatient_accept")}
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="6">
         <img class="hero" src="{ASSET_PREFIX}/monitoring.png" alt="">
         <h2>通院だけで始める場合</h2>
         <p class="scenarioText"></p>
@@ -777,15 +900,15 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button class="primary" onclick="answerVisit(true)">はい</button><button onclick="answerVisit(false)">いいえ</button><button onclick="prevVisit()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="5">
+      <section class="step" data-step="7">
         <h2>前向きに考えにくい理由</h2>
         <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="safety_concern"> この通院回数だけでは安全面が不安</label>
-        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=4; renderStep()">前へ</button></div>
+        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=6; renderStep()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="6">
+      <section class="step" data-step="8">
         <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
         <h2>訪問看護を加える場合</h2>
         <p>通院だけでは安全面が不安な場合に、同じ通院頻度のまま訪問看護を加える条件を伺います。</p>
@@ -798,7 +921,7 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button class="primary" onclick="answerSupport(true)">はい</button><button onclick="answerSupport(false)">いいえ</button><button onclick="prevSupport()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="7">
+      <section class="step" data-step="9">
         <h2>訪問看護を加えても前向きに考えにくい理由</h2>
         <p><strong id="supportReasonLabel">この条件</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="radio" name="support_refusal_reason" value="home_nursing_dislike"> 訪問看護が入ること自体が嫌</label>
@@ -809,7 +932,7 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button onclick="prevSupportReason()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="8">
+      <section class="step" data-step="10">
         <h2>副作用可能性の影響</h2>
         <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
         <div class="tt-card">
@@ -829,10 +952,12 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button onclick="prevSideEffect()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="9">
+      <section class="step" data-step="11">
         <h2>回答ありがとうございました</h2>
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
+          <strong>入院導入:</strong> <span id="inpatientSummary">未回答</span><br>
+          <strong>外来導入:</strong> <span id="outpatientSummary">未回答</span><br>
           <strong>通院頻度threshold:</strong> <span id="thresholdSummary">未回答</span><br>
           <strong>訪問看護追加:</strong> <span id="supportSummary">該当なし/未回答</span>
         </div>
@@ -876,6 +1001,8 @@ let assumedState = null;
 let reasonSource = null;
 let currentRejectedVisit = null;
 let supportBaseVisit = null;
+let inpatientAccept = null;
+let outpatientAccept = null;
 const sideEffects = [
   ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
   ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -918,27 +1045,30 @@ function renderStep(){
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
-  if(current === 4) renderVisitQuestion();
-  if(current === 5) renderVisitReason();
-  if(current === 6) renderSupportQuestion();
-  if(current === 7) renderSupportReason();
-  if(current === 8) renderSideEffectQuestion();
+  if(current === 6) renderVisitQuestion();
+  if(current === 7) renderVisitReason();
+  if(current === 8) renderSupportQuestion();
+  if(current === 9) renderSupportReason();
+  if(current === 10) renderSideEffectQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
   document.querySelectorAll('input[name="current_need"]').forEach(input => input.addEventListener('change', nextNeed));
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
+  document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
+  document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
   document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.addEventListener('change', nextSideEffect));
   document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => input.addEventListener('change', saveSupportReason));
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 9){ current = 8; renderStep(); return; }
-  if(current === 8 && threshold === 'NO_CLOZAPINE'){ current = 3; renderStep(); return; }
-  if(current === 8 && supportWasAsked()){ current = 6; renderStep(); return; }
-  if(current === 8 && !supportWasAsked()){ current = 4; renderStep(); return; }
-  if(current === 6){ current = 5; renderStep(); return; }
-  if(current === 5){ current = 4; renderStep(); return; }
+  if(current === 11){ current = 10; renderStep(); return; }
+  if(current === 10 && threshold === 'NO_CLOZAPINE'){ current = 3; renderStep(); return; }
+  if(current === 10 && threshold === 'NO_OUTPATIENT'){ current = 5; renderStep(); return; }
+  if(current === 10 && supportWasAsked()){ current = 8; renderStep(); return; }
+  if(current === 10 && !supportWasAsked()){ current = 6; renderStep(); return; }
+  if(current === 8){ current = 7; renderStep(); return; }
+  if(current === 7){ current = 6; renderStep(); return; }
   if(current > 0){
     const target = current - 1;
     if(target === 2){
@@ -951,6 +1081,16 @@ function prev(){
     } else if(target === 3){
       clearChecked('clozapine_accept');
       resetAfterClozapine();
+    } else if(target === 4){
+      clearChecked('inpatient_accept');
+      inpatientAccept = null;
+      document.getElementById('inpatientSummary').textContent = '未回答';
+      resetAfterInpatient();
+    } else if(target === 5){
+      clearChecked('outpatient_accept');
+      outpatientAccept = null;
+      document.getElementById('outpatientSummary').textContent = '未回答';
+      resetAfterOutpatient();
     }
     current = target;
     renderStep();
@@ -992,7 +1132,7 @@ function nextSideEffect(){
     renderSideEffectQuestion();
     return;
   }
-  current = 9; renderStep();
+  current = 11; renderStep();
 }
 function prevSideEffect(){
   if(sideEffectIndex > 0){
@@ -1001,8 +1141,9 @@ function prevSideEffect(){
     return;
   }
   if(threshold === 'NO_CLOZAPINE') current = 3;
-  else if(supportWasAsked()) current = 6;
-  else current = 4;
+  else if(threshold === 'NO_OUTPATIENT') current = 5;
+  else if(supportWasAsked()) current = 8;
+  else current = 6;
   renderStep();
 }
 function nextClozapine(){
@@ -1013,7 +1154,30 @@ function nextClozapine(){
     reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 8; renderStep(); return;
+    current = 10; renderStep(); return;
+  }
+  next();
+}
+function nextInpatient(){
+  const val = document.querySelector('input[name="inpatient_accept"]:checked')?.value;
+  if(!val){ alert('はい、または、いいえを選んでください。'); return; }
+  resetAfterInpatient();
+  inpatientAccept = val === 'yes';
+  document.getElementById('inpatientSummary').textContent = inpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
+  next();
+}
+function nextOutpatient(){
+  const val = document.querySelector('input[name="outpatient_accept"]:checked')?.value;
+  if(!val){ alert('はい、または、いいえを選んでください。'); return; }
+  resetAfterOutpatient();
+  outpatientAccept = val === 'yes';
+  document.getElementById('outpatientSummary').textContent = outpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
+  if(!outpatientAccept){
+    threshold = 'NO_OUTPATIENT';
+    document.getElementById('thresholdSummary').textContent = '外来導入を前向きに考えにくい';
+    current = 10;
+    renderStep();
+    return;
   }
   next();
 }
@@ -1032,7 +1196,7 @@ function answerVisit(accepted){
     return;
   }
   currentRejectedVisit = visitQuestions[visitIndex][0];
-  current = 5; renderStep();
+  current = 7; renderStep();
 }
 function prevVisit(){
   if(visitIndex > 0){
@@ -1060,12 +1224,12 @@ function saveVisitReason(){
   visitRejectionReasons[currentRejectedVisit] = reasons;
   if(reasons.includes('safety_concern')){
     supportBaseVisit = currentRejectedVisit;
-    current = 6; renderStep();
+    current = 8; renderStep();
     return;
   }
   if(visitIndex < visitQuestions.length - 1){
     visitIndex++;
-    current = 4; renderStep();
+    current = 6; renderStep();
     return;
   }
   threshold = 'NONE';
@@ -1082,11 +1246,11 @@ function afterVisitSequence(){
   supportIndex = 0;
   if(safetyConcernRecorded()){
     supportBaseVisit = Object.keys(visitRejectionReasons).find(key => visitRejectionReasons[key].includes('safety_concern')) || threshold;
-    current = 6;
+    current = 8;
     renderStep();
     return;
   }
-  current = 8;
+  current = 10;
   renderStep();
 }
 function renderSupportQuestion(){
@@ -1103,9 +1267,9 @@ function answerSupport(accepted){
   supportAnswers[key] = accepted ? 'accepted' : 'refused';
   if(accepted){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 8; renderStep(); return;
+    current = 10; renderStep(); return;
   }
-  current = 7; renderStep();
+  current = 9; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -1113,7 +1277,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = 5; renderStep();
+  current = 7; renderStep();
 }
 function renderSupportReason(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
@@ -1132,13 +1296,13 @@ function saveSupportReason(){
   supportRefusalReasons[key] = reason;
   if(reason === 'still_safety_concern' && supportIndex < options.length - 1){
     supportIndex++;
-    current = 6; renderStep(); return;
+    current = 8; renderStep(); return;
   }
   document.getElementById('supportSummary').textContent = `${supportLabels[key]}でも前向きに考えにくい（理由: ${supportRefusalLabels[reason]}）`;
-  current = 8; renderStep();
+  current = 10; renderStep();
 }
 function prevSupportReason(){
-  current = 6; renderStep();
+  current = 8; renderStep();
 }
 function clearChecked(name){
   document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = false);
@@ -1148,6 +1312,21 @@ function resetAfterNeed(){
   resetAfterClozapine();
 }
 function resetAfterClozapine(){
+  inpatientAccept = null;
+  outpatientAccept = null;
+  clearChecked('inpatient_accept');
+  clearChecked('outpatient_accept');
+  document.getElementById('inpatientSummary').textContent = '未回答';
+  document.getElementById('outpatientSummary').textContent = '未回答';
+  resetAfterOutpatient();
+}
+function resetAfterInpatient(){
+  outpatientAccept = null;
+  clearChecked('outpatient_accept');
+  document.getElementById('outpatientSummary').textContent = '未回答';
+  resetAfterOutpatient();
+}
+function resetAfterOutpatient(){
   visitIndex = 0;
   threshold = null;
   currentRejectedVisit = null;

@@ -8,17 +8,17 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="190" y="30" class="title">図2. 外来導入burden thresholdの分布</text>
+<text x="190" y="30" class="title">図2. 外来導入を前向きに考える人でのburden threshold</text>
 <text x="178" y="96" text-anchor="end" class="label">全体</text>
-<rect x="190.0" y="68" width="92.8" height="36" fill="#0f766e"/>
-<text x="236.4" y="91" text-anchor="middle" class="inside">25</text>
-<rect x="282.8" y="68" width="200.4" height="36" fill="#2f7d8c"/>
-<text x="383.0" y="91" text-anchor="middle" class="inside">54</text>
-<rect x="483.2" y="68" width="256.1" height="36" fill="#8bbbc3"/>
-<text x="611.2" y="91" text-anchor="middle" class="inside">69</text>
-<rect x="739.2" y="68" width="118.8" height="36" fill="#d8dee4"/>
-<text x="798.6" y="91" text-anchor="middle" class="inside">32</text>
-<text x="866" y="91" class="num">n=180</text>
+<rect x="190.0" y="68" width="148.4" height="36" fill="#0f766e"/>
+<text x="264.2" y="91" text-anchor="middle" class="inside">24</text>
+<rect x="338.4" y="68" width="210.3" height="36" fill="#2f7d8c"/>
+<text x="443.6" y="91" text-anchor="middle" class="inside">34</text>
+<rect x="548.7" y="68" width="179.4" height="36" fill="#8bbbc3"/>
+<text x="638.4" y="91" text-anchor="middle" class="inside">29</text>
+<rect x="728.1" y="68" width="129.9" height="36" fill="#d8dee4"/>
+<text x="793.1" y="91" text-anchor="middle" class="inside">21</text>
+<text x="866" y="91" class="num">n=108</text>
 <rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
 <text x="210" y="334" class="legend">週3回通院なら受容</text>
 <rect x="360" y="322" width="14" height="14" fill="#2f7d8c"/>

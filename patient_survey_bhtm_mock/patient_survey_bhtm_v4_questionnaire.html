@@ -77,6 +77,38 @@
       </section>
 
       <section class="step" data-step="4">
+        <img class="hero" src="../patient_survey_mock/assets/inpatient_start.png" alt="">
+        <h2>入院して始める場合</h2>
+        <p class="scenarioText"></p>
+        <p>主治医から、入院してクロザピンを始める方法を勧められたとします。入院中に薬の調整、採血、体調確認を行います。</p>
+        <p class="small">入院期間は施設や状態により異なりますが、ここでは数週間程度の予定入院を想定してください。</p>
+        <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
+        
+        <div class="seg two">
+          <label><input type="radio" name="inpatient_accept" value="yes"> はい</label>
+          <label><input type="radio" name="inpatient_accept" value="no"> いいえ</label>
+        </div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="5">
+        <img class="hero" src="../patient_survey_mock/assets/outpatient_visit.png" alt="">
+        <h2>外来で始める場合</h2>
+        <p class="scenarioText"></p>
+        <p>主治医から、入院せず外来でクロザピンを始める方法を勧められたとします。通院、採血、体調確認を続けながら開始します。</p>
+        <p class="small">体調に異常があれば、必要時は入院へ切り替えます。</p>
+        <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
+        
+        <div class="seg two">
+          <label><input type="radio" name="outpatient_accept" value="yes"> はい</label>
+          <label><input type="radio" name="outpatient_accept" value="no"> いいえ</label>
+        </div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="6">
         <img class="hero" src="../patient_survey_mock/assets/monitoring.png" alt="">
         <h2>通院だけで始める場合</h2>
         <p class="scenarioText"></p>
@@ -90,15 +122,15 @@
         <div class="nav"><button class="primary" onclick="answerVisit(true)">はい</button><button onclick="answerVisit(false)">いいえ</button><button onclick="prevVisit()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="5">
+      <section class="step" data-step="7">
         <h2>前向きに考えにくい理由</h2>
         <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="safety_concern"> この通院回数だけでは安全面が不安</label>
-        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=4; renderStep()">前へ</button></div>
+        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=6; renderStep()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="6">
+      <section class="step" data-step="8">
         <img class="hero" src="../patient_survey_mock/assets/outpatient_visit.png" alt="">
         <h2>訪問看護を加える場合</h2>
         <p>通院だけでは安全面が不安な場合に、同じ通院頻度のまま訪問看護を加える条件を伺います。</p>
@@ -111,7 +143,7 @@
         <div class="nav"><button class="primary" onclick="answerSupport(true)">はい</button><button onclick="answerSupport(false)">いいえ</button><button onclick="prevSupport()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="7">
+      <section class="step" data-step="9">
         <h2>訪問看護を加えても前向きに考えにくい理由</h2>
         <p><strong id="supportReasonLabel">この条件</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="radio" name="support_refusal_reason" value="home_nursing_dislike"> 訪問看護が入ること自体が嫌</label>
@@ -122,7 +154,7 @@
         <div class="nav"><button onclick="prevSupportReason()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="8">
+      <section class="step" data-step="10">
         <h2>副作用可能性の影響</h2>
         <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
         <div class="tt-card">
@@ -142,10 +174,12 @@
         <div class="nav"><button onclick="prevSideEffect()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="9">
+      <section class="step" data-step="11">
         <h2>回答ありがとうございました</h2>
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
+          <strong>入院導入:</strong> <span id="inpatientSummary">未回答</span><br>
+          <strong>外来導入:</strong> <span id="outpatientSummary">未回答</span><br>
           <strong>通院頻度threshold:</strong> <span id="thresholdSummary">未回答</span><br>
           <strong>訪問看護追加:</strong> <span id="supportSummary">該当なし/未回答</span>
         </div>
@@ -165,6 +199,8 @@ let assumedState = null;
 let reasonSource = null;
 let currentRejectedVisit = null;
 let supportBaseVisit = null;
+let inpatientAccept = null;
+let outpatientAccept = null;
 const sideEffects = [
   ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
   ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -207,27 +243,30 @@ function renderStep(){
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
-  if(current === 4) renderVisitQuestion();
-  if(current === 5) renderVisitReason();
-  if(current === 6) renderSupportQuestion();
-  if(current === 7) renderSupportReason();
-  if(current === 8) renderSideEffectQuestion();
+  if(current === 6) renderVisitQuestion();
+  if(current === 7) renderVisitReason();
+  if(current === 8) renderSupportQuestion();
+  if(current === 9) renderSupportReason();
+  if(current === 10) renderSideEffectQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
   document.querySelectorAll('input[name="current_need"]').forEach(input => input.addEventListener('change', nextNeed));
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
+  document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
+  document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
   document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.addEventListener('change', nextSideEffect));
   document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => input.addEventListener('change', saveSupportReason));
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 9){ current = 8; renderStep(); return; }
-  if(current === 8 && threshold === 'NO_CLOZAPINE'){ current = 3; renderStep(); return; }
-  if(current === 8 && supportWasAsked()){ current = 6; renderStep(); return; }
-  if(current === 8 && !supportWasAsked()){ current = 4; renderStep(); return; }
-  if(current === 6){ current = 5; renderStep(); return; }
-  if(current === 5){ current = 4; renderStep(); return; }
+  if(current === 11){ current = 10; renderStep(); return; }
+  if(current === 10 && threshold === 'NO_CLOZAPINE'){ current = 3; renderStep(); return; }
+  if(current === 10 && threshold === 'NO_OUTPATIENT'){ current = 5; renderStep(); return; }
+  if(current === 10 && supportWasAsked()){ current = 8; renderStep(); return; }
+  if(current === 10 && !supportWasAsked()){ current = 6; renderStep(); return; }
+  if(current === 8){ current = 7; renderStep(); return; }
+  if(current === 7){ current = 6; renderStep(); return; }
   if(current > 0){
     const target = current - 1;
     if(target === 2){
@@ -240,6 +279,16 @@ function prev(){
     } else if(target === 3){
       clearChecked('clozapine_accept');
       resetAfterClozapine();
+    } else if(target === 4){
+      clearChecked('inpatient_accept');
+      inpatientAccept = null;
+      document.getElementById('inpatientSummary').textContent = '未回答';
+      resetAfterInpatient();
+    } else if(target === 5){
+      clearChecked('outpatient_accept');
+      outpatientAccept = null;
+      document.getElementById('outpatientSummary').textContent = '未回答';
+      resetAfterOutpatient();
     }
     current = target;
     renderStep();
@@ -281,7 +330,7 @@ function nextSideEffect(){
     renderSideEffectQuestion();
     return;
   }
-  current = 9; renderStep();
+  current = 11; renderStep();
 }
 function prevSideEffect(){
   if(sideEffectIndex > 0){
@@ -290,8 +339,9 @@ function prevSideEffect(){
     return;
   }
   if(threshold === 'NO_CLOZAPINE') current = 3;
-  else if(supportWasAsked()) current = 6;
-  else current = 4;
+  else if(threshold === 'NO_OUTPATIENT') current = 5;
+  else if(supportWasAsked()) current = 8;
+  else current = 6;
   renderStep();
 }
 function nextClozapine(){
@@ -302,7 +352,30 @@ function nextClozapine(){
     reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 8; renderStep(); return;
+    current = 10; renderStep(); return;
+  }
+  next();
+}
+function nextInpatient(){
+  const val = document.querySelector('input[name="inpatient_accept"]:checked')?.value;
+  if(!val){ alert('はい、または、いいえを選んでください。'); return; }
+  resetAfterInpatient();
+  inpatientAccept = val === 'yes';
+  document.getElementById('inpatientSummary').textContent = inpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
+  next();
+}
+function nextOutpatient(){
+  const val = document.querySelector('input[name="outpatient_accept"]:checked')?.value;
+  if(!val){ alert('はい、または、いいえを選んでください。'); return; }
+  resetAfterOutpatient();
+  outpatientAccept = val === 'yes';
+  document.getElementById('outpatientSummary').textContent = outpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
+  if(!outpatientAccept){
+    threshold = 'NO_OUTPATIENT';
+    document.getElementById('thresholdSummary').textContent = '外来導入を前向きに考えにくい';
+    current = 10;
+    renderStep();
+    return;
   }
   next();
 }
@@ -321,7 +394,7 @@ function answerVisit(accepted){
     return;
   }
   currentRejectedVisit = visitQuestions[visitIndex][0];
-  current = 5; renderStep();
+  current = 7; renderStep();
 }
 function prevVisit(){
   if(visitIndex > 0){
@@ -349,12 +422,12 @@ function saveVisitReason(){
   visitRejectionReasons[currentRejectedVisit] = reasons;
   if(reasons.includes('safety_concern')){
     supportBaseVisit = currentRejectedVisit;
-    current = 6; renderStep();
+    current = 8; renderStep();
     return;
   }
   if(visitIndex < visitQuestions.length - 1){
     visitIndex++;
-    current = 4; renderStep();
+    current = 6; renderStep();
     return;
   }
   threshold = 'NONE';
@@ -371,11 +444,11 @@ function afterVisitSequence(){
   supportIndex = 0;
   if(safetyConcernRecorded()){
     supportBaseVisit = Object.keys(visitRejectionReasons).find(key => visitRejectionReasons[key].includes('safety_concern')) || threshold;
-    current = 6;
+    current = 8;
     renderStep();
     return;
   }
-  current = 8;
+  current = 10;
   renderStep();
 }
 function renderSupportQuestion(){
@@ -392,9 +465,9 @@ function answerSupport(accepted){
   supportAnswers[key] = accepted ? 'accepted' : 'refused';
   if(accepted){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 8; renderStep(); return;
+    current = 10; renderStep(); return;
   }
-  current = 7; renderStep();
+  current = 9; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -402,7 +475,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = 5; renderStep();
+  current = 7; renderStep();
 }
 function renderSupportReason(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
@@ -421,13 +494,13 @@ function saveSupportReason(){
   supportRefusalReasons[key] = reason;
   if(reason === 'still_safety_concern' && supportIndex < options.length - 1){
     supportIndex++;
-    current = 6; renderStep(); return;
+    current = 8; renderStep(); return;
   }
   document.getElementById('supportSummary').textContent = `${supportLabels[key]}でも前向きに考えにくい（理由: ${supportRefusalLabels[reason]}）`;
-  current = 8; renderStep();
+  current = 10; renderStep();
 }
 function prevSupportReason(){
-  current = 6; renderStep();
+  current = 8; renderStep();
 }
 function clearChecked(name){
   document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = false);
@@ -437,6 +510,21 @@ function resetAfterNeed(){
   resetAfterClozapine();
 }
 function resetAfterClozapine(){
+  inpatientAccept = null;
+  outpatientAccept = null;
+  clearChecked('inpatient_accept');
+  clearChecked('outpatient_accept');
+  document.getElementById('inpatientSummary').textContent = '未回答';
+  document.getElementById('outpatientSummary').textContent = '未回答';
+  resetAfterOutpatient();
+}
+function resetAfterInpatient(){
+  outpatientAccept = null;
+  clearChecked('outpatient_accept');
+  document.getElementById('outpatientSummary').textContent = '未回答';
+  resetAfterOutpatient();
+}
+function resetAfterOutpatient(){
   visitIndex = 0;
   threshold = null;
   currentRejectedVisit = null;
