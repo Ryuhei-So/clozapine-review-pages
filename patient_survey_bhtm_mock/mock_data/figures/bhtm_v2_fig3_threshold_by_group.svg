@@ -10,32 +10,25 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="210" y="30" class="title">図3. 通院頻度別にみた拒否理由</text>
 <text x="198" y="93" text-anchor="end" class="label">週3回通院を拒否</text>
-<rect x="210.0" y="66" width="544.7" height="38" fill="#2f7d8c"/>
-<text x="482.4" y="91" text-anchor="middle" class="inside">94</text>
-<rect x="754.7" y="66" width="29.0" height="38" fill="#c47f4f"/>
-<rect x="783.7" y="66" width="104.3" height="38" fill="#7a9a3d"/>
-<text x="835.8" y="91" text-anchor="middle" class="inside">18</text>
-<text x="896" y="91" class="num">n=117</text>
+<rect x="210.0" y="66" width="494.8" height="38" fill="#2f7d8c"/>
+<text x="457.4" y="91" text-anchor="middle" class="inside">81</text>
+<rect x="704.8" y="66" width="183.2" height="38" fill="#c47f4f"/>
+<text x="796.4" y="91" text-anchor="middle" class="inside">30</text>
+<text x="896" y="91" class="num">n=111</text>
 <text x="198" y="165" text-anchor="end" class="label">週2回通院を拒否</text>
-<rect x="210.0" y="138" width="441.7" height="38" fill="#2f7d8c"/>
-<text x="430.9" y="163" text-anchor="middle" class="inside">43</text>
-<rect x="651.7" y="138" width="113.0" height="38" fill="#c47f4f"/>
-<text x="708.2" y="163" text-anchor="middle" class="inside">11</text>
-<rect x="764.7" y="138" width="123.3" height="38" fill="#7a9a3d"/>
-<text x="826.4" y="163" text-anchor="middle" class="inside">12</text>
-<text x="896" y="163" class="num">n=66</text>
+<rect x="210.0" y="138" width="448.5" height="38" fill="#2f7d8c"/>
+<text x="434.3" y="163" text-anchor="middle" class="inside">43</text>
+<rect x="658.5" y="138" width="229.5" height="38" fill="#c47f4f"/>
+<text x="773.3" y="163" text-anchor="middle" class="inside">22</text>
+<text x="896" y="163" class="num">n=65</text>
 <text x="198" y="237" text-anchor="end" class="label">週1回通院を拒否</text>
-<rect x="210.0" y="210" width="431.5" height="38" fill="#2f7d8c"/>
-<text x="425.7" y="235" text-anchor="middle" class="inside">14</text>
-<rect x="641.5" y="210" width="123.3" height="38" fill="#c47f4f"/>
-<text x="703.1" y="235" text-anchor="middle" class="inside">4</text>
-<rect x="764.7" y="210" width="123.3" height="38" fill="#7a9a3d"/>
-<text x="826.4" y="235" text-anchor="middle" class="inside">4</text>
-<text x="896" y="235" class="num">n=22</text>
+<rect x="210.0" y="210" width="319.1" height="38" fill="#2f7d8c"/>
+<text x="369.5" y="235" text-anchor="middle" class="inside">8</text>
+<rect x="529.1" y="210" width="358.9" height="38" fill="#c47f4f"/>
+<text x="708.5" y="235" text-anchor="middle" class="inside">9</text>
+<text x="896" y="235" class="num">n=17</text>
 <rect x="210" y="382" width="14" height="14" fill="#2f7d8c"/>
 <text x="230" y="394" class="legend">通院負担のみ</text>
 <rect x="420" y="382" width="14" height="14" fill="#c47f4f"/>
 <text x="440" y="394" class="legend">安全面不安のみ</text>
-<rect x="630" y="382" width="14" height="14" fill="#7a9a3d"/>
-<text x="650" y="394" class="legend">通院負担+安全面不安</text>
 </svg>

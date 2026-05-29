@@ -55,8 +55,8 @@ VERSIONS = {
             "クロザピン服用意向の前に、有効性の十分性評価と副作用別の服用判断への影響を取得する。",
             "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
             "抽象的な外来導入Yes/Noは削除し、外来導入受容性は週3/週2/週1通院条件のいずれかを受容したかで定義する。",
-            "通院のみ条件を拒否した場合は理由を記録し、安全面不安が含まれる場合だけ訪問看護追加モジュールへ進む。",
-            "通院頻度ごとに拒否理由を集計し、安全面不安を含む拒否者の中で訪問看護追加がどの程度受容性を改善するかを示す。",
+            "通院のみ条件を受容した場合も、同じ通院頻度に訪問看護を加えると服用判断がどう変わるかを聞く。",
+            "通院のみ条件を拒否した場合は理由を二択で記録し、通院負担なら低頻度へ進み、安全面不安なら同じ通院頻度への訪問看護追加で受容に転じるかを聞く。",
             "医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。",
         ],
     },
@@ -104,6 +104,13 @@ SUPPORT_REFUSAL_REASONS = [
     ("nursing_too_frequent", "訪問看護の回数が多すぎる"),
     ("still_safety_concern", "それでも安全面が不安"),
     ("other_unknown", "その他・わからない"),
+]
+
+SUPPORT_DIRECTIONS = [
+    ("positive", "より前向き"),
+    ("neutral", "あまり変わらない"),
+    ("negative", "むしろ難しい"),
+    ("unsure", "わからない"),
 ]
 
 
@@ -215,39 +222,40 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         for visit_key, _ in THRESHOLDS[:3]:
             rejected = visit_key in rejected_visits
             visit_reason_values[f"visit_rejected_{visit_key.lower()}"] = str(int(rejected))
-            selected: set[str] = set()
             reason_pattern = "not_rejected"
             if rejected:
-                burden_p = {"V3": 0.72, "V2": 0.56, "V1": 0.40}[visit_key]
-                safety_p = {"V3": 0.18, "V2": 0.27, "V1": 0.40}[visit_key] + 0.08 * (max_side_effect_impact >= 4)
-                if RNG.random() < burden_p:
-                    selected.add("visit_burden")
-                if RNG.random() < safety_p:
-                    selected.add("safety_concern")
-                if not selected:
-                    selected.add("visit_burden")
-                if "safety_concern" in selected:
+                safety_p = {"V3": 0.20, "V2": 0.30, "V1": 0.44}[visit_key] + 0.08 * (max_side_effect_impact >= 4)
+                selected_reason = "safety_concern" if RNG.random() < safety_p else "visit_burden"
+                if selected_reason == "safety_concern":
                     any_safety_concern = True
                     if first_safety_concern_visit is None:
                         first_safety_concern_visit = visit_key
-                if {"visit_burden", "safety_concern"}.issubset(selected):
-                    reason_pattern = "both"
-                elif "safety_concern" in selected:
                     reason_pattern = "safety_only"
                 else:
                     reason_pattern = "burden_only"
             for reason_key, _ in VISIT_REJECTION_REASONS:
-                visit_reason_values[f"reason_{visit_key.lower()}_{reason_key}"] = str(int(reason_key in selected))
+                visit_reason_values[f"reason_{visit_key.lower()}_{reason_key}"] = str(int(rejected and reason_key == selected_reason))
             visit_reason_values[f"reason_pattern_{visit_key.lower()}"] = reason_pattern
 
-        support_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
-        support_refusal_reasons: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
+        support_conversion_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
+        support_direction_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
         support_base = first_safety_concern_visit or (th if th in {"V3", "V2", "V1"} else "V1")
-        support_eligible = method_outpatient_accept and first_safety_concern_visit is not None
+        support_conversion_eligible = method_outpatient_accept and first_safety_concern_visit is not None
+        support_addon_eligible = method_outpatient_accept and th in {"V3", "V2", "V1"}
         support_accept_any = False
         support_accept_condition = "none"
-        support_final_refusal_reason = "not_asked"
-        if support_eligible:
+        if support_addon_eligible:
+            for support_key in SUPPORT_BY_THRESHOLD[th]:
+                direction = weighted_choice(
+                    [
+                        ("positive", 0.28 + 0.12 * subjective_distress),
+                        ("neutral", 0.36),
+                        ("negative", 0.22 + 0.08 * past_refusal),
+                        ("unsure", 0.14),
+                    ]
+                )
+                support_direction_answers[support_key] = direction
+        if support_conversion_eligible:
             for support_key in SUPPORT_BY_THRESHOLD[support_base]:
                 accept_base = {
                     "V1N1": 0.48,
@@ -258,34 +266,19 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                     "V3N2": 0.34,
                 }[support_key]
                 accept_prob = accept_base + 0.08 * subjective_distress - 0.05 * (max_side_effect_impact >= 5)
-                if RNG.random() < accept_prob:
-                    support_answers[support_key] = "accepted"
+                answer = weighted_choice(
+                    [
+                        ("accepted", accept_prob),
+                        ("refused", max(0.08, 0.72 - accept_prob)),
+                        ("unsure", 0.20),
+                    ]
+                )
+                support_conversion_answers[support_key] = answer
+                if answer == "accepted":
                     support_accept_any = True
                     support_accept_condition = support_key
-                    support_final_refusal_reason = "accepted"
                     break
-                support_answers[support_key] = "refused"
-                if support_key in {"V1N1", "V2N1"}:
-                    reason = weighted_choice(
-                        [
-                            ("still_safety_concern", 0.48),
-                            ("home_nursing_dislike", 0.24),
-                            ("nursing_too_frequent", 0.14),
-                            ("other_unknown", 0.14),
-                        ]
-                    )
-                else:
-                    reason = weighted_choice(
-                        [
-                            ("nursing_too_frequent", 0.40),
-                            ("home_nursing_dislike", 0.24),
-                            ("still_safety_concern", 0.22),
-                            ("other_unknown", 0.14),
-                        ]
-                    )
-                support_refusal_reasons[support_key] = reason
-                support_final_refusal_reason = reason
-                if reason != "still_safety_concern":
+                if answer == "unsure":
                     break
         threshold.append(
             {
@@ -298,13 +291,13 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "efficacy_sufficiency": str(efficacy_sufficiency),
                 "side_effect_max_impact": str(max_side_effect_impact),
                 **{f"side_effect_{key}": str(value) for key, value in side_effect_ratings.items()},
-                "support_eligible": str(int(support_eligible)),
-                "support_base_visit": support_base if support_eligible else "not_asked",
-                **{f"support_{key.lower()}": value for key, value in support_answers.items()},
-                **{f"support_{key.lower()}_refusal_reason": value for key, value in support_refusal_reasons.items()},
+                "support_conversion_eligible": str(int(support_conversion_eligible)),
+                "support_addon_eligible": str(int(support_addon_eligible)),
+                "support_base_visit": support_base if (support_conversion_eligible or support_addon_eligible) else "not_asked",
+                **{f"support_conversion_{key.lower()}": value for key, value in support_conversion_answers.items()},
+                **{f"support_direction_{key.lower()}": value for key, value in support_direction_answers.items()},
                 "support_accept_any": str(int(support_accept_any)),
                 "support_accept_condition": support_accept_condition,
-                "support_final_refusal_reason": support_final_refusal_reason,
             }
         )
         # In the revised questionnaire, outpatient initiation acceptance is
@@ -495,11 +488,10 @@ def visit_reason_by_frequency_svg(path: Path, title: str, rows: dict[str, Counte
     left, top, right, bottom = 210, 66, 52, 86
     plot_w = width - left - right
     row_h = 72
-    colors = {"burden_only": "#2f7d8c", "safety_only": "#c47f4f", "both": "#7a9a3d"}
+    colors = {"burden_only": "#2f7d8c", "safety_only": "#c47f4f"}
     labels = [
         ("burden_only", "通院負担のみ"),
         ("safety_only", "安全面不安のみ"),
-        ("both", "通院負担+安全面不安"),
     ]
     parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
     for i, (visit_key, visit_label) in enumerate([("v3", "週3回通院"), ("v2", "週2回通院"), ("v1", "週1回通院")]):
@@ -744,7 +736,7 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     visit_reason_by_frequency_svg(p, "図3. 通院頻度別にみた拒否理由", reason_rows)
     fig_paths["fig3"] = rel(p)
 
-    support_eligible_rows = [r for r in threshold if r["support_eligible"] == "1"]
+    support_eligible_rows = [r for r in threshold if r["support_conversion_eligible"] == "1"]
     support_by_base: dict[str, Counter] = {"V3": Counter(), "V2": Counter(), "V1": Counter()}
     for r in support_eligible_rows:
         base = r["support_base_visit"]
@@ -754,19 +746,16 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     support_acceptance_by_base_svg(p, "図4. 安全面不安を含む拒否者での訪問看護追加後の受容", support_by_base)
     fig_paths["fig4"] = rel(p)
 
-    support_refusal_counts = Counter(
-        r["support_final_refusal_reason"]
-        for r in support_eligible_rows
-        if r["support_accept_any"] == "0" and r["support_final_refusal_reason"] != "not_asked"
-    )
-    p = FIG / f"bhtm_v{version}_fig5_support_refusal_reason.svg"
-    bar_svg(
-        p,
-        "図5. 訪問看護追加でも受容に転じない理由",
-        [label for _, label in SUPPORT_REFUSAL_REASONS],
-        [support_refusal_counts[key] for key, _ in SUPPORT_REFUSAL_REASONS],
-        "人数",
-    )
+    support_direction_rows: dict[str, Counter] = {key: Counter() for key, _ in SUPPORT_PACKAGES}
+    for r in threshold:
+        if r.get("support_addon_eligible") != "1":
+            continue
+        for key, _ in SUPPORT_PACKAGES:
+            direction = r.get(f"support_direction_{key.lower()}", "not_asked")
+            if direction != "not_asked":
+                support_direction_rows[key][direction] += 1
+    p = FIG / f"bhtm_v{version}_fig5_support_direction.svg"
+    support_direction_svg(p, "図5. 通院OK者における訪問看護追加の影響", support_direction_rows)
     fig_paths["fig5"] = rel(p)
 
     effect_labels = [f"{label}（{frequency}）" for _, label, frequency, _ in SIDE_EFFECTS]
@@ -834,8 +823,8 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
-        "fig4": "各通院頻度で安全面不安を含む回答をした人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
-        "fig5": "訪問看護を追加しても受容に転じない理由を示す図。訪問看護そのものへの抵抗、回数過多、なお残る安全面不安を分けることで、外来導入レジメン改善の方向を整理する。",
+        "fig4": "各通院頻度を安全面不安のために拒否した人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
+        "fig5": "通院のみ条件を受容した人に、同じ通院頻度のまま訪問看護を加えると服用判断がより前向きになるか、変わらないか、むしろ難しくなるかを示す図。訪問看護が安心材料なのか追加負担なのかを分けて評価する。",
         "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
     }
@@ -985,10 +974,11 @@ def questionnaire_html(version: int) -> str:
 
       <section class="step" data-step="8">
         <h2>前向きに考えにくい理由</h2>
-        <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由を選んでください。</p>
-        <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
-        <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="safety_concern"> この通院回数だけでは安全面が不安</label>
-        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=7; renderStep()">前へ</button></div>
+        <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由として、より近いものを選んでください。</p>
+        <label class="choice"><input type="radio" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
+        <label class="choice"><input type="radio" name="visit_rejection_reason" value="safety_concern"> この通院頻度だけでは安全面が不安</label>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="current=7; renderStep()">前へ</button></div>
       </section>
 
       <section class="step" data-step="9">
@@ -1000,19 +990,8 @@ def questionnaire_html(version: int) -> str:
           <h3 id="supportQuestion">週5回確認</h3>
           <p class="small" id="supportDescription"></p>
         </div>
-        <p class="question">この条件ならクロザピン服用を前向きに考えたいですか？</p>
-        <div class="nav"><button class="primary" onclick="answerSupport(true)">はい</button><button onclick="answerSupport(false)">いいえ</button><button onclick="prevSupport()">前へ</button></div>
-      </section>
-
-      <section class="step" data-step="10">
-        <h2>訪問看護を加えても前向きに考えにくい理由</h2>
-        <p><strong id="supportReasonLabel">この条件</strong>を前向きに考えにくい理由を選んでください。</p>
-        <label class="choice"><input type="radio" name="support_refusal_reason" value="home_nursing_dislike"> 訪問看護が入ること自体が嫌</label>
-        <label class="choice"><input type="radio" name="support_refusal_reason" value="nursing_too_frequent"> 訪問看護の回数が多すぎる</label>
-        <label class="choice"><input type="radio" name="support_refusal_reason" value="still_safety_concern"> それでも安全面が不安</label>
-        <label class="choice"><input type="radio" name="support_refusal_reason" value="other_unknown"> その他・わからない</label>
-        <p class="small">選択すると次へ進みます。安全面が不安な場合は、より手厚い条件を続けて確認します。</p>
-        <div class="nav"><button onclick="prevSupportReason()">前へ</button></div>
+        <div id="supportChoices"></div>
+        <div class="nav"><button onclick="prevSupport()">前へ</button></div>
       </section>
 
       <section class="step" data-step="11">
@@ -1108,8 +1087,8 @@ const supportRefusalLabels = {
   other_unknown:'その他・わからない'
 };
 const supportAnswers = {};
-const supportRefusalReasons = {};
 const visitRejectionReasons = {};
+let supportMode = null;
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -1119,7 +1098,6 @@ function renderStep(){
   if(current === 7) renderVisitQuestion();
   if(current === 8) renderVisitReason();
   if(current === 9) renderSupportQuestion();
-  if(current === 10) renderSupportReason();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
@@ -1131,11 +1109,10 @@ function wireAutoAdvance(){
   });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
-  document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => input.addEventListener('change', saveSupportReason));
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 11){
+  if(current === 10){
     if(threshold === 'NO_CLOZAPINE') current = 5;
     else if(supportWasAsked()) current = 9;
     else current = 7;
@@ -1285,7 +1262,7 @@ function nextClozapine(){
     reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 11; renderStep(); return;
+    current = 10; renderStep(); return;
   }
   next();
 }
@@ -1308,6 +1285,8 @@ function answerVisit(accepted){
     threshold = visitQuestions[visitIndex][0];
     setThresholdSummary();
     supportIndex = 0;
+    supportBaseVisit = threshold;
+    supportMode = 'accepted_addon';
     afterVisitSequence();
     return;
   }
@@ -1330,16 +1309,18 @@ function renderVisitReason(){
   const label = visitQuestions.find(v => v[0] === currentRejectedVisit)?.[1] || 'この通院頻度';
   document.getElementById('rejectionVisitLabel').textContent = label;
   document.querySelectorAll('input[name="visit_rejection_reason"]').forEach(input => {
-    input.checked = (visitRejectionReasons[currentRejectedVisit] || []).includes(input.value);
+    input.checked = visitRejectionReasons[currentRejectedVisit] === input.value;
+    input.onchange = saveVisitReason;
   });
 }
 function saveVisitReason(){
-  const reasons = Array.from(document.querySelectorAll('input[name="visit_rejection_reason"]:checked')).map(input => input.value);
-  if(reasons.length === 0){ alert('あてはまる理由を1つ以上選んでください。'); return; }
+  const reason = document.querySelector('input[name="visit_rejection_reason"]:checked')?.value;
+  if(!reason){ alert('より近い理由を1つ選んでください。'); return; }
   resetAfterVisitReason();
-  visitRejectionReasons[currentRejectedVisit] = reasons;
-  if(reasons.includes('safety_concern')){
+  visitRejectionReasons[currentRejectedVisit] = reason;
+  if(reason === 'safety_concern'){
     supportBaseVisit = currentRejectedVisit;
+    supportMode = 'safety_conversion';
     current = 9; renderStep();
     return;
   }
@@ -1353,20 +1334,14 @@ function saveVisitReason(){
   afterVisitSequence();
 }
 function safetyConcernRecorded(){
-  return Object.values(visitRejectionReasons).some(reasons => reasons.includes('safety_concern'));
+  return Object.values(visitRejectionReasons).some(reason => reason === 'safety_concern');
 }
 function supportWasAsked(){
-  return Object.keys(supportAnswers).length > 0 || Object.keys(supportRefusalReasons).length > 0;
+  return Object.keys(supportAnswers).length > 0;
 }
 function afterVisitSequence(){
   supportIndex = 0;
-  if(safetyConcernRecorded()){
-    supportBaseVisit = Object.keys(visitRejectionReasons).find(key => visitRejectionReasons[key].includes('safety_concern')) || threshold;
-    current = 9;
-    renderStep();
-    return;
-  }
-  current = 11;
+  current = supportMode ? 9 : 10;
   renderStep();
 }
 function renderSupportQuestion(){
@@ -1374,16 +1349,54 @@ function renderSupportQuestion(){
   const key = options[supportIndex];
   document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
   document.getElementById('supportQuestion').textContent = supportLabels[key];
-  document.getElementById('supportDescription').textContent = '通院だけでは安全面が不安な場合、この条件なら前向きに考えられるかを伺います。';
+  const choices = document.getElementById('supportChoices');
+  if(supportMode === 'accepted_addon'){
+    document.getElementById('supportDescription').textContent = 'この通院条件は前向きに考えられる場合に、訪問看護が加わると服用判断がどう変わるかを伺います。';
+    choices.innerHTML = `
+      <p class="question">訪問看護が加わると、クロザピン服用への気持ちはどう変わりますか？</p>
+      <div class="seg">
+        <label><input type="radio" name="support_current" value="positive"> より前向きになる</label>
+        <label><input type="radio" name="support_current" value="neutral"> あまり変わらない</label>
+        <label><input type="radio" name="support_current" value="negative"> むしろ前向きに考えにくくなる</label>
+        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
+      </div>
+      <p class="small">選択すると次へ進みます。</p>
+    `;
+  } else {
+    document.getElementById('supportDescription').textContent = 'この通院頻度だけでは安全面が不安な場合に、訪問看護が加われば前向きに考えられるかを伺います。';
+    choices.innerHTML = `
+      <p class="question">この条件ならクロザピン服用を前向きに考えたいですか？</p>
+      <div class="seg">
+        <label><input type="radio" name="support_current" value="accepted"> はい</label>
+        <label><input type="radio" name="support_current" value="refused"> いいえ</label>
+        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
+      </div>
+      <p class="small">選択すると次へ進みます。</p>
+    `;
+  }
+  document.querySelectorAll('input[name="support_current"]').forEach(input => {
+    input.checked = supportAnswers[key] === input.value;
+    input.onchange = () => answerSupport(input.value);
+  });
 }
-function answerSupport(accepted){
+function answerSupport(answer){
   resetAfterSupport();
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
-  supportAnswers[key] = accepted ? 'accepted' : 'refused';
-  if(accepted){
+  supportAnswers[key] = answer;
+  if(supportMode === 'safety_conversion' && answer === 'accepted'){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 11; renderStep(); return;
+    current = 10; renderStep(); return;
+  }
+  if(supportIndex < options.length - 1){
+    supportIndex++;
+    renderSupportQuestion();
+    return;
+  }
+  if(supportMode === 'accepted_addon'){
+    document.getElementById('supportSummary').textContent = '訪問看護追加の影響を回答済み';
+  } else {
+    document.getElementById('supportSummary').textContent = '訪問看護追加でも前向きに考えにくい/不明';
   }
   current = 10; renderStep();
 }
@@ -1393,32 +1406,8 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = 8; renderStep();
-}
-function renderSupportReason(){
-  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
-  const key = options[supportIndex];
-  document.getElementById('supportReasonLabel').textContent = supportLabels[key];
-  document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => {
-    input.checked = supportRefusalReasons[key] === input.value;
-  });
-}
-function saveSupportReason(){
-  const reason = document.querySelector('input[name="support_refusal_reason"]:checked')?.value;
-  if(!reason){ alert('1つ選んでください。'); return; }
-  resetAfterSupportReason();
-  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
-  const key = options[supportIndex];
-  supportRefusalReasons[key] = reason;
-  if(reason === 'still_safety_concern' && supportIndex < options.length - 1){
-    supportIndex++;
-    current = 9; renderStep(); return;
-  }
-  document.getElementById('supportSummary').textContent = `${supportLabels[key]}でも前向きに考えにくい（理由: ${supportRefusalLabels[reason]}）`;
-  current = 11; renderStep();
-}
-function prevSupportReason(){
-  current = 9; renderStep();
+  current = supportMode === 'accepted_addon' ? 7 : 8;
+  renderStep();
 }
 function clearChecked(name){
   document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = false);
@@ -1459,24 +1448,18 @@ function resetAfterVisit(){
 function resetAfterVisitReason(){
   supportIndex = 0;
   supportBaseVisit = null;
+  supportMode = null;
   Object.keys(supportAnswers).forEach(key => delete supportAnswers[key]);
-  Object.keys(supportRefusalReasons).forEach(key => delete supportRefusalReasons[key]);
   document.getElementById('supportSummary').textContent = '該当なし/未回答';
-  clearChecked('support_refusal_reason');
-  resetAfterSupportReason();
+  clearChecked('support_current');
 }
 function resetAfterSupport(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'] || [];
   const key = options[supportIndex];
   if(key){
     delete supportAnswers[key];
-    delete supportRefusalReasons[key];
   }
-  clearChecked('support_refusal_reason');
-  resetAfterSupportReason();
-}
-function resetAfterSupportReason(){
-  clearChecked('support_refusal_reason');
+  clearChecked('support_current');
 }
 function resetInfoAnswers(){
   sideEffectIndex = 0;
