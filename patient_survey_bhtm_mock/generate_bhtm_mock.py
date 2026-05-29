@@ -118,6 +118,30 @@ def sigmoid(x: float) -> float:
 
 def simulate(version: int) -> dict[str, list[dict[str, str]]]:
     n = 180
+    n_physicians = 48
+    physicians: list[dict[str, str]] = []
+    for j in range(1, n_physicians + 1):
+        years = max(2, min(36, int(RNG.normalvariate(13, 7))))
+        initiations = max(0, int(RNG.expovariate(1 / 4.5) + (3 if years > 15 else 0)))
+        current_clozapine = max(0, int(RNG.expovariate(1 / 3.2) + (2 if initiations >= 5 else 0)))
+        specialist = years >= 6 and RNG.random() < 0.78
+        designated = years >= 5 and RNG.random() < 0.72
+        outpatient_recommendation_rate = min(0.95, max(0.05, RNG.normalvariate(0.45 + 0.012 * initiations, 0.16)))
+        stably_unwell_reason_rate = min(0.85, max(0.02, RNG.normalvariate(0.28 - 0.006 * initiations, 0.12)))
+        expected_refusal_reason_rate = min(0.90, max(0.05, RNG.normalvariate(0.42 - 0.004 * current_clozapine, 0.14)))
+        physicians.append(
+            {
+                "physician_id": f"D{j:02d}",
+                "psychiatry_experience_years": str(years),
+                "psychiatry_specialist": str(int(specialist)),
+                "designated_mental_health_physician": str(int(designated)),
+                "clozapine_initiation_cases": str(initiations),
+                "current_clozapine_patients": str(current_clozapine),
+                "outpatient_recommendation_rate": f"{outpatient_recommendation_rate:.3f}",
+                "stably_unwell_reason_rate": f"{stably_unwell_reason_rate:.3f}",
+                "expected_refusal_reason_rate": f"{expected_refusal_reason_rate:.3f}",
+            }
+        )
     participants: list[dict[str, str]] = []
     vignette: list[dict[str, str]] = []
     threshold: list[dict[str, str]] = []
@@ -125,6 +149,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
     safety: list[dict[str, str]] = []
 
     for i in range(1, n + 1):
+        physician = physicians[(i - 1) % n_physicians]
         target = "TRS適格候補" if i <= 86 else "広い未使用外来患者"
         unmet = RNG.random() < (0.72 if target == "TRS適格候補" else 0.46)
         past_refusal = RNG.random() < 0.16
@@ -138,6 +163,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
+                "physician_id": physician["physician_id"],
                 "target_group": target,
                 "clinician_mgaf_function": str(mgaf_function),
                 "response_frame": response_frame,
@@ -242,11 +268,24 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         # defined by accepting at least one concrete outpatient visit-frequency
         # condition, not by an abstract outpatient yes/no item.
         vignette[-1]["outpatient_asked_accept"] = str(int(th != "NONE"))
-        physician_expect = RNG.random() < (0.30 + 0.20 * unmet - 0.10 * past_refusal)
+        low_experience = int(physician["clozapine_initiation_cases"]) < 3
+        stably_style = float(physician["stably_unwell_reason_rate"]) > 0.30
+        refusal_style = float(physician["expected_refusal_reason_rate"]) > 0.45
+        physician_expect_prob = (
+            0.25
+            + 0.20 * unmet
+            - 0.10 * past_refusal
+            + 0.20 * float(physician["outpatient_recommendation_rate"])
+            - 0.10 * low_experience
+            - 0.08 * stably_style
+            - 0.07 * refusal_style
+        )
+        physician_expect = RNG.random() < min(0.85, max(0.05, physician_expect_prob))
         patient_accept_outpatient = th != "NONE" or support_accept_any
         gap.append(
             {
                 "participant_id": f"P{i:03d}",
+                "physician_id": physician["physician_id"],
                 "physician_expected_outpatient_acceptance": str(int(physician_expect)),
                 "patient_outpatient_acceptance": str(int(patient_accept_outpatient)),
             }
@@ -262,6 +301,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         safety.append({"participant_id": f"P{i:03d}", "safety_study_interest": interest})
 
     return {
+        "physicians": physicians,
         "participants": participants,
         "vignette_responses": vignette,
         "threshold_responses": threshold,
@@ -599,7 +639,7 @@ def univariate_or(exposed: list[bool], outcome: list[bool]) -> tuple[float, floa
 
 
 def forest_or_svg(path: Path, title: str, rows: list[dict[str, str | float | int]]) -> None:
-    width, height = 980, 92 + 44 * len(rows)
+    width, height = 1040, 92 + 42 * len(rows)
     left, top, right, bottom = 310, 58, 230, 54
     plot_w = width - left - right
     xmin, xmax = 0.25, 4.0
@@ -616,7 +656,11 @@ def forest_or_svg(path: Path, title: str, rows: list[dict[str, str | float | int
         parts.append(f'<line x1="{x:.1f}" y1="{top-10}" x2="{x:.1f}" y2="{height-bottom}" stroke="{stroke}" stroke-width="{1.4 if tick == 1 else 1}"/>')
         parts.append(f'<text x="{x:.1f}" y="{height-22}" text-anchor="middle" class="axis">{tick:g}</text>')
     for i, row in enumerate(rows):
-        y = top + i * 44
+        y = top + i * 42
+        if row.get("header"):
+            parts.append(f'<text x="{left-12}" y="{y+6}" text-anchor="end" class="label">{esc(str(row["label"]))}</text>')
+            parts.append(f'<line x1="{left}" y1="{y+12}" x2="{width-right}" y2="{y+12}" stroke="#d8dee4"/>')
+            continue
         label = str(row["label"])
         orv = float(row["or"])
         lo = float(row["lo"])
@@ -704,6 +748,7 @@ def esc(s: str) -> str:
 
 def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[str, str]:
     fig_paths: dict[str, str] = {}
+    physicians = {r["physician_id"]: r for r in data["physicians"]}
     participants = {r["participant_id"]: r for r in data["participants"]}
     vignette = data["vignette_responses"]
     threshold = data["threshold_responses"]
@@ -820,12 +865,26 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         ("有効性は十分（4以上）", [int(threshold_by_id[pid]["efficacy_sufficiency"]) >= 4 for pid in ids]),
         ("過去拒否記載あり", [participants[pid]["past_clozapine_refusal_documented"] == "あり" for pid in ids]),
     ]
-    or_rows: list[dict[str, str | float | int]] = []
+    physician_factor_specs: list[tuple[str, list[bool]]] = [
+        ("精神科経験15年以上", [int(physicians[participants[pid]["physician_id"]]["psychiatry_experience_years"]) >= 15 for pid in ids]),
+        ("精神科専門医", [physicians[participants[pid]["physician_id"]]["psychiatry_specialist"] == "1" for pid in ids]),
+        ("精神保健指定医", [physicians[participants[pid]["physician_id"]]["designated_mental_health_physician"] == "1" for pid in ids]),
+        ("クロザピン導入3例以上", [int(physicians[participants[pid]["physician_id"]]["clozapine_initiation_cases"]) >= 3 for pid in ids]),
+        ("現在担当クロザピン患者3名以上", [int(physicians[participants[pid]["physician_id"]]["current_clozapine_patients"]) >= 3 for pid in ids]),
+        ("医師の外来導入推奨率が高い", [float(physicians[participants[pid]["physician_id"]]["outpatient_recommendation_rate"]) >= 0.50 for pid in ids]),
+        ("stably unwell理由選択率が高い", [float(physicians[participants[pid]["physician_id"]]["stably_unwell_reason_rate"]) >= 0.30 for pid in ids]),
+        ("患者拒否見込み理由選択率が高い", [float(physicians[participants[pid]["physician_id"]]["expected_refusal_reason_rate"]) >= 0.45 for pid in ids]),
+    ]
+    or_rows: list[dict[str, str | float | int]] = [{"label": "A. 患者要因", "header": 1}]
     for label, exposed in factor_specs:
         orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
         or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
+    or_rows.append({"label": "B. 医師要因", "header": 1})
+    for label, exposed in physician_factor_specs:
+        orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
+        or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
     p = FIG / f"bhtm_v{version}_fig8_underestimation_factors.svg"
-    forest_or_svg(p, "図8. 医師が外来導入受容性を過小評価しやすい患者特徴", or_rows)
+    forest_or_svg(p, "図8. 医師が外来導入受容性を過小評価しやすい患者・医師要因", or_rows)
     fig_paths["fig8"] = rel(p)
     return fig_paths
 
@@ -872,7 +931,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
         "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
-        "fig8": "図7の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する因子を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像を探索的に記述する目的で置く。",
+        "fig8": "図7の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する患者要因と医師要因を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像と、見落としが起きやすい医師側の判断スタイルを探索的に記述する目的で置く。医師要因は臨床家調査と患者調査を主治医単位でリンクできる場合に解析する。",
     }
     links = """
       <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>
