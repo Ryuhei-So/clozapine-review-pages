@@ -677,7 +677,7 @@ def questionnaire_html(version: int) -> str:
         <div class="seg">
           <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
           <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
-          <label><input type="radio" name="side_effect_current" value="3"> 3. どちらともいえない</label>
+          <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げになる</label>
           <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
           <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
         </div>
