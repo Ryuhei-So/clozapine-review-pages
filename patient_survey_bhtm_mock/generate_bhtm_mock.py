@@ -50,6 +50,7 @@ VERSIONS = {
         "label": "v5: 最終候補",
         "focus": "科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。",
         "improvements": [
+            "臨床家調査のmGAF-Fに基づき、mGAF-F 40以下は現在の状態で回答、41以上は将来TRS相当となった場合の仮想シナリオで回答する2層構造にした。",
             "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
             "通院のみ条件を拒否した場合は理由を記録し、安全面不安が含まれる場合だけ訪問看護追加モジュールへ進む。",
             "通院頻度ごとに拒否理由を集計し、安全面不安を含む拒否者の中で訪問看護追加がどの程度受容性を改善するかを示す。",
@@ -128,10 +129,16 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         past_refusal = RNG.random() < 0.16
         subjective_distress = RNG.random() < (0.68 if unmet else 0.30)
         age = max(21, min(78, int(RNG.normalvariate(48 if target == "TRS適格候補" else 44, 12))))
+        mgaf_function = max(18, min(75, int(RNG.normalvariate(36 if target == "TRS適格候補" else 50, 7))))
+        if target == "広い未使用外来患者" and not unmet:
+            mgaf_function = max(mgaf_function, int(RNG.normalvariate(55, 5)))
+        response_frame = "actual_current" if mgaf_function <= 40 else "hypothetical_future"
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
                 "target_group": target,
+                "clinician_mgaf_function": str(mgaf_function),
+                "response_frame": response_frame,
                 "age": str(age),
                 "sex": RNG.choice(["女性", "男性", "回答しない"]),
                 "current_unmet_need": "あり" if unmet else "なし/軽度",
@@ -148,16 +155,19 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         outpatient_now = RNG.random() < p_outpatient_now
         inpatient_worse = RNG.random() < p_inpatient_worse
         outpatient_worse = RNG.random() < p_outpatient_worse
-        method_inpatient_accept = inpatient_now
-        method_outpatient_accept = outpatient_now
+        method_inpatient_accept = inpatient_now if response_frame == "actual_current" else inpatient_worse
+        method_outpatient_accept = outpatient_now if response_frame == "actual_current" else outpatient_worse
         clozapine_accept = method_inpatient_accept or method_outpatient_accept
         vignette.append(
             {
                 "participant_id": f"P{i:03d}",
+                "response_frame": response_frame,
                 "inpatient_now_accept": str(int(inpatient_now)),
                 "outpatient_now_accept": str(int(outpatient_now)),
                 "inpatient_worse_accept": str(int(inpatient_worse)),
                 "outpatient_worse_accept": str(int(outpatient_worse)),
+                "inpatient_asked_accept": str(int(method_inpatient_accept)),
+                "outpatient_asked_accept": str(int(method_outpatient_accept)),
             }
         )
 
@@ -417,6 +427,58 @@ def method_pattern_svg(path: Path, title: str, counts: Counter) -> None:
     bar_svg(path, title, [label for _, label in labels], [counts[key] for key, _ in labels], "人数")
 
 
+def method_pattern_by_frame_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
+    width, height = 960, 420
+    left, top, right, bottom = 230, 68, 42, 96
+    plot_w = width - left - right
+    row_h = 86
+    labels = [
+        ("outpatient_only", "入院は難しいが外来なら前向き"),
+        ("both", "入院・外来のどちらも前向き"),
+        ("inpatient_only", "入院なら前向き"),
+        ("neither", "どちらも前向きに考えにくい"),
+    ]
+    colors = {
+        "outpatient_only": "#2f7d8c",
+        "both": "#0f766e",
+        "inpatient_only": "#9aa6b2",
+        "neither": "#d8dee4",
+    }
+    row_labels = {
+        "actual_current": "現在の状態で回答",
+        "hypothetical_future": "将来TRS相当を想定",
+    }
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, key in enumerate(["actual_current", "hypothetical_future"]):
+        counts = rows.get(key, Counter())
+        total = sum(counts.values())
+        y = top + i * row_h
+        parts.append(f'<text x="{left-12}" y="{y+27}" text-anchor="end" class="label">{esc(row_labels[key])}</text>')
+        x = left
+        if total == 0:
+            parts.append(f'<text x="{left}" y="{y+27}" class="axis">該当者なし</text>')
+            continue
+        for value_key, label in labels:
+            val = counts.get(value_key, 0)
+            w = plot_w * val / total
+            if w > 0:
+                parts.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="42" fill="{colors[value_key]}"/>')
+                if w > 42:
+                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+28}" text-anchor="middle" class="inside">{val}</text>')
+            x += w
+        parts.append(f'<text x="{left+plot_w+8}" y="{y+27}" class="num">n={total}</text>')
+    lx, ly = left, height - 76
+    for key, label in labels:
+        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[key]}"/>')
+        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(label)}</text>')
+        ly += 24
+        if ly > height - 24:
+            ly = height - 76
+            lx += 350
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def visit_reason_by_frequency_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
     width, height = 940, 430
     left, top, right, bottom = 210, 66, 52, 86
@@ -635,24 +697,25 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     threshold = data["threshold_responses"]
     gap = data["physician_patient_gap"]
 
-    method_counts = Counter()
+    method_counts_by_frame: dict[str, Counter] = {"actual_current": Counter(), "hypothetical_future": Counter()}
     for r in vignette:
-        inpatient = r["inpatient_now_accept"] == "1"
-        outpatient = r["outpatient_now_accept"] == "1"
+        inpatient = r["inpatient_asked_accept"] == "1"
+        outpatient = r["outpatient_asked_accept"] == "1"
         if inpatient and outpatient:
-            method_counts["both"] += 1
+            key = "both"
         elif inpatient:
-            method_counts["inpatient_only"] += 1
+            key = "inpatient_only"
         elif outpatient:
-            method_counts["outpatient_only"] += 1
+            key = "outpatient_only"
         else:
-            method_counts["neither"] += 1
+            key = "neither"
+        method_counts_by_frame[r["response_frame"]][key] += 1
     p = FIG / f"bhtm_v{version}_fig1_clozapine_accept.svg"
-    method_pattern_svg(p, "図1. 入院導入・外来導入の受容パターン", method_counts)
+    method_pattern_by_frame_svg(p, "図1. 回答前提別にみた入院導入・外来導入の受容パターン", method_counts_by_frame)
     fig_paths["fig1"] = rel(p)
 
-    inpatient_accept_ids = {r["participant_id"] for r in vignette if r["inpatient_now_accept"] == "1"}
-    inpatient_decline_ids = {r["participant_id"] for r in vignette if r["inpatient_now_accept"] == "0"}
+    inpatient_accept_ids = {r["participant_id"] for r in vignette if r["inpatient_asked_accept"] == "1"}
+    inpatient_decline_ids = {r["participant_id"] for r in vignette if r["inpatient_asked_accept"] == "0"}
     group_counts: dict[str, Counter] = {
         "入院導入を前向きに考える": Counter(r["threshold"] for r in threshold if r["participant_id"] in inpatient_accept_ids),
         "入院導入を前向きに考えにくい": Counter(r["threshold"] for r in threshold if r["participant_id"] in inpatient_decline_ids),
@@ -738,10 +801,15 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
     target = Counter(r["target_group"] for r in participants)
     unmet = Counter(r["current_unmet_need"] for r in participants)
     distress = Counter(r["subjective_distress"] for r in participants)
+    frame = Counter(r["response_frame"] for r in participants)
+    mgaf_le40 = sum(1 for r in participants if int(r["clinician_mgaf_function"]) <= 40)
     rows = [
         ("解析対象者", f"{n}"),
         ("TRS適格候補", f"{target['TRS適格候補']} ({target['TRS適格候補']/n*100:.1f}%)"),
         ("広い未使用外来患者", f"{target['広い未使用外来患者']} ({target['広い未使用外来患者']/n*100:.1f}%)"),
+        ("臨床家評価mGAF-F 40以下", f"{mgaf_le40} ({mgaf_le40/n*100:.1f}%)"),
+        ("現在の状態で回答", f"{frame['actual_current']} ({frame['actual_current']/n*100:.1f}%)"),
+        ("将来TRS相当を想定して回答", f"{frame['hypothetical_future']} ({frame['hypothetical_future']/n*100:.1f}%)"),
         ("現在の治療で残る困りごとあり", f"{unmet['あり']} ({unmet['あり']/n*100:.1f}%)"),
         ("主観的困りごと/つらさあり", f"{distress['あり']} ({distress['あり']/n*100:.1f}%)"),
     ]
@@ -752,7 +820,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     v = VERSIONS[version]
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7"]
     reasons = {
-        "fig1": "入院導入と外来導入の受容性を同じ前提で比較する中核図。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、特に“入院は難しいが外来なら前向き”という当局向けにも重要な潜在ニーズを可視化する。",
+        "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
         "fig4": "各通院頻度で安全面不安を含む回答をした人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
@@ -844,11 +912,10 @@ def questionnaire_html(version: int) -> str:
       </section>
 
       <section class="step" data-step="2">
-        <h2>現在の治療への感じ方</h2>
-        <p>現在の治療について、いちばん近いものを選んでください。</p>
-        <label class="choice"><input type="radio" name="current_need" value="low"> 症状による困りごとは少ない</label>
-        <label class="choice"><input type="radio" name="current_need" value="some"> 症状による困りごとや生活のしづらさがいくらか残っている</label>
-        <label class="choice"><input type="radio" name="current_need" value="large"> 症状による困りごとや生活のしづらさが大きい</label>
+        <h2>回答の前提</h2>
+        <p>このデモでは、回答する前提を選んで確認できます。実際の研究では、事前の臨床家調査での評価に基づいて前提を設定します。</p>
+        <label class="choice"><input type="radio" name="response_frame" value="actual_current"> 現在の状態で答える（臨床家評価でmGAF-F 40以下など、クロザピン適応相当候補）</label>
+        <label class="choice"><input type="radio" name="response_frame" value="hypothetical_future"> もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合として答える</label>
         <div id="scenarioBox" class="notice hidden"></div>
         <p class="small">選択すると次へ進みます。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
@@ -1001,7 +1068,7 @@ let threshold = null;
 let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
-let assumedState = null;
+let responseFrame = null;
 let reasonSource = null;
 let currentRejectedVisit = null;
 let supportBaseVisit = null;
@@ -1057,7 +1124,7 @@ function renderStep(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
-  document.querySelectorAll('input[name="current_need"]').forEach(input => input.addEventListener('change', nextNeed));
+  document.querySelectorAll('input[name="response_frame"]').forEach(input => input.addEventListener('change', nextResponseFrame));
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
   document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
@@ -1076,8 +1143,8 @@ function prev(){
   if(current > 0){
     const target = current - 1;
     if(target === 2){
-      clearChecked('current_need');
-      assumedState = null;
+      clearChecked('response_frame');
+      responseFrame = null;
       const box = document.getElementById('scenarioBox');
       box.textContent = '';
       box.classList.add('hidden');
@@ -1100,19 +1167,14 @@ function prev(){
     renderStep();
   }
 }
-function nextNeed(){
-  const val = document.querySelector('input[name="current_need"]:checked')?.value;
+function nextResponseFrame(){
+  const val = document.querySelector('input[name="response_frame"]:checked')?.value;
   const box = document.getElementById('scenarioBox');
-  if(!val){ box.textContent = 'いちばん近いものを選んでください。'; box.classList.remove('hidden'); return; }
+  if(!val){ box.textContent = '回答の前提を選んでください。'; box.classList.remove('hidden'); return; }
   resetAfterNeed();
-  if(val === 'low'){
-    assumedState = Math.random() < 0.5 ? 'some' : 'large';
-    box.textContent = scenarioText();
-    box.classList.remove('hidden');
-  } else {
-    assumedState = val;
-    box.classList.add('hidden');
-  }
+  responseFrame = val;
+  box.textContent = scenarioText();
+  box.classList.remove('hidden');
   next();
 }
 function renderSideEffectQuestion(){
@@ -1374,8 +1436,8 @@ function resetAfterSupportReason(){
   clearChecked('side_effect_current');
 }
 function scenarioText(){
-  if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';
-  if(assumedState === 'large') return '以下では「症状による困りごとや生活のしづらさが大きい」状態で、主治医からクロザピンを勧められたと想像してください。';
+  if(responseFrame === 'actual_current') return '以下では、現在のあなたの状態で、主治医からクロザピンを勧められた場面を想像してください。';
+  if(responseFrame === 'hypothetical_future') return '以下では、もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合を想像してください。';
   return '以下では、主治医からクロザピンを勧められた場面を想像してください。';
 }
 function finish(){

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="820" height="440" viewBox="0 0 820 440" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img">
 <style>
 .title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 .label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
@@ -8,19 +8,32 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="240" y="30" class="title">図1. 入院導入・外来導入の受容パターン</text>
-<text x="228" y="103.9" text-anchor="end" class="label">入院は難しいが外来なら前向き</text>
-<rect x="240" y="72.8" width="536.0" height="45.9" fill="#2f7d8c"/>
-<text x="784.0" y="103.9" class="num">91</text>
-<text x="228" y="185.9" text-anchor="end" class="label">入院・外来のどちらも前向き</text>
-<rect x="240" y="154.8" width="159.0" height="45.9" fill="#2f7d8c"/>
-<text x="407.0" y="185.9" class="num">27</text>
-<text x="228" y="267.9" text-anchor="end" class="label">入院なら前向き</text>
-<rect x="240" y="236.8" width="111.9" height="45.9" fill="#2f7d8c"/>
-<text x="359.9" y="267.9" class="num">19</text>
-<text x="228" y="349.9" text-anchor="end" class="label">どちらも前向きに考えにくい</text>
-<rect x="240" y="318.8" width="253.3" height="45.9" fill="#2f7d8c"/>
-<text x="501.3" y="349.9" class="num">43</text>
-<line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
-<text x="508.0" y="424" text-anchor="middle" class="axis">人数</text>
+<text x="230" y="30" class="title">図1. 回答前提別にみた入院導入・外来導入の受容パターン</text>
+<text x="218" y="95" text-anchor="end" class="label">現在の状態で回答</text>
+<rect x="230.0" y="68" width="370.5" height="42" fill="#2f7d8c"/>
+<text x="415.2" y="96" text-anchor="middle" class="inside">35</text>
+<rect x="600.5" y="68" width="158.8" height="42" fill="#0f766e"/>
+<text x="679.8" y="96" text-anchor="middle" class="inside">15</text>
+<rect x="759.2" y="68" width="10.6" height="42" fill="#9aa6b2"/>
+<rect x="769.8" y="68" width="148.2" height="42" fill="#d8dee4"/>
+<text x="843.9" y="96" text-anchor="middle" class="inside">14</text>
+<text x="926" y="95" class="num">n=65</text>
+<text x="218" y="181" text-anchor="end" class="label">将来TRS相当を想定</text>
+<rect x="230.0" y="154" width="257.3" height="42" fill="#2f7d8c"/>
+<text x="358.6" y="182" text-anchor="middle" class="inside">43</text>
+<rect x="487.3" y="154" width="293.1" height="42" fill="#0f766e"/>
+<text x="633.8" y="182" text-anchor="middle" class="inside">49</text>
+<rect x="780.4" y="154" width="53.8" height="42" fill="#9aa6b2"/>
+<text x="807.3" y="182" text-anchor="middle" class="inside">9</text>
+<rect x="834.2" y="154" width="83.8" height="42" fill="#d8dee4"/>
+<text x="876.1" y="182" text-anchor="middle" class="inside">14</text>
+<text x="926" y="181" class="num">n=115</text>
+<rect x="230" y="344" width="14" height="14" fill="#2f7d8c"/>
+<text x="250" y="356" class="legend">入院は難しいが外来なら前向き</text>
+<rect x="230" y="368" width="14" height="14" fill="#0f766e"/>
+<text x="250" y="380" class="legend">入院・外来のどちらも前向き</text>
+<rect x="230" y="392" width="14" height="14" fill="#9aa6b2"/>
+<text x="250" y="404" class="legend">入院なら前向き</text>
+<rect x="580" y="344" width="14" height="14" fill="#d8dee4"/>
+<text x="600" y="356" class="legend">どちらも前向きに考えにくい</text>
 </svg>

@@ -51,11 +51,10 @@
       </section>
 
       <section class="step" data-step="2">
-        <h2>現在の治療への感じ方</h2>
-        <p>現在の治療について、いちばん近いものを選んでください。</p>
-        <label class="choice"><input type="radio" name="current_need" value="low"> 症状による困りごとは少ない</label>
-        <label class="choice"><input type="radio" name="current_need" value="some"> 症状による困りごとや生活のしづらさがいくらか残っている</label>
-        <label class="choice"><input type="radio" name="current_need" value="large"> 症状による困りごとや生活のしづらさが大きい</label>
+        <h2>回答の前提</h2>
+        <p>このデモでは、回答する前提を選んで確認できます。実際の研究では、事前の臨床家調査での評価に基づいて前提を設定します。</p>
+        <label class="choice"><input type="radio" name="response_frame" value="actual_current"> 現在の状態で答える（臨床家評価でmGAF-F 40以下など、クロザピン適応相当候補）</label>
+        <label class="choice"><input type="radio" name="response_frame" value="hypothetical_future"> もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合として答える</label>
         <div id="scenarioBox" class="notice hidden"></div>
         <p class="small">選択すると次へ進みます。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
@@ -196,7 +195,7 @@ let threshold = null;
 let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
-let assumedState = null;
+let responseFrame = null;
 let reasonSource = null;
 let currentRejectedVisit = null;
 let supportBaseVisit = null;
@@ -252,7 +251,7 @@ function renderStep(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
-  document.querySelectorAll('input[name="current_need"]').forEach(input => input.addEventListener('change', nextNeed));
+  document.querySelectorAll('input[name="response_frame"]').forEach(input => input.addEventListener('change', nextResponseFrame));
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
   document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
@@ -271,8 +270,8 @@ function prev(){
   if(current > 0){
     const target = current - 1;
     if(target === 2){
-      clearChecked('current_need');
-      assumedState = null;
+      clearChecked('response_frame');
+      responseFrame = null;
       const box = document.getElementById('scenarioBox');
       box.textContent = '';
       box.classList.add('hidden');
@@ -295,19 +294,14 @@ function prev(){
     renderStep();
   }
 }
-function nextNeed(){
-  const val = document.querySelector('input[name="current_need"]:checked')?.value;
+function nextResponseFrame(){
+  const val = document.querySelector('input[name="response_frame"]:checked')?.value;
   const box = document.getElementById('scenarioBox');
-  if(!val){ box.textContent = 'いちばん近いものを選んでください。'; box.classList.remove('hidden'); return; }
+  if(!val){ box.textContent = '回答の前提を選んでください。'; box.classList.remove('hidden'); return; }
   resetAfterNeed();
-  if(val === 'low'){
-    assumedState = Math.random() < 0.5 ? 'some' : 'large';
-    box.textContent = scenarioText();
-    box.classList.remove('hidden');
-  } else {
-    assumedState = val;
-    box.classList.add('hidden');
-  }
+  responseFrame = val;
+  box.textContent = scenarioText();
+  box.classList.remove('hidden');
   next();
 }
 function renderSideEffectQuestion(){
@@ -569,8 +563,8 @@ function resetAfterSupportReason(){
   clearChecked('side_effect_current');
 }
 function scenarioText(){
-  if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';
-  if(assumedState === 'large') return '以下では「症状による困りごとや生活のしづらさが大きい」状態で、主治医からクロザピンを勧められたと想像してください。';
+  if(responseFrame === 'actual_current') return '以下では、現在のあなたの状態で、主治医からクロザピンを勧められた場面を想像してください。';
+  if(responseFrame === 'hypothetical_future') return '以下では、もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合を想像してください。';
   return '以下では、主治医からクロザピンを勧められた場面を想像してください。';
 }
 function finish(){
