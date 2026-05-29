@@ -95,16 +95,6 @@
         <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="safety_concern"> この通院回数だけでは安全面が不安</label>
-        <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="clozapine_unwilling"> クロザピン自体を使いたくない</label>
-        <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="other_unknown"> その他・わからない</label>
-        <p class="subq">主な理由を1つ選んでください。</p>
-        <div class="seg">
-          <label><input type="radio" name="visit_primary_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
-          <label><input type="radio" name="visit_primary_reason" value="safety_concern"> 安全面が不安</label>
-          <label><input type="radio" name="visit_primary_reason" value="visit_burden_and_safety_concern"> 通院負担も安全面の不安もある</label>
-          <label><input type="radio" name="visit_primary_reason" value="clozapine_unwilling"> クロザピン自体を使いたくない</label>
-          <label><input type="radio" name="visit_primary_reason" value="other_unknown"> その他・わからない</label>
-        </div>
         <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=4; renderStep()">前へ</button></div>
       </section>
 
@@ -174,6 +164,7 @@ let supportIndex = 0;
 let assumedState = null;
 let reasonSource = null;
 let currentRejectedVisit = null;
+let supportBaseVisit = null;
 const sideEffects = [
   ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
   ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -211,7 +202,6 @@ const supportRefusalLabels = {
 const supportAnswers = {};
 const supportRefusalReasons = {};
 const visitRejectionReasons = {};
-const visitPrimaryReasons = {};
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -238,12 +228,28 @@ function prev(){
   if(current === 8 && !supportWasAsked()){ current = 4; renderStep(); return; }
   if(current === 6){ current = 5; renderStep(); return; }
   if(current === 5){ current = 4; renderStep(); return; }
-  if(current > 0){ current--; renderStep(); }
+  if(current > 0){
+    const target = current - 1;
+    if(target === 2){
+      clearChecked('current_need');
+      assumedState = null;
+      const box = document.getElementById('scenarioBox');
+      box.textContent = '';
+      box.classList.add('hidden');
+      resetAfterNeed();
+    } else if(target === 3){
+      clearChecked('clozapine_accept');
+      resetAfterClozapine();
+    }
+    current = target;
+    renderStep();
+  }
 }
 function nextNeed(){
   const val = document.querySelector('input[name="current_need"]:checked')?.value;
   const box = document.getElementById('scenarioBox');
   if(!val){ box.textContent = 'いちばん近いものを選んでください。'; box.classList.remove('hidden'); return; }
+  resetAfterNeed();
   if(val === 'low'){
     assumedState = Math.random() < 0.5 ? 'some' : 'large';
     box.textContent = scenarioText();
@@ -291,6 +297,7 @@ function prevSideEffect(){
 function nextClozapine(){
   const val = document.querySelector('input[name="clozapine_accept"]:checked')?.value;
   if(!val){ alert('はい、または、いいえを選んでください。'); return; }
+  resetAfterClozapine();
   if(val === 'no'){
     reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
@@ -305,6 +312,7 @@ function renderVisitQuestion(){
   document.getElementById('visitQuestion').textContent = label;
 }
 function answerVisit(accepted){
+  resetAfterVisit();
   if(accepted){
     threshold = visitQuestions[visitIndex][0];
     setThresholdSummary();
@@ -333,27 +341,15 @@ function renderVisitReason(){
   document.querySelectorAll('input[name="visit_rejection_reason"]').forEach(input => {
     input.checked = (visitRejectionReasons[currentRejectedVisit] || []).includes(input.value);
   });
-  document.querySelectorAll('input[name="visit_primary_reason"]').forEach(input => {
-    input.checked = visitPrimaryReasons[currentRejectedVisit] === input.value;
-  });
 }
 function saveVisitReason(){
   const reasons = Array.from(document.querySelectorAll('input[name="visit_rejection_reason"]:checked')).map(input => input.value);
-  const primary = document.querySelector('input[name="visit_primary_reason"]:checked')?.value;
   if(reasons.length === 0){ alert('あてはまる理由を1つ以上選んでください。'); return; }
-  if(!primary){ alert('主な理由を1つ選んでください。'); return; }
-  if(primary === 'visit_burden_and_safety_concern'){
-    if(!reasons.includes('visit_burden')) reasons.push('visit_burden');
-    if(!reasons.includes('safety_concern')) reasons.push('safety_concern');
-  } else if(['visit_burden','safety_concern','clozapine_unwilling','other_unknown'].includes(primary) && !reasons.includes(primary)){
-    reasons.push(primary);
-  }
+  resetAfterVisitReason();
   visitRejectionReasons[currentRejectedVisit] = reasons;
-  visitPrimaryReasons[currentRejectedVisit] = primary;
-  if(primary === 'clozapine_unwilling' || reasons.includes('clozapine_unwilling')){
-    threshold = 'NONE';
-    setThresholdSummary();
-    current = 8; renderStep();
+  if(reasons.includes('safety_concern')){
+    supportBaseVisit = currentRejectedVisit;
+    current = 6; renderStep();
     return;
   }
   if(visitIndex < visitQuestions.length - 1){
@@ -374,6 +370,7 @@ function supportWasAsked(){
 function afterVisitSequence(){
   supportIndex = 0;
   if(safetyConcernRecorded()){
+    supportBaseVisit = Object.keys(visitRejectionReasons).find(key => visitRejectionReasons[key].includes('safety_concern')) || threshold;
     current = 6;
     renderStep();
     return;
@@ -382,14 +379,15 @@ function afterVisitSequence(){
   renderStep();
 }
 function renderSupportQuestion(){
-  const options = supportByThreshold[threshold || 'NONE'];
+  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
   document.getElementById('supportQuestion').textContent = supportLabels[key];
   document.getElementById('supportDescription').textContent = '通院だけでは安全面が不安な場合、この条件なら前向きに考えられるかを伺います。';
 }
 function answerSupport(accepted){
-  const options = supportByThreshold[threshold || 'NONE'];
+  resetAfterSupport();
+  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   supportAnswers[key] = accepted ? 'accepted' : 'refused';
   if(accepted){
@@ -407,7 +405,7 @@ function prevSupport(){
   current = 5; renderStep();
 }
 function renderSupportReason(){
-  const options = supportByThreshold[threshold || 'NONE'];
+  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   document.getElementById('supportReasonLabel').textContent = supportLabels[key];
   document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => {
@@ -417,7 +415,8 @@ function renderSupportReason(){
 function saveSupportReason(){
   const reason = document.querySelector('input[name="support_refusal_reason"]:checked')?.value;
   if(!reason){ alert('1つ選んでください。'); return; }
-  const options = supportByThreshold[threshold || 'NONE'];
+  resetAfterSupportReason();
+  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   supportRefusalReasons[key] = reason;
   if(reason === 'still_safety_concern' && supportIndex < options.length - 1){
@@ -429,6 +428,56 @@ function saveSupportReason(){
 }
 function prevSupportReason(){
   current = 6; renderStep();
+}
+function clearChecked(name){
+  document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = false);
+}
+function resetAfterNeed(){
+  clearChecked('clozapine_accept');
+  resetAfterClozapine();
+}
+function resetAfterClozapine(){
+  visitIndex = 0;
+  threshold = null;
+  currentRejectedVisit = null;
+  supportBaseVisit = null;
+  document.getElementById('thresholdSummary').textContent = '未回答';
+  clearChecked('visit_rejection_reason');
+  Object.keys(visitRejectionReasons).forEach(key => delete visitRejectionReasons[key]);
+  resetAfterVisitReason();
+}
+function resetAfterVisit(){
+  const currentVisit = visitQuestions[visitIndex]?.[0];
+  if(currentVisit){
+    delete visitRejectionReasons[currentVisit];
+  }
+  currentRejectedVisit = null;
+  clearChecked('visit_rejection_reason');
+  resetAfterVisitReason();
+}
+function resetAfterVisitReason(){
+  supportIndex = 0;
+  supportBaseVisit = null;
+  Object.keys(supportAnswers).forEach(key => delete supportAnswers[key]);
+  Object.keys(supportRefusalReasons).forEach(key => delete supportRefusalReasons[key]);
+  document.getElementById('supportSummary').textContent = '該当なし/未回答';
+  clearChecked('support_refusal_reason');
+  resetAfterSupportReason();
+}
+function resetAfterSupport(){
+  const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'] || [];
+  const key = options[supportIndex];
+  if(key){
+    delete supportAnswers[key];
+    delete supportRefusalReasons[key];
+  }
+  clearChecked('support_refusal_reason');
+  resetAfterSupportReason();
+}
+function resetAfterSupportReason(){
+  sideEffectIndex = 0;
+  Object.keys(sideEffectAnswers).forEach(key => delete sideEffectAnswers[key]);
+  clearChecked('side_effect_current');
 }
 function scenarioText(){
   if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';

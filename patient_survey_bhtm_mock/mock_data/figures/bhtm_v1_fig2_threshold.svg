@@ -10,14 +10,14 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="190" y="30" class="title">図2. 外来導入burden thresholdの分布</text>
 <text x="178" y="96" text-anchor="end" class="label">全体</text>
-<rect x="190.0" y="68" width="100.2" height="36" fill="#0f766e"/>
-<text x="240.1" y="91" text-anchor="middle" class="inside">27</text>
-<rect x="290.2" y="68" width="233.8" height="36" fill="#2f7d8c"/>
-<text x="407.1" y="91" text-anchor="middle" class="inside">63</text>
-<rect x="524.0" y="68" width="174.4" height="36" fill="#8bbbc3"/>
-<text x="611.2" y="91" text-anchor="middle" class="inside">47</text>
-<rect x="698.4" y="68" width="159.6" height="36" fill="#d8dee4"/>
-<text x="778.2" y="91" text-anchor="middle" class="inside">43</text>
+<rect x="190.0" y="68" width="129.9" height="36" fill="#0f766e"/>
+<text x="254.9" y="91" text-anchor="middle" class="inside">35</text>
+<rect x="319.9" y="68" width="163.3" height="36" fill="#2f7d8c"/>
+<text x="401.5" y="91" text-anchor="middle" class="inside">44</text>
+<rect x="483.2" y="68" width="241.2" height="36" fill="#8bbbc3"/>
+<text x="603.8" y="91" text-anchor="middle" class="inside">65</text>
+<rect x="724.4" y="68" width="133.6" height="36" fill="#d8dee4"/>
+<text x="791.2" y="91" text-anchor="middle" class="inside">36</text>
 <text x="866" y="91" class="num">n=180</text>
 <rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
 <text x="210" y="334" class="legend">週3回通院なら受容</text>

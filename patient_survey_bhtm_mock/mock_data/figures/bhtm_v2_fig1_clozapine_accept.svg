@@ -11,10 +11,10 @@
 <text x="240" y="30" class="title">図1. クロザピン服用自体の受容性</text>
 <text x="228" y="149.8" text-anchor="end" class="label">前向きに考えたい</text>
 <rect x="240" y="87.5" width="536.0" height="91.8" fill="#2f7d8c"/>
-<text x="784.0" y="149.8" class="num">171</text>
+<text x="784.0" y="149.8" class="num">175</text>
 <text x="228" y="313.8" text-anchor="end" class="label">前向きに考えにくい/保留</text>
-<rect x="240" y="251.5" width="28.2" height="91.8" fill="#2f7d8c"/>
-<text x="276.2" y="313.8" class="num">9</text>
+<rect x="240" y="251.5" width="15.3" height="91.8" fill="#2f7d8c"/>
+<text x="263.3" y="313.8" class="num">5</text>
 <line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
 <text x="508.0" y="424" text-anchor="middle" class="axis">人数</text>
 </svg>
