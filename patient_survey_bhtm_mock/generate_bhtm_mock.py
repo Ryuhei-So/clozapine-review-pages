@@ -651,11 +651,14 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     method_pattern_svg(p, "図1. 入院導入・外来導入の受容パターン", method_counts)
     fig_paths["fig1"] = rel(p)
 
-    outpatient_accept_ids = {r["participant_id"] for r in vignette if r["outpatient_now_accept"] == "1"}
-    total_counts = Counter(r["threshold"] for r in threshold if r["participant_id"] in outpatient_accept_ids)
-    group_counts: dict[str, Counter] = {"全体": total_counts}
+    inpatient_accept_ids = {r["participant_id"] for r in vignette if r["inpatient_now_accept"] == "1"}
+    inpatient_decline_ids = {r["participant_id"] for r in vignette if r["inpatient_now_accept"] == "0"}
+    group_counts: dict[str, Counter] = {
+        "入院導入を前向きに考える": Counter(r["threshold"] for r in threshold if r["participant_id"] in inpatient_accept_ids),
+        "入院導入を前向きに考えにくい": Counter(r["threshold"] for r in threshold if r["participant_id"] in inpatient_decline_ids),
+    }
     p = FIG / f"bhtm_v{version}_fig2_threshold.svg"
-    stacked_svg(p, "図2. 外来導入を前向きに考える人でのburden threshold", group_counts)
+    stacked_svg(p, "図2. 入院導入受容性別にみた外来通院頻度threshold", group_counts)
     fig_paths["fig2"] = rel(p)
 
     reason_rows: dict[str, Counter] = {"v3": Counter(), "v2": Counter(), "v1": Counter()}
@@ -750,7 +753,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7"]
     reasons = {
         "fig1": "入院導入と外来導入の受容性を同じ前提で比較する中核図。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、特に“入院は難しいが外来なら前向き”という当局向けにも重要な潜在ニーズを可視化する。",
-        "fig2": "外来導入を前向きに考えた人に限定し、通院頻度をprimary thresholdとして扱う中核図。訪問看護の有無はここでは動かさず、外来導入を受け入れるために必要な初期通院頻度を示す。",
+        "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
         "fig4": "各通院頻度で安全面不安を含む回答をした人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
         "fig5": "訪問看護を追加しても受容に転じない理由を示す図。訪問看護そのものへの抵抗、回数過多、なお残る安全面不安を分けることで、外来導入レジメン改善の方向を整理する。",
@@ -878,6 +881,7 @@ def questionnaire_html(version: int) -> str:
         <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
         <h2>外来で始める場合</h2>
         <p class="scenarioText"></p>
+        <p>前の質問で伺った入院して始める方法とは別に、外来で始める方法について伺います。</p>
         <p>主治医から、入院せず外来でクロザピンを始める方法を勧められたとします。通院、採血、体調確認を続けながら開始します。</p>
         <p class="small">体調に異常があれば、必要時は入院へ切り替えます。</p>
         <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
