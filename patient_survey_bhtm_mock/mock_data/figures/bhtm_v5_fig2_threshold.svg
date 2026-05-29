@@ -10,12 +10,12 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="190" y="30" class="title">図2. 外来導入burden thresholdの分布</text>
 <text x="178" y="96" text-anchor="end" class="label">全体</text>
-<rect x="190.0" y="68" width="100.2" height="36" fill="#0f766e"/>
-<text x="240.1" y="91" text-anchor="middle" class="inside">27</text>
-<rect x="290.2" y="68" width="174.4" height="36" fill="#2f7d8c"/>
-<text x="377.4" y="91" text-anchor="middle" class="inside">47</text>
-<rect x="464.6" y="68" width="252.4" height="36" fill="#8bbbc3"/>
-<text x="590.8" y="91" text-anchor="middle" class="inside">68</text>
+<rect x="190.0" y="68" width="129.9" height="36" fill="#0f766e"/>
+<text x="254.9" y="91" text-anchor="middle" class="inside">35</text>
+<rect x="319.9" y="68" width="230.1" height="36" fill="#2f7d8c"/>
+<text x="434.9" y="91" text-anchor="middle" class="inside">62</text>
+<rect x="550.0" y="68" width="167.0" height="36" fill="#8bbbc3"/>
+<text x="633.5" y="91" text-anchor="middle" class="inside">45</text>
 <rect x="717.0" y="68" width="141.0" height="36" fill="#d8dee4"/>
 <text x="787.5" y="91" text-anchor="middle" class="inside">38</text>
 <text x="866" y="91" class="num">n=180</text>

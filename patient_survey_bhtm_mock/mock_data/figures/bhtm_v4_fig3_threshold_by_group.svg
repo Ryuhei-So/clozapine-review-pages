@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="440" viewBox="0 0 820 440" role="img">
 <style>
 .title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 .label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
@@ -8,33 +8,19 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="190" y="30" class="title">図3. 対象集団別のburden threshold</text>
-<text x="178" y="96" text-anchor="end" class="label">TRS適格候補</text>
-<rect x="190.0" y="68" width="93.2" height="36" fill="#0f766e"/>
-<text x="236.6" y="91" text-anchor="middle" class="inside">12</text>
-<rect x="283.2" y="68" width="248.6" height="36" fill="#2f7d8c"/>
-<text x="407.5" y="91" text-anchor="middle" class="inside">32</text>
-<rect x="531.8" y="68" width="209.7" height="36" fill="#8bbbc3"/>
-<text x="636.6" y="91" text-anchor="middle" class="inside">27</text>
-<rect x="741.5" y="68" width="116.5" height="36" fill="#d8dee4"/>
-<text x="799.7" y="91" text-anchor="middle" class="inside">15</text>
-<text x="866" y="91" class="num">n=86</text>
-<text x="178" y="172" text-anchor="end" class="label">広い未使用外来患者</text>
-<rect x="190.0" y="144" width="56.9" height="36" fill="#0f766e"/>
-<text x="218.4" y="167" text-anchor="middle" class="inside">8</text>
-<rect x="246.9" y="144" width="206.1" height="36" fill="#2f7d8c"/>
-<text x="349.9" y="167" text-anchor="middle" class="inside">29</text>
-<rect x="452.9" y="144" width="270.0" height="36" fill="#8bbbc3"/>
-<text x="588.0" y="167" text-anchor="middle" class="inside">38</text>
-<rect x="723.0" y="144" width="135.0" height="36" fill="#d8dee4"/>
-<text x="790.5" y="167" text-anchor="middle" class="inside">19</text>
-<text x="866" y="167" class="num">n=94</text>
-<rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
-<text x="210" y="334" class="legend">週3回通院なら受容</text>
-<rect x="360" y="322" width="14" height="14" fill="#2f7d8c"/>
-<text x="380" y="334" class="legend">週2回通院なら受容</text>
-<rect x="530" y="322" width="14" height="14" fill="#8bbbc3"/>
-<text x="550" y="334" class="legend">週1回通院なら受容</text>
-<rect x="700" y="322" width="14" height="14" fill="#d8dee4"/>
-<text x="720" y="334" class="legend">通院のみ条件は非受容/保留</text>
+<text x="240" y="30" class="title">図3. 通院のみ条件を拒否した理由</text>
+<text x="228" y="103.9" text-anchor="end" class="label">通院回数・移動の負担が大きい</text>
+<rect x="240" y="72.8" width="536.0" height="45.9" fill="#2f7d8c"/>
+<text x="784.0" y="103.9" class="num">148</text>
+<text x="228" y="185.9" text-anchor="end" class="label">この通院回数だけでは安全面が不安</text>
+<rect x="240" y="154.8" width="242.6" height="45.9" fill="#2f7d8c"/>
+<text x="490.6" y="185.9" class="num">67</text>
+<text x="228" y="267.9" text-anchor="end" class="label">クロザピン自体を使いたくない</text>
+<rect x="240" y="236.8" width="97.8" height="45.9" fill="#2f7d8c"/>
+<text x="345.8" y="267.9" class="num">27</text>
+<text x="228" y="349.9" text-anchor="end" class="label">その他・わからない</text>
+<rect x="240" y="318.8" width="90.5" height="45.9" fill="#2f7d8c"/>
+<text x="338.5" y="349.9" class="num">25</text>
+<line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
+<text x="508.0" y="424" text-anchor="middle" class="axis">人数（複数理由あり）</text>
 </svg>

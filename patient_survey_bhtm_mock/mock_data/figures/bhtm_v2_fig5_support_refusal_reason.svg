@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="440" viewBox="0 0 820 440" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="240" y="30" class="title">図5. 訪問看護追加でも受容に転じない理由</text>
+<text x="228" y="103.9" text-anchor="end" class="label">訪問看護が入ること自体が嫌</text>
+<rect x="240" y="72.8" width="288.6" height="45.9" fill="#2f7d8c"/>
+<text x="536.6" y="103.9" class="num">7</text>
+<text x="228" y="185.9" text-anchor="end" class="label">訪問看護の回数が多すぎる</text>
+<rect x="240" y="154.8" width="536.0" height="45.9" fill="#2f7d8c"/>
+<text x="784.0" y="185.9" class="num">13</text>
+<text x="228" y="267.9" text-anchor="end" class="label">それでも安全面が不安</text>
+<rect x="240" y="236.8" width="0.0" height="45.9" fill="#2f7d8c"/>
+<text x="248.0" y="267.9" class="num">0</text>
+<text x="228" y="349.9" text-anchor="end" class="label">その他・わからない</text>
+<rect x="240" y="318.8" width="82.5" height="45.9" fill="#2f7d8c"/>
+<text x="330.5" y="349.9" class="num">2</text>
+<line x1="240" y1="386" x2="776" y2="386" stroke="#1f2933"/>
+<text x="508.0" y="424" text-anchor="middle" class="axis">人数</text>
+</svg>
