@@ -10,40 +10,21 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="190" y="30" class="title">図2. 外来導入burden thresholdの分布</text>
 <text x="178" y="96" text-anchor="end" class="label">全体</text>
-<rect x="190.0" y="68" width="55.7" height="36" fill="#004d40"/>
-<text x="217.8" y="91" text-anchor="middle" class="inside">15</text>
-<rect x="245.7" y="68" width="74.2" height="36" fill="#00695c"/>
-<text x="282.8" y="91" text-anchor="middle" class="inside">20</text>
-<rect x="319.9" y="68" width="103.9" height="36" fill="#0f766e"/>
-<text x="371.8" y="91" text-anchor="middle" class="inside">28</text>
-<rect x="423.8" y="68" width="70.5" height="36" fill="#2f7d8c"/>
-<text x="459.1" y="91" text-anchor="middle" class="inside">19</text>
-<rect x="494.3" y="68" width="107.6" height="36" fill="#5f9ea8"/>
-<text x="548.1" y="91" text-anchor="middle" class="inside">29</text>
-<rect x="601.9" y="68" width="59.4" height="36" fill="#8bbbc3"/>
-<text x="631.6" y="91" text-anchor="middle" class="inside">16</text>
-<rect x="661.3" y="68" width="44.5" height="36" fill="#b7d5da"/>
-<rect x="705.8" y="68" width="70.5" height="36" fill="#d7e8eb"/>
-<text x="741.1" y="91" text-anchor="middle" class="inside">19</text>
-<rect x="776.4" y="68" width="81.6" height="36" fill="#d8dee4"/>
-<text x="817.2" y="91" text-anchor="middle" class="inside">22</text>
+<rect x="190.0" y="68" width="115.0" height="36" fill="#0f766e"/>
+<text x="247.5" y="91" text-anchor="middle" class="inside">31</text>
+<rect x="305.0" y="68" width="211.5" height="36" fill="#2f7d8c"/>
+<text x="410.8" y="91" text-anchor="middle" class="inside">57</text>
+<rect x="516.6" y="68" width="207.8" height="36" fill="#8bbbc3"/>
+<text x="620.5" y="91" text-anchor="middle" class="inside">56</text>
+<rect x="724.4" y="68" width="133.6" height="36" fill="#d8dee4"/>
+<text x="791.2" y="91" text-anchor="middle" class="inside">36</text>
 <text x="866" y="91" class="num">n=180</text>
-<rect x="190" y="322" width="14" height="14" fill="#004d40"/>
-<text x="210" y="334" class="legend">週3回通院+週2回訪問看護なら受容</text>
-<rect x="360" y="322" width="14" height="14" fill="#00695c"/>
-<text x="380" y="334" class="legend">週3回通院なら受容</text>
-<rect x="530" y="322" width="14" height="14" fill="#0f766e"/>
-<text x="550" y="334" class="legend">週2回通院+週3回訪問看護なら受容</text>
-<rect x="700" y="322" width="14" height="14" fill="#2f7d8c"/>
-<text x="720" y="334" class="legend">週2回通院+週1回訪問看護なら受容</text>
-<rect x="190" y="344" width="14" height="14" fill="#5f9ea8"/>
-<text x="210" y="356" class="legend">週1回通院+週4回訪問看護なら受容</text>
-<rect x="360" y="344" width="14" height="14" fill="#8bbbc3"/>
-<text x="380" y="356" class="legend">週1回通院+週2回訪問看護なら受容</text>
-<rect x="530" y="344" width="14" height="14" fill="#b7d5da"/>
-<text x="550" y="356" class="legend">週1回通院+週1回訪問看護なら受容</text>
-<rect x="700" y="344" width="14" height="14" fill="#d7e8eb"/>
-<text x="720" y="356" class="legend">週1回通院なら受容</text>
-<rect x="190" y="366" width="14" height="14" fill="#d8dee4"/>
-<text x="210" y="378" class="legend">外来導入も非受容/保留</text>
+<rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
+<text x="210" y="334" class="legend">週3回通院なら受容</text>
+<rect x="360" y="322" width="14" height="14" fill="#2f7d8c"/>
+<text x="380" y="334" class="legend">週2回通院なら受容</text>
+<rect x="530" y="322" width="14" height="14" fill="#8bbbc3"/>
+<text x="550" y="334" class="legend">週1回通院なら受容</text>
+<rect x="700" y="322" width="14" height="14" fill="#d8dee4"/>
+<text x="720" y="334" class="legend">通院のみ条件は非受容/保留</text>
 </svg>

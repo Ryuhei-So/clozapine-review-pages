@@ -14,12 +14,12 @@
 <text x="40" y="195.0" class="axis">医師予測: 非受容</text>
 <text x="40" y="345.0" class="axis">医師予測: 受容</text>
 <rect x="150" y="120" width="150" height="150" fill="#eef2f6" stroke="#ffffff" stroke-width="3"/>
-<text x="225.0" y="203.0" text-anchor="middle" class="big">19</text>
+<text x="225.0" y="203.0" text-anchor="middle" class="big">10</text>
 <rect x="300" y="120" width="150" height="150" fill="#d4f0f4" stroke="#ffffff" stroke-width="3"/>
-<text x="375.0" y="203.0" text-anchor="middle" class="big">93</text>
+<text x="375.0" y="203.0" text-anchor="middle" class="big">88</text>
 <rect x="150" y="270" width="150" height="150" fill="#f0e7d8" stroke="#ffffff" stroke-width="3"/>
-<text x="225.0" y="353.0" text-anchor="middle" class="big">8</text>
+<text x="225.0" y="353.0" text-anchor="middle" class="big">11</text>
 <rect x="300" y="270" width="150" height="150" fill="#2f7d8c" stroke="#ffffff" stroke-width="3"/>
-<text x="375.0" y="353.0" text-anchor="middle" class="big">60</text>
+<text x="375.0" y="353.0" text-anchor="middle" class="big">71</text>
 <text x="150" y="462" class="note">右上: 医師は非受容と予測したが、患者本人は外来導入を受け入れる層。</text>
 </svg>

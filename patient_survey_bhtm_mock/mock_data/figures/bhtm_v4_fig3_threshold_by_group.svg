@@ -10,58 +10,31 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="190" y="30" class="title">図3. 対象集団別のburden threshold</text>
 <text x="178" y="96" text-anchor="end" class="label">TRS適格候補</text>
-<rect x="190.0" y="68" width="85.4" height="36" fill="#004d40"/>
-<text x="232.7" y="91" text-anchor="middle" class="inside">11</text>
-<rect x="275.4" y="68" width="38.8" height="36" fill="#00695c"/>
-<rect x="314.3" y="68" width="38.8" height="36" fill="#0f766e"/>
-<rect x="353.1" y="68" width="85.4" height="36" fill="#2f7d8c"/>
-<text x="395.8" y="91" text-anchor="middle" class="inside">11</text>
-<rect x="438.6" y="68" width="46.6" height="36" fill="#5f9ea8"/>
-<rect x="485.2" y="68" width="93.2" height="36" fill="#8bbbc3"/>
-<text x="531.8" y="91" text-anchor="middle" class="inside">12</text>
-<rect x="578.4" y="68" width="93.2" height="36" fill="#b7d5da"/>
-<text x="625.0" y="91" text-anchor="middle" class="inside">12</text>
-<rect x="671.6" y="68" width="132.0" height="36" fill="#d7e8eb"/>
-<text x="737.6" y="91" text-anchor="middle" class="inside">17</text>
-<rect x="803.6" y="68" width="54.4" height="36" fill="#d8dee4"/>
-<text x="830.8" y="91" text-anchor="middle" class="inside">7</text>
+<rect x="190.0" y="68" width="124.3" height="36" fill="#0f766e"/>
+<text x="252.1" y="91" text-anchor="middle" class="inside">16</text>
+<rect x="314.3" y="68" width="202.0" height="36" fill="#2f7d8c"/>
+<text x="415.3" y="91" text-anchor="middle" class="inside">26</text>
+<rect x="516.2" y="68" width="240.8" height="36" fill="#8bbbc3"/>
+<text x="636.6" y="91" text-anchor="middle" class="inside">31</text>
+<rect x="757.0" y="68" width="101.0" height="36" fill="#d8dee4"/>
+<text x="807.5" y="91" text-anchor="middle" class="inside">13</text>
 <text x="866" y="91" class="num">n=86</text>
 <text x="178" y="172" text-anchor="end" class="label">広い未使用外来患者</text>
-<rect x="190.0" y="144" width="92.4" height="36" fill="#004d40"/>
-<text x="236.2" y="167" text-anchor="middle" class="inside">13</text>
-<rect x="282.4" y="144" width="56.9" height="36" fill="#00695c"/>
-<text x="310.8" y="167" text-anchor="middle" class="inside">8</text>
-<rect x="339.2" y="144" width="78.2" height="36" fill="#0f766e"/>
-<text x="378.3" y="167" text-anchor="middle" class="inside">11</text>
-<rect x="417.4" y="144" width="92.4" height="36" fill="#2f7d8c"/>
-<text x="463.6" y="167" text-anchor="middle" class="inside">13</text>
-<rect x="509.8" y="144" width="92.4" height="36" fill="#5f9ea8"/>
-<text x="556.0" y="167" text-anchor="middle" class="inside">13</text>
-<rect x="602.2" y="144" width="49.7" height="36" fill="#8bbbc3"/>
-<text x="627.0" y="167" text-anchor="middle" class="inside">7</text>
-<rect x="651.9" y="144" width="71.1" height="36" fill="#b7d5da"/>
-<text x="687.4" y="167" text-anchor="middle" class="inside">10</text>
-<rect x="723.0" y="144" width="78.2" height="36" fill="#d7e8eb"/>
-<text x="762.1" y="167" text-anchor="middle" class="inside">11</text>
-<rect x="801.1" y="144" width="56.9" height="36" fill="#d8dee4"/>
-<text x="829.6" y="167" text-anchor="middle" class="inside">8</text>
+<rect x="190.0" y="144" width="113.7" height="36" fill="#0f766e"/>
+<text x="246.9" y="167" text-anchor="middle" class="inside">16</text>
+<rect x="303.7" y="144" width="170.6" height="36" fill="#2f7d8c"/>
+<text x="389.0" y="167" text-anchor="middle" class="inside">24</text>
+<rect x="474.3" y="144" width="199.0" height="36" fill="#8bbbc3"/>
+<text x="573.7" y="167" text-anchor="middle" class="inside">28</text>
+<rect x="673.2" y="144" width="184.8" height="36" fill="#d8dee4"/>
+<text x="765.6" y="167" text-anchor="middle" class="inside">26</text>
 <text x="866" y="167" class="num">n=94</text>
-<rect x="190" y="322" width="14" height="14" fill="#004d40"/>
-<text x="210" y="334" class="legend">週3回通院+週2回訪問看護なら受容</text>
-<rect x="360" y="322" width="14" height="14" fill="#00695c"/>
-<text x="380" y="334" class="legend">週3回通院なら受容</text>
-<rect x="530" y="322" width="14" height="14" fill="#0f766e"/>
-<text x="550" y="334" class="legend">週2回通院+週3回訪問看護なら受容</text>
-<rect x="700" y="322" width="14" height="14" fill="#2f7d8c"/>
-<text x="720" y="334" class="legend">週2回通院+週1回訪問看護なら受容</text>
-<rect x="190" y="344" width="14" height="14" fill="#5f9ea8"/>
-<text x="210" y="356" class="legend">週1回通院+週4回訪問看護なら受容</text>
-<rect x="360" y="344" width="14" height="14" fill="#8bbbc3"/>
-<text x="380" y="356" class="legend">週1回通院+週2回訪問看護なら受容</text>
-<rect x="530" y="344" width="14" height="14" fill="#b7d5da"/>
-<text x="550" y="356" class="legend">週1回通院+週1回訪問看護なら受容</text>
-<rect x="700" y="344" width="14" height="14" fill="#d7e8eb"/>
-<text x="720" y="356" class="legend">週1回通院なら受容</text>
-<rect x="190" y="366" width="14" height="14" fill="#d8dee4"/>
-<text x="210" y="378" class="legend">外来導入も非受容/保留</text>
+<rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
+<text x="210" y="334" class="legend">週3回通院なら受容</text>
+<rect x="360" y="322" width="14" height="14" fill="#2f7d8c"/>
+<text x="380" y="334" class="legend">週2回通院なら受容</text>
+<rect x="530" y="322" width="14" height="14" fill="#8bbbc3"/>
+<text x="550" y="334" class="legend">週1回通院なら受容</text>
+<rect x="700" y="322" width="14" height="14" fill="#d8dee4"/>
+<text x="720" y="334" class="legend">通院のみ条件は非受容/保留</text>
 </svg>
