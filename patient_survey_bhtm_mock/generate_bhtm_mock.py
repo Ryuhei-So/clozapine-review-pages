@@ -76,12 +76,12 @@ SUPPORT_PACKAGES = [
 ]
 
 SIDE_EFFECTS = [
-    ("sedation", "眠気・だるさ"),
-    ("hypersalivation", "よだれ・流涎"),
-    ("weight_metabolic", "体重増加・代謝異常"),
-    ("constipation", "便秘"),
-    ("infection_blood", "採血異常・感染リスク"),
-    ("myocarditis", "心筋炎など重い副作用"),
+    ("sedation", "眠気・だるさ", "比較的よくみられる", "日中の眠気や活動しづらさにつながることがあります。"),
+    ("hypersalivation", "よだれ・流涎", "比較的よくみられる", "唾液が増え、夜間や会話中に困ることがあります。"),
+    ("weight_metabolic", "体重増加・代謝異常", "比較的よくみられる", "体重、血糖、脂質などを定期的に確認します。"),
+    ("constipation", "便秘", "比較的よくみられる・重くなることがある", "早めに対処しないと重くなることがあります。"),
+    ("infection_blood", "白血球減少・感染リスク", "まれだが重要", "早く見つけるため、定期的な採血を行います。"),
+    ("myocarditis", "心筋炎など重い副作用", "まれだが重要", "発熱、胸痛、息切れなどがあれば早めに相談します。"),
 ]
 
 SUPPORT_BY_THRESHOLD = {
@@ -155,7 +155,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         )
 
         side_effect_ratings: dict[str, int] = {}
-        for key, _ in SIDE_EFFECTS:
+        for key, _, _, _ in SIDE_EFFECTS:
             base = {
                 "sedation": 2.8,
                 "hypersalivation": 2.4,
@@ -478,10 +478,10 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     stacked_svg(p, "図3. 対象集団別のburden threshold", dict(rows))
     fig_paths["fig3"] = rel(p)
 
-    effect_labels = [label for _, label in SIDE_EFFECTS]
+    effect_labels = [f"{label}（{frequency}）" for _, label, frequency, _ in SIDE_EFFECTS]
     effect_means = [
         sum(int(r[f"side_effect_{key}"]) for r in threshold) / len(threshold)
-        for key, _ in SIDE_EFFECTS
+        for key, _, _, _ in SIDE_EFFECTS
     ]
     p = FIG / f"bhtm_v{version}_fig4_burden.svg"
     mean_bar_svg(p, "図4. 副作用別にみた服用判断への影響", effect_labels, effect_means)
@@ -650,7 +650,8 @@ def questionnaire_html(version: int) -> str:
         <label class="choice"><input type="radio" name="current_need" value="some"> 症状による困りごとや生活のしづらさがいくらか残っている</label>
         <label class="choice"><input type="radio" name="current_need" value="large"> 症状による困りごとや生活のしづらさが大きい</label>
         <div id="scenarioBox" class="notice hidden"></div>
-        <div class="nav"><button class="primary" onclick="nextNeed()">次へ</button><button onclick="prev()">前へ</button></div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="3">
@@ -660,7 +661,8 @@ def questionnaire_html(version: int) -> str:
         <p>主治医からクロザピンを勧められたとします。</p>
         <p class="question">クロザピン服用を前向きに考えたいですか？</p>
         {yes_no_choices("clozapine_accept")}
-        <div class="nav"><button class="primary" onclick="nextClozapine()">次へ</button><button onclick="prev()">前へ</button></div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="4">
@@ -669,6 +671,8 @@ def questionnaire_html(version: int) -> str:
         <div class="tt-card">
           <span class="pill" id="sideEffectProgress">1/6</span>
           <h3 id="sideEffectLabel">眠気・だるさ</h3>
+          <p class="small"><strong id="sideEffectFrequency">比較的よくみられる</strong></p>
+          <p class="small" id="sideEffectDescription">日中の眠気や活動しづらさにつながることがあります。</p>
         </div>
         <div class="seg">
           <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
@@ -677,7 +681,8 @@ def questionnaire_html(version: int) -> str:
           <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
           <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
         </div>
-        <div class="nav"><button class="primary" onclick="nextSideEffect()">次へ</button><button onclick="prevSideEffect()">前へ</button></div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prevSideEffect()">前へ</button></div>
       </section>
 
       <section class="step" data-step="5">
@@ -709,7 +714,8 @@ def questionnaire_html(version: int) -> str:
           <label><input type="radio" name="support_direction_current" value="negative"> むしろ後ろ向きになる</label>
           <label><input type="radio" name="support_direction_current" value="unsure"> わからない</label>
         </div>
-        <div class="nav"><button class="primary" onclick="nextSupport()">次へ</button><button onclick="prevSupport()">前へ</button></div>
+        <p class="small">選択すると次へ進みます。</p>
+        <div class="nav"><button onclick="prevSupport()">前へ</button></div>
       </section>
 
       <section class="step optional" data-step="7">
@@ -720,7 +726,8 @@ def questionnaire_html(version: int) -> str:
         <label class="choice"><input type="radio" name="biggest_burden" value="visits"> 通院や訪問看護の回数が負担</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="blood"> 採血が負担</label>
         <label class="choice"><input type="radio" name="biggest_burden" value="stable"> 今の治療のままでよい</label>
-        <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
+        <p class="small">選択すると完了します。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="8">
@@ -769,12 +776,12 @@ let supportIndex = 0;
 let assumedState = null;
 let reasonSource = null;
 const sideEffects = [
-  ['sedation','眠気・だるさ'],
-  ['hypersalivation','よだれ・流涎'],
-  ['weight_metabolic','体重増加・代謝異常'],
-  ['constipation','便秘'],
-  ['infection_blood','採血異常・感染リスク'],
-  ['myocarditis','心筋炎など重い副作用']
+  ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
+  ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
+  ['weight_metabolic','体重増加・代謝異常','比較的よくみられる','体重、血糖、脂質などを定期的に確認します。'],
+  ['constipation','便秘','比較的よくみられる・重くなることがある','早めに対処しないと重くなることがあります。'],
+  ['infection_blood','白血球減少・感染リスク','まれだが重要','早く見つけるため、定期的な採血を行います。'],
+  ['myocarditis','心筋炎など重い副作用','まれだが重要','発熱、胸痛、息切れなどがあれば早めに相談します。']
 ];
 const sideEffectAnswers = {};
 const visitQuestions = [
@@ -815,6 +822,13 @@ function renderStep(){
   if(current === 6) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
+function wireAutoAdvance(){
+  document.querySelectorAll('input[name="current_need"]').forEach(input => input.addEventListener('change', nextNeed));
+  document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
+  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.addEventListener('change', nextSideEffect));
+  document.querySelectorAll('input[name="support_direction_current"]').forEach(input => input.addEventListener('change', nextSupport));
+  document.querySelectorAll('input[name="biggest_burden"]').forEach(input => input.addEventListener('change', finish));
+}
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
   if(current === 8){ current = 6; renderStep(); return; }
@@ -836,9 +850,11 @@ function nextNeed(){
   next();
 }
 function renderSideEffectQuestion(){
-  const [key, label] = sideEffects[sideEffectIndex];
+  const [key, label, frequency, description] = sideEffects[sideEffectIndex];
   document.getElementById('sideEffectProgress').textContent = `${sideEffectIndex + 1}/${sideEffects.length}`;
   document.getElementById('sideEffectLabel').textContent = label;
+  document.getElementById('sideEffectFrequency').textContent = frequency;
+  document.getElementById('sideEffectDescription').textContent = description;
   document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
     input.checked = sideEffectAnswers[key] === input.value;
   });
@@ -954,6 +970,7 @@ function scenarioText(){
 function finish(){
   alert('ダミー質問票です。実際の回答は保存されません。');
 }
+wireAutoAdvance();
 renderStep();
 """
 
