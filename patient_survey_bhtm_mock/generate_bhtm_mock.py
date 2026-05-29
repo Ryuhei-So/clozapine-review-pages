@@ -55,8 +55,8 @@ VERSIONS = {
             "クロザピン服用意向の前に、有効性の十分性評価と副作用別の服用判断への影響を取得する。",
             "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
             "抽象的な外来導入Yes/Noは削除し、外来導入受容性は週3/週2/週1通院条件のいずれかを受容したかで定義する。",
-            "通院のみ条件を受容した場合も、同じ通院頻度に訪問看護を加えると服用判断がどう変わるかを聞く。",
-            "通院のみ条件を拒否した場合は理由を二択で記録し、通院負担なら低頻度へ進み、安全面不安なら同じ通院頻度への訪問看護追加で受容に転じるかを聞く。",
+            "通院のみthresholdを先に決め、その通院頻度を固定したうえで、診察と訪問看護を合わせた確認頻度のthresholdを高頻度から順に尋ねる。",
+            "訪問看護は安全面不安への救済分岐ではなく、医師が安全上必要と判断しうる確認頻度を患者が受容できるかを測る別thresholdとして扱う。",
             "医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。",
         ],
     },
@@ -89,29 +89,20 @@ SIDE_EFFECTS = [
 
 SUPPORT_BY_THRESHOLD = {
     "V3": ["V3N2"],
-    "V2": ["V2N1", "V2N3"],
-    "V1": ["V1N1", "V1N2", "V1N4"],
-    "NONE": ["V1N1", "V1N2", "V1N4"],
+    "V2": ["V2N3", "V2N1"],
+    "V1": ["V1N4", "V1N2", "V1N1"],
+    "NONE": [],
 }
 
-VISIT_REJECTION_REASONS = [
-    ("visit_burden", "通院回数・移動の負担が大きい"),
-    ("safety_concern", "この通院回数だけでは安全面が不安"),
-]
-
-SUPPORT_REFUSAL_REASONS = [
-    ("home_nursing_dislike", "訪問看護が入ること自体が嫌"),
-    ("nursing_too_frequent", "訪問看護の回数が多すぎる"),
-    ("still_safety_concern", "それでも安全面が不安"),
-    ("other_unknown", "その他・わからない"),
-]
-
-SUPPORT_DIRECTIONS = [
-    ("positive", "より前向き"),
-    ("neutral", "あまり変わらない"),
-    ("negative", "むしろ難しい"),
-    ("unsure", "わからない"),
-]
+SUPPORT_THRESHOLD_LABELS = {
+    "V3N2": "週5回確認まで受容（週3通院+週2訪問）",
+    "V2N3": "週5回確認まで受容（週2通院+週3訪問）",
+    "V1N4": "週5回確認まで受容（週1通院+週4訪問）",
+    "V2N1": "週3回確認まで受容（週2通院+週1訪問）",
+    "V1N2": "週3回確認まで受容（週1通院+週2訪問）",
+    "V1N1": "週2回確認まで受容（週1通院+週1訪問）",
+    "SNONE": "訪問看護追加は非受容/保留",
+}
 
 
 def ensure_dirs() -> None:
@@ -208,96 +199,43 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         else:
             th = "NONE"
         max_burden = dict(THRESHOLDS)[th]
-        rejected_visits = {
-            "V3": [],
-            "V2": ["V3"],
-            "V1": ["V3", "V2"],
-            "NONE": ["V3", "V2", "V1"],
-        }[th]
-        if not method_outpatient_accept:
-            rejected_visits = []
-        visit_reason_values: dict[str, str] = {}
-        any_safety_concern = False
-        first_safety_concern_visit = None
-        for visit_key, _ in THRESHOLDS[:3]:
-            rejected = visit_key in rejected_visits
-            visit_reason_values[f"visit_rejected_{visit_key.lower()}"] = str(int(rejected))
-            reason_pattern = "not_rejected"
-            if rejected:
-                safety_p = {"V3": 0.20, "V2": 0.30, "V1": 0.44}[visit_key] + 0.08 * (max_side_effect_impact >= 4)
-                selected_reason = "safety_concern" if RNG.random() < safety_p else "visit_burden"
-                if selected_reason == "safety_concern":
-                    any_safety_concern = True
-                    if first_safety_concern_visit is None:
-                        first_safety_concern_visit = visit_key
-                    reason_pattern = "safety_only"
-                else:
-                    reason_pattern = "burden_only"
-            for reason_key, _ in VISIT_REJECTION_REASONS:
-                visit_reason_values[f"reason_{visit_key.lower()}_{reason_key}"] = str(int(rejected and reason_key == selected_reason))
-            visit_reason_values[f"reason_pattern_{visit_key.lower()}"] = reason_pattern
-
-        support_conversion_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
-        support_direction_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
-        support_base = first_safety_concern_visit or (th if th in {"V3", "V2", "V1"} else "V1")
-        support_conversion_eligible = method_outpatient_accept and first_safety_concern_visit is not None
-        support_addon_eligible = method_outpatient_accept and th in {"V3", "V2", "V1"}
+        support_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
+        support_base = th if th in {"V3", "V2", "V1"} else "not_asked"
+        support_eligible = method_outpatient_accept and th in {"V3", "V2", "V1"}
         support_accept_any = False
-        support_accept_condition = "none"
-        if support_addon_eligible:
+        support_accept_condition = "SNONE"
+        if support_eligible:
             for support_key in SUPPORT_BY_THRESHOLD[th]:
-                direction = weighted_choice(
-                    [
-                        ("positive", 0.28 + 0.12 * subjective_distress),
-                        ("neutral", 0.36),
-                        ("negative", 0.22 + 0.08 * past_refusal),
-                        ("unsure", 0.14),
-                    ]
-                )
-                support_direction_answers[support_key] = direction
-        if support_conversion_eligible:
-            for support_key in SUPPORT_BY_THRESHOLD[support_base]:
                 accept_base = {
-                    "V1N1": 0.48,
-                    "V1N2": 0.54,
-                    "V1N4": 0.42,
-                    "V2N1": 0.44,
-                    "V2N3": 0.38,
-                    "V3N2": 0.34,
+                    "V3N2": 0.30,
+                    "V2N3": 0.34,
+                    "V1N4": 0.30,
+                    "V2N1": 0.46,
+                    "V1N2": 0.48,
+                    "V1N1": 0.58,
                 }[support_key]
                 accept_prob = accept_base + 0.08 * subjective_distress - 0.05 * (max_side_effect_impact >= 5)
-                answer = weighted_choice(
-                    [
-                        ("accepted", accept_prob),
-                        ("refused", max(0.08, 0.72 - accept_prob)),
-                        ("unsure", 0.20),
-                    ]
-                )
-                support_conversion_answers[support_key] = answer
-                if answer == "accepted":
+                if RNG.random() < accept_prob:
+                    support_answers[support_key] = "accepted"
                     support_accept_any = True
                     support_accept_condition = support_key
                     break
-                if answer == "unsure":
-                    break
+                support_answers[support_key] = "refused"
         threshold.append(
             {
                 "participant_id": f"P{i:03d}",
                 "clozapine_accept": str(int(clozapine_accept)),
                 "threshold": th,
                 "threshold_label": max_burden,
-                "any_safety_concern_in_visit_refusal": str(int(any_safety_concern)),
-                **visit_reason_values,
                 "efficacy_sufficiency": str(efficacy_sufficiency),
                 "side_effect_max_impact": str(max_side_effect_impact),
                 **{f"side_effect_{key}": str(value) for key, value in side_effect_ratings.items()},
-                "support_conversion_eligible": str(int(support_conversion_eligible)),
-                "support_addon_eligible": str(int(support_addon_eligible)),
-                "support_base_visit": support_base if (support_conversion_eligible or support_addon_eligible) else "not_asked",
-                **{f"support_conversion_{key.lower()}": value for key, value in support_conversion_answers.items()},
-                **{f"support_direction_{key.lower()}": value for key, value in support_direction_answers.items()},
+                "support_eligible": str(int(support_eligible)),
+                "support_base_visit": support_base,
+                **{f"support_{key.lower()}": value for key, value in support_answers.items()},
                 "support_accept_any": str(int(support_accept_any)),
                 "support_accept_condition": support_accept_condition,
+                "support_threshold_label": SUPPORT_THRESHOLD_LABELS[support_accept_condition],
             }
         )
         # In the revised questionnaire, outpatient initiation acceptance is
@@ -573,6 +511,61 @@ def support_acceptance_by_base_svg(path: Path, title: str, rows: dict[str, Count
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+SUPPORT_LEVELS = [
+    ("S5", "週5回確認まで受容"),
+    ("S3", "週3回確認まで受容"),
+    ("S2", "週2回確認まで受容"),
+    ("SNONE", "訪問看護追加は非受容/保留"),
+]
+
+
+def support_level(condition: str) -> str:
+    if condition in {"V3N2", "V2N3", "V1N4"}:
+        return "S5"
+    if condition in {"V2N1", "V1N2"}:
+        return "S3"
+    if condition == "V1N1":
+        return "S2"
+    return "SNONE"
+
+
+def support_threshold_rows_svg(path: Path, title: str, rows: dict[str, Counter], row_labels: dict[str, str]) -> None:
+    width, height = 940, 380 + max(0, len(rows) - 2) * 46
+    left, top, right, bottom = 230, 66, 52, 92
+    plot_w = width - left - right
+    row_h = 68
+    colors = {"S5": "#245b67", "S3": "#2f7d8c", "S2": "#8bbbc3", "SNONE": "#d8dee4"}
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, key in enumerate(rows.keys()):
+        counts = rows[key]
+        total = sum(counts.values())
+        y = top + i * row_h
+        parts.append(f'<text x="{left-12}" y="{y+27}" text-anchor="end" class="label">{esc(row_labels.get(key, key))}</text>')
+        x = left
+        if total == 0:
+            parts.append(f'<text x="{left}" y="{y+27}" class="axis">該当者なし</text>')
+            continue
+        for level_key, _ in SUPPORT_LEVELS:
+            val = counts.get(level_key, 0)
+            w = plot_w * val / total if total else 0
+            if w > 0:
+                parts.append(f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="38" fill="{colors[level_key]}"/>')
+                if w > 42:
+                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+25}" text-anchor="middle" class="inside">{val}</text>')
+            x += w
+        parts.append(f'<text x="{left+plot_w+8}" y="{y+25}" class="num">n={total}</text>')
+    lx, ly = left, height - 58
+    for level_key, label in SUPPORT_LEVELS:
+        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[level_key]}"/>')
+        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(label)}</text>')
+        lx += 210
+        if lx > width - 190:
+            lx = left
+            ly += 24
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def matrix_svg(path: Path, title: str, both: int, physician_only: int, patient_only: int, neither: int) -> None:
     width, height = 620, 500
     left, top, cell = 150, 120, 150
@@ -642,40 +635,6 @@ def mean_bar_svg(path: Path, title: str, labels: list[str], means: list[float], 
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
-def support_direction_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
-    width, height = 980, 560
-    left, top, right, bottom = 250, 62, 40, 92
-    plot_w = width - left - right
-    row_h = 42
-    colors = {"positive": "#2f7d8c", "neutral": "#b7d5da", "negative": "#c47f4f", "unsure": "#d8dee4"}
-    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
-    for i, (key, label) in enumerate(SUPPORT_PACKAGES):
-        counts = rows.get(key, Counter())
-        total = sum(counts.values())
-        y = top + i * row_h
-        parts.append(f'<text x="{left-12}" y="{y+24}" text-anchor="end" class="label">{esc(label)}</text>')
-        x = left
-        if total == 0:
-            parts.append(f'<text x="{left}" y="{y+24}" class="axis">該当者なし</text>')
-            continue
-        for direction, direction_label in SUPPORT_DIRECTIONS:
-            val = counts.get(direction, 0)
-            w = plot_w * val / total
-            if w > 0:
-                parts.append(f'<rect x="{x:.1f}" y="{y+5}" width="{w:.1f}" height="26" fill="{colors[direction]}"/>')
-                if w > 38:
-                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+23}" text-anchor="middle" class="inside">{val}</text>')
-            x += w
-        parts.append(f'<text x="{left+plot_w+8}" y="{y+24}" class="num">n={total}</text>')
-    lx, ly = left, height - 58
-    for direction, direction_label in SUPPORT_DIRECTIONS:
-        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[direction]}"/>')
-        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(direction_label)}</text>')
-        lx += 180
-    parts.append("</svg>")
-    path.write_text("\n".join(parts), encoding="utf-8")
-
-
 def svg_head(width: int, height: int) -> str:
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img">
 <style>
@@ -727,35 +686,44 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     stacked_svg(p, "図2. 入院導入受容性別にみた外来通院頻度threshold", group_counts)
     fig_paths["fig2"] = rel(p)
 
-    reason_rows: dict[str, Counter] = {"v3": Counter(), "v2": Counter(), "v1": Counter()}
+    support_overall = Counter()
     for r in threshold:
-        for visit in ["v3", "v2", "v1"]:
-            if r.get(f"visit_rejected_{visit}") == "1":
-                reason_rows[visit][r.get(f"reason_pattern_{visit}")] += 1
+        if r["support_eligible"] == "1":
+            support_overall[support_level(r["support_accept_condition"])] += 1
     p = FIG / f"bhtm_v{version}_fig3_threshold_by_group.svg"
-    visit_reason_by_frequency_svg(p, "図3. 通院頻度別にみた拒否理由", reason_rows)
+    support_threshold_rows_svg(
+        p,
+        "図3. 訪問看護を含む確認頻度threshold",
+        {"overall": support_overall},
+        {"overall": "外来導入受容者"},
+    )
     fig_paths["fig3"] = rel(p)
 
-    support_eligible_rows = [r for r in threshold if r["support_conversion_eligible"] == "1"]
-    support_by_base: dict[str, Counter] = {"V3": Counter(), "V2": Counter(), "V1": Counter()}
-    for r in support_eligible_rows:
-        base = r["support_base_visit"]
-        condition = r["support_accept_condition"] if r["support_accept_any"] == "1" else "none"
-        support_by_base[base][condition] += 1
+    support_by_visit: dict[str, Counter] = {"V3": Counter(), "V2": Counter(), "V1": Counter()}
+    for r in threshold:
+        if r["support_eligible"] == "1":
+            support_by_visit[r["support_base_visit"]][support_level(r["support_accept_condition"])] += 1
     p = FIG / f"bhtm_v{version}_fig4_support_acceptance.svg"
-    support_acceptance_by_base_svg(p, "図4. 安全面不安を含む拒否者での訪問看護追加後の受容", support_by_base)
+    support_threshold_rows_svg(
+        p,
+        "図4. 通院頻度threshold別にみた訪問看護確認頻度threshold",
+        support_by_visit,
+        {"V3": "週3回通院受容", "V2": "週2回通院受容", "V1": "週1回通院受容"},
+    )
     fig_paths["fig4"] = rel(p)
 
-    support_direction_rows: dict[str, Counter] = {key: Counter() for key, _ in SUPPORT_PACKAGES}
+    support_by_frame: dict[str, Counter] = {"actual_current": Counter(), "hypothetical_future": Counter()}
     for r in threshold:
-        if r.get("support_addon_eligible") != "1":
-            continue
-        for key, _ in SUPPORT_PACKAGES:
-            direction = r.get(f"support_direction_{key.lower()}", "not_asked")
-            if direction != "not_asked":
-                support_direction_rows[key][direction] += 1
-    p = FIG / f"bhtm_v{version}_fig5_support_direction.svg"
-    support_direction_svg(p, "図5. 通院OK者における訪問看護追加の影響", support_direction_rows)
+        if r["support_eligible"] == "1":
+            frame_key = participants[r["participant_id"]]["response_frame"]
+            support_by_frame[frame_key][support_level(r["support_accept_condition"])] += 1
+    p = FIG / f"bhtm_v{version}_fig5_support_by_frame.svg"
+    support_threshold_rows_svg(
+        p,
+        "図5. 回答前提別にみた訪問看護確認頻度threshold",
+        support_by_frame,
+        {"actual_current": "現在の状態で回答", "hypothetical_future": "将来TRS相当を想定"},
+    )
     fig_paths["fig5"] = rel(p)
 
     effect_labels = [f"{label}（{frequency}）" for _, label, frequency, _ in SIDE_EFFECTS]
@@ -822,9 +790,9 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     reasons = {
         "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
-        "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
-        "fig4": "各通院頻度を安全面不安のために拒否した人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
-        "fig5": "通院のみ条件を受容した人に、同じ通院頻度のまま訪問看護を加えると服用判断がより前向きになるか、変わらないか、むしろ難しくなるかを示す図。訪問看護が安心材料なのか追加負担なのかを分けて評価する。",
+        "fig3": "外来導入を受容しうる人について、通院に訪問看護を加えた総確認頻度をどこまで受け入れられるかを示す図。安全に必要な頻度は医師が判断する前提で、その頻度を患者が受容可能かを直接把握する。",
+        "fig4": "先に確定した通院頻度thresholdごとに、訪問看護を加えた確認頻度thresholdを示す図。週3回通院を受容する人、週2回なら受容する人、週1回なら受容する人で、追加モニタリングへの許容度が異なるかを確認する。",
+        "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
         "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
     }
@@ -973,18 +941,9 @@ def questionnaire_html(version: int) -> str:
       </section>
 
       <section class="step" data-step="8">
-        <h2>前向きに考えにくい理由</h2>
-        <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由として、より近いものを選んでください。</p>
-        <label class="choice"><input type="radio" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
-        <label class="choice"><input type="radio" name="visit_rejection_reason" value="safety_concern"> この通院頻度だけでは安全面が不安</label>
-        <p class="small">選択すると次へ進みます。</p>
-        <div class="nav"><button onclick="current=7; renderStep()">前へ</button></div>
-      </section>
-
-      <section class="step" data-step="9">
         <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
-        <h2>訪問看護を加える場合</h2>
-        <p>通院だけでは安全面が不安な場合に、同じ通院頻度のまま訪問看護を加える条件を伺います。</p>
+        <h2>訪問看護を加えて確認する場合</h2>
+        <p>安全に必要な確認頻度は医師が判断します。ここでは、先ほど受け入れられると答えた通院頻度を固定したまま、訪問看護を加えた確認頻度をどこまで受け入れられるかを伺います。</p>
         <div class="tt-card">
           <span class="pill" id="supportProgress">1/3</span>
           <h3 id="supportQuestion">週5回確認</h3>
@@ -994,7 +953,7 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button onclick="prevSupport()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="11">
+      <section class="step" data-step="9">
         <h2>回答ありがとうございました</h2>
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
@@ -1039,8 +998,6 @@ let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
 let responseFrame = null;
-let reasonSource = null;
-let currentRejectedVisit = null;
 let supportBaseVisit = null;
 let inpatientAccept = null;
 let participantCode = null;
@@ -1068,9 +1025,9 @@ const visitQuestions = [
 ];
 const supportByThreshold = {
   V3: ['V3N2'],
-  V2: ['V2N1','V2N3'],
-  V1: ['V1N1','V1N2','V1N4'],
-  NONE: ['V1N1','V1N2','V1N4']
+  V2: ['V2N3','V2N1'],
+  V1: ['V1N4','V1N2','V1N1'],
+  NONE: []
 };
 const supportLabels = {
   V3N2:'週5回確認: 週3回通院+週2回訪問看護',
@@ -1080,15 +1037,7 @@ const supportLabels = {
   V1N2:'週3回確認: 週1回通院+週2回訪問看護',
   V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
-const supportRefusalLabels = {
-  home_nursing_dislike:'訪問看護が入ること自体が嫌',
-  nursing_too_frequent:'訪問看護の回数が多すぎる',
-  still_safety_concern:'それでも安全面が不安',
-  other_unknown:'その他・わからない'
-};
 const supportAnswers = {};
-const visitRejectionReasons = {};
-let supportMode = null;
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -1096,8 +1045,7 @@ function renderStep(){
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
   if(current === 3 || current === 4) renderInfoStep(current);
   if(current === 7) renderVisitQuestion();
-  if(current === 8) renderVisitReason();
-  if(current === 9) renderSupportQuestion();
+  if(current === 8) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
@@ -1112,13 +1060,12 @@ function wireAutoAdvance(){
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 10){
+  if(current === 9){
     if(threshold === 'NO_CLOZAPINE') current = 5;
-    else if(supportWasAsked()) current = 9;
+    else if(supportEligible()) current = 8;
     else current = 7;
     renderStep(); return;
   }
-  if(current === 9){ current = 8; renderStep(); return; }
   if(current === 8){ current = 7; renderStep(); return; }
   if(current > 0){
     const target = current - 1;
@@ -1259,10 +1206,9 @@ function nextClozapine(){
   if(!val){ alert('はい、または、いいえを選んでください。'); return; }
   resetAfterClozapine();
   if(val === 'no'){
-    reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 10; renderStep(); return;
+    current = 9; renderStep(); return;
   }
   next();
 }
@@ -1286,12 +1232,19 @@ function answerVisit(accepted){
     setThresholdSummary();
     supportIndex = 0;
     supportBaseVisit = threshold;
-    supportMode = 'accepted_addon';
-    afterVisitSequence();
+    current = 8;
+    renderStep();
     return;
   }
-  currentRejectedVisit = visitQuestions[visitIndex][0];
-  current = 8; renderStep();
+  if(visitIndex < visitQuestions.length - 1){
+    visitIndex++;
+    renderStep();
+    return;
+  }
+  threshold = 'NONE';
+  setThresholdSummary();
+  current = 9;
+  renderStep();
 }
 function prevVisit(){
   if(visitIndex > 0){
@@ -1305,75 +1258,30 @@ function setThresholdSummary(){
   const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
   document.getElementById('thresholdSummary').textContent = labels[threshold];
 }
-function renderVisitReason(){
-  const label = visitQuestions.find(v => v[0] === currentRejectedVisit)?.[1] || 'この通院頻度';
-  document.getElementById('rejectionVisitLabel').textContent = label;
-  document.querySelectorAll('input[name="visit_rejection_reason"]').forEach(input => {
-    input.checked = visitRejectionReasons[currentRejectedVisit] === input.value;
-    input.onchange = saveVisitReason;
-  });
-}
-function saveVisitReason(){
-  const reason = document.querySelector('input[name="visit_rejection_reason"]:checked')?.value;
-  if(!reason){ alert('より近い理由を1つ選んでください。'); return; }
-  resetAfterVisitReason();
-  visitRejectionReasons[currentRejectedVisit] = reason;
-  if(reason === 'safety_concern'){
-    supportBaseVisit = currentRejectedVisit;
-    supportMode = 'safety_conversion';
-    current = 9; renderStep();
-    return;
-  }
-  if(visitIndex < visitQuestions.length - 1){
-    visitIndex++;
-    current = 7; renderStep();
-    return;
-  }
-  threshold = 'NONE';
-  setThresholdSummary();
-  afterVisitSequence();
-}
-function safetyConcernRecorded(){
-  return Object.values(visitRejectionReasons).some(reason => reason === 'safety_concern');
-}
-function supportWasAsked(){
-  return Object.keys(supportAnswers).length > 0;
-}
-function afterVisitSequence(){
-  supportIndex = 0;
-  current = supportMode ? 9 : 10;
-  renderStep();
+function supportEligible(){
+  return ['V3','V2','V1'].includes(threshold);
 }
 function renderSupportQuestion(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
+  if(!options.length){
+    current = 9;
+    renderStep();
+    return;
+  }
   const key = options[supportIndex];
   document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
   document.getElementById('supportQuestion').textContent = supportLabels[key];
   const choices = document.getElementById('supportChoices');
-  if(supportMode === 'accepted_addon'){
-    document.getElementById('supportDescription').textContent = 'この通院条件は前向きに考えられる場合に、訪問看護が加わると服用判断がどう変わるかを伺います。';
-    choices.innerHTML = `
-      <p class="question">訪問看護が加わると、クロザピン服用への気持ちはどう変わりますか？</p>
-      <div class="seg">
-        <label><input type="radio" name="support_current" value="positive"> より前向きになる</label>
-        <label><input type="radio" name="support_current" value="neutral"> あまり変わらない</label>
-        <label><input type="radio" name="support_current" value="negative"> むしろ前向きに考えにくくなる</label>
-        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
-      </div>
-      <p class="small">選択すると次へ進みます。</p>
-    `;
-  } else {
-    document.getElementById('supportDescription').textContent = 'この通院頻度だけでは安全面が不安な場合に、訪問看護が加われば前向きに考えられるかを伺います。';
-    choices.innerHTML = `
-      <p class="question">この条件ならクロザピン服用を前向きに考えたいですか？</p>
-      <div class="seg">
-        <label><input type="radio" name="support_current" value="accepted"> はい</label>
-        <label><input type="radio" name="support_current" value="refused"> いいえ</label>
-        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
-      </div>
-      <p class="small">選択すると次へ進みます。</p>
-    `;
-  }
+  document.getElementById('supportDescription').textContent = '医師からこの確認頻度が安全上必要だと説明された場合を想像してください。';
+  choices.innerHTML = `
+    <p class="question">この条件までなら、クロザピン服用を前向きに考えたいですか？</p>
+    <div class="seg">
+      <label><input type="radio" name="support_current" value="accepted"> はい</label>
+      <label><input type="radio" name="support_current" value="refused"> いいえ</label>
+      <label><input type="radio" name="support_current" value="unsure"> わからない</label>
+    </div>
+    <p class="small">「いいえ」または「わからない」の場合は、確認頻度を少なくした条件へ進みます。</p>
+  `;
   document.querySelectorAll('input[name="support_current"]').forEach(input => {
     input.checked = supportAnswers[key] === input.value;
     input.onchange = () => answerSupport(input.value);
@@ -1384,21 +1292,17 @@ function answerSupport(answer){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   supportAnswers[key] = answer;
-  if(supportMode === 'safety_conversion' && answer === 'accepted'){
+  if(answer === 'accepted'){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 10; renderStep(); return;
+    current = 9; renderStep(); return;
   }
   if(supportIndex < options.length - 1){
     supportIndex++;
     renderSupportQuestion();
     return;
   }
-  if(supportMode === 'accepted_addon'){
-    document.getElementById('supportSummary').textContent = '訪問看護追加の影響を回答済み';
-  } else {
-    document.getElementById('supportSummary').textContent = '訪問看護追加でも前向きに考えにくい/不明';
-  }
-  current = 10; renderStep();
+  document.getElementById('supportSummary').textContent = '訪問看護追加は前向きに考えにくい/不明';
+  current = 9; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -1406,7 +1310,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = supportMode === 'accepted_addon' ? 7 : 8;
+  current = 7;
   renderStep();
 }
 function clearChecked(name){
@@ -1429,35 +1333,21 @@ function resetAfterInpatient(){
 function resetAfterOutpatient(){
   visitIndex = 0;
   threshold = null;
-  currentRejectedVisit = null;
   supportBaseVisit = null;
   document.getElementById('thresholdSummary').textContent = '未回答';
-  clearChecked('visit_rejection_reason');
-  Object.keys(visitRejectionReasons).forEach(key => delete visitRejectionReasons[key]);
-  resetAfterVisitReason();
+  resetAfterVisit();
 }
 function resetAfterVisit(){
-  const currentVisit = visitQuestions[visitIndex]?.[0];
-  if(currentVisit){
-    delete visitRejectionReasons[currentVisit];
-  }
-  currentRejectedVisit = null;
-  clearChecked('visit_rejection_reason');
-  resetAfterVisitReason();
-}
-function resetAfterVisitReason(){
   supportIndex = 0;
   supportBaseVisit = null;
-  supportMode = null;
   Object.keys(supportAnswers).forEach(key => delete supportAnswers[key]);
   document.getElementById('supportSummary').textContent = '該当なし/未回答';
   clearChecked('support_current');
 }
 function resetAfterSupport(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'] || [];
-  const key = options[supportIndex];
-  if(key){
-    delete supportAnswers[key];
+  for(let i = supportIndex; i < options.length; i++){
+    delete supportAnswers[options[i]];
   }
   clearChecked('support_current');
 }

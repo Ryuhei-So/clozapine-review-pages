@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="940" height="430" viewBox="0 0 940 430" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="380" viewBox="0 0 940 380" role="img">
 <style>
 .title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 .label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
@@ -8,27 +8,22 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="210" y="30" class="title">図3. 通院頻度別にみた拒否理由</text>
-<text x="198" y="93" text-anchor="end" class="label">週3回通院を拒否</text>
-<rect x="210.0" y="66" width="494.8" height="38" fill="#2f7d8c"/>
-<text x="457.4" y="91" text-anchor="middle" class="inside">81</text>
-<rect x="704.8" y="66" width="183.2" height="38" fill="#c47f4f"/>
-<text x="796.4" y="91" text-anchor="middle" class="inside">30</text>
-<text x="896" y="91" class="num">n=111</text>
-<text x="198" y="165" text-anchor="end" class="label">週2回通院を拒否</text>
-<rect x="210.0" y="138" width="448.5" height="38" fill="#2f7d8c"/>
-<text x="434.3" y="163" text-anchor="middle" class="inside">43</text>
-<rect x="658.5" y="138" width="229.5" height="38" fill="#c47f4f"/>
-<text x="773.3" y="163" text-anchor="middle" class="inside">22</text>
-<text x="896" y="163" class="num">n=65</text>
-<text x="198" y="237" text-anchor="end" class="label">週1回通院を拒否</text>
-<rect x="210.0" y="210" width="319.1" height="38" fill="#2f7d8c"/>
-<text x="369.5" y="235" text-anchor="middle" class="inside">8</text>
-<rect x="529.1" y="210" width="358.9" height="38" fill="#c47f4f"/>
-<text x="708.5" y="235" text-anchor="middle" class="inside">9</text>
-<text x="896" y="235" class="num">n=17</text>
-<rect x="210" y="382" width="14" height="14" fill="#2f7d8c"/>
-<text x="230" y="394" class="legend">通院負担のみ</text>
-<rect x="420" y="382" width="14" height="14" fill="#c47f4f"/>
-<text x="440" y="394" class="legend">安全面不安のみ</text>
+<text x="230" y="30" class="title">図3. 訪問看護を含む確認頻度threshold</text>
+<text x="218" y="93" text-anchor="end" class="label">外来導入受容者</text>
+<rect x="230.0" y="66" width="234.6" height="38" fill="#245b67"/>
+<text x="347.3" y="91" text-anchor="middle" class="inside">41</text>
+<rect x="464.6" y="66" width="194.5" height="38" fill="#2f7d8c"/>
+<text x="561.9" y="91" text-anchor="middle" class="inside">34</text>
+<rect x="659.1" y="66" width="40.1" height="38" fill="#8bbbc3"/>
+<rect x="699.2" y="66" width="188.8" height="38" fill="#d8dee4"/>
+<text x="793.6" y="91" text-anchor="middle" class="inside">33</text>
+<text x="896" y="91" class="num">n=115</text>
+<rect x="230" y="322" width="14" height="14" fill="#245b67"/>
+<text x="250" y="334" class="legend">週5回確認まで受容</text>
+<rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>
+<text x="460" y="334" class="legend">週3回確認まで受容</text>
+<rect x="650" y="322" width="14" height="14" fill="#8bbbc3"/>
+<text x="670" y="334" class="legend">週2回確認まで受容</text>
+<rect x="230" y="346" width="14" height="14" fill="#d8dee4"/>
+<text x="250" y="358" class="legend">訪問看護追加は非受容/保留</text>
 </svg>

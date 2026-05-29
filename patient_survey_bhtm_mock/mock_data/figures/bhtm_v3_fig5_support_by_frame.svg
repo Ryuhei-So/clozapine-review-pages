@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="380" viewBox="0 0 940 380" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="230" y="30" class="title">図5. 回答前提別にみた訪問看護確認頻度threshold</text>
+<text x="218" y="93" text-anchor="end" class="label">現在の状態で回答</text>
+<rect x="230.0" y="66" width="230.3" height="38" fill="#245b67"/>
+<text x="345.1" y="91" text-anchor="middle" class="inside">14</text>
+<rect x="460.3" y="66" width="98.7" height="38" fill="#2f7d8c"/>
+<text x="509.7" y="91" text-anchor="middle" class="inside">6</text>
+<rect x="559.0" y="66" width="65.8" height="38" fill="#8bbbc3"/>
+<text x="591.9" y="91" text-anchor="middle" class="inside">4</text>
+<rect x="624.8" y="66" width="263.2" height="38" fill="#d8dee4"/>
+<text x="756.4" y="91" text-anchor="middle" class="inside">16</text>
+<text x="896" y="91" class="num">n=40</text>
+<text x="218" y="161" text-anchor="end" class="label">将来TRS相当を想定</text>
+<rect x="230.0" y="134" width="213.4" height="38" fill="#245b67"/>
+<text x="336.7" y="159" text-anchor="middle" class="inside">24</text>
+<rect x="443.4" y="134" width="177.8" height="38" fill="#2f7d8c"/>
+<text x="532.3" y="159" text-anchor="middle" class="inside">20</text>
+<rect x="621.2" y="134" width="62.2" height="38" fill="#8bbbc3"/>
+<text x="652.4" y="159" text-anchor="middle" class="inside">7</text>
+<rect x="683.5" y="134" width="204.5" height="38" fill="#d8dee4"/>
+<text x="785.7" y="159" text-anchor="middle" class="inside">23</text>
+<text x="896" y="159" class="num">n=74</text>
+<rect x="230" y="322" width="14" height="14" fill="#245b67"/>
+<text x="250" y="334" class="legend">週5回確認まで受容</text>
+<rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>
+<text x="460" y="334" class="legend">週3回確認まで受容</text>
+<rect x="650" y="322" width="14" height="14" fill="#8bbbc3"/>
+<text x="670" y="334" class="legend">週2回確認まで受容</text>
+<rect x="230" y="346" width="14" height="14" fill="#d8dee4"/>
+<text x="250" y="358" class="legend">訪問看護追加は非受容/保留</text>
+</svg>

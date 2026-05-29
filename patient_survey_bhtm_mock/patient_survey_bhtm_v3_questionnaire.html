@@ -122,18 +122,9 @@
       </section>
 
       <section class="step" data-step="8">
-        <h2>前向きに考えにくい理由</h2>
-        <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由として、より近いものを選んでください。</p>
-        <label class="choice"><input type="radio" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
-        <label class="choice"><input type="radio" name="visit_rejection_reason" value="safety_concern"> この通院頻度だけでは安全面が不安</label>
-        <p class="small">選択すると次へ進みます。</p>
-        <div class="nav"><button onclick="current=7; renderStep()">前へ</button></div>
-      </section>
-
-      <section class="step" data-step="9">
         <img class="hero" src="../patient_survey_mock/assets/outpatient_visit.png" alt="">
-        <h2>訪問看護を加える場合</h2>
-        <p>通院だけでは安全面が不安な場合に、同じ通院頻度のまま訪問看護を加える条件を伺います。</p>
+        <h2>訪問看護を加えて確認する場合</h2>
+        <p>安全に必要な確認頻度は医師が判断します。ここでは、先ほど受け入れられると答えた通院頻度を固定したまま、訪問看護を加えた確認頻度をどこまで受け入れられるかを伺います。</p>
         <div class="tt-card">
           <span class="pill" id="supportProgress">1/3</span>
           <h3 id="supportQuestion">週5回確認</h3>
@@ -143,7 +134,7 @@
         <div class="nav"><button onclick="prevSupport()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="11">
+      <section class="step" data-step="9">
         <h2>回答ありがとうございました</h2>
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
@@ -164,8 +155,6 @@ let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
 let responseFrame = null;
-let reasonSource = null;
-let currentRejectedVisit = null;
 let supportBaseVisit = null;
 let inpatientAccept = null;
 let participantCode = null;
@@ -193,9 +182,9 @@ const visitQuestions = [
 ];
 const supportByThreshold = {
   V3: ['V3N2'],
-  V2: ['V2N1','V2N3'],
-  V1: ['V1N1','V1N2','V1N4'],
-  NONE: ['V1N1','V1N2','V1N4']
+  V2: ['V2N3','V2N1'],
+  V1: ['V1N4','V1N2','V1N1'],
+  NONE: []
 };
 const supportLabels = {
   V3N2:'週5回確認: 週3回通院+週2回訪問看護',
@@ -205,15 +194,7 @@ const supportLabels = {
   V1N2:'週3回確認: 週1回通院+週2回訪問看護',
   V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
-const supportRefusalLabels = {
-  home_nursing_dislike:'訪問看護が入ること自体が嫌',
-  nursing_too_frequent:'訪問看護の回数が多すぎる',
-  still_safety_concern:'それでも安全面が不安',
-  other_unknown:'その他・わからない'
-};
 const supportAnswers = {};
-const visitRejectionReasons = {};
-let supportMode = null;
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -221,8 +202,7 @@ function renderStep(){
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
   if(current === 3 || current === 4) renderInfoStep(current);
   if(current === 7) renderVisitQuestion();
-  if(current === 8) renderVisitReason();
-  if(current === 9) renderSupportQuestion();
+  if(current === 8) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
@@ -237,13 +217,12 @@ function wireAutoAdvance(){
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 10){
+  if(current === 9){
     if(threshold === 'NO_CLOZAPINE') current = 5;
-    else if(supportWasAsked()) current = 9;
+    else if(supportEligible()) current = 8;
     else current = 7;
     renderStep(); return;
   }
-  if(current === 9){ current = 8; renderStep(); return; }
   if(current === 8){ current = 7; renderStep(); return; }
   if(current > 0){
     const target = current - 1;
@@ -384,10 +363,9 @@ function nextClozapine(){
   if(!val){ alert('はい、または、いいえを選んでください。'); return; }
   resetAfterClozapine();
   if(val === 'no'){
-    reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 10; renderStep(); return;
+    current = 9; renderStep(); return;
   }
   next();
 }
@@ -411,12 +389,19 @@ function answerVisit(accepted){
     setThresholdSummary();
     supportIndex = 0;
     supportBaseVisit = threshold;
-    supportMode = 'accepted_addon';
-    afterVisitSequence();
+    current = 8;
+    renderStep();
     return;
   }
-  currentRejectedVisit = visitQuestions[visitIndex][0];
-  current = 8; renderStep();
+  if(visitIndex < visitQuestions.length - 1){
+    visitIndex++;
+    renderStep();
+    return;
+  }
+  threshold = 'NONE';
+  setThresholdSummary();
+  current = 9;
+  renderStep();
 }
 function prevVisit(){
   if(visitIndex > 0){
@@ -430,75 +415,30 @@ function setThresholdSummary(){
   const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
   document.getElementById('thresholdSummary').textContent = labels[threshold];
 }
-function renderVisitReason(){
-  const label = visitQuestions.find(v => v[0] === currentRejectedVisit)?.[1] || 'この通院頻度';
-  document.getElementById('rejectionVisitLabel').textContent = label;
-  document.querySelectorAll('input[name="visit_rejection_reason"]').forEach(input => {
-    input.checked = visitRejectionReasons[currentRejectedVisit] === input.value;
-    input.onchange = saveVisitReason;
-  });
-}
-function saveVisitReason(){
-  const reason = document.querySelector('input[name="visit_rejection_reason"]:checked')?.value;
-  if(!reason){ alert('より近い理由を1つ選んでください。'); return; }
-  resetAfterVisitReason();
-  visitRejectionReasons[currentRejectedVisit] = reason;
-  if(reason === 'safety_concern'){
-    supportBaseVisit = currentRejectedVisit;
-    supportMode = 'safety_conversion';
-    current = 9; renderStep();
-    return;
-  }
-  if(visitIndex < visitQuestions.length - 1){
-    visitIndex++;
-    current = 7; renderStep();
-    return;
-  }
-  threshold = 'NONE';
-  setThresholdSummary();
-  afterVisitSequence();
-}
-function safetyConcernRecorded(){
-  return Object.values(visitRejectionReasons).some(reason => reason === 'safety_concern');
-}
-function supportWasAsked(){
-  return Object.keys(supportAnswers).length > 0;
-}
-function afterVisitSequence(){
-  supportIndex = 0;
-  current = supportMode ? 9 : 10;
-  renderStep();
+function supportEligible(){
+  return ['V3','V2','V1'].includes(threshold);
 }
 function renderSupportQuestion(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
+  if(!options.length){
+    current = 9;
+    renderStep();
+    return;
+  }
   const key = options[supportIndex];
   document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
   document.getElementById('supportQuestion').textContent = supportLabels[key];
   const choices = document.getElementById('supportChoices');
-  if(supportMode === 'accepted_addon'){
-    document.getElementById('supportDescription').textContent = 'この通院条件は前向きに考えられる場合に、訪問看護が加わると服用判断がどう変わるかを伺います。';
-    choices.innerHTML = `
-      <p class="question">訪問看護が加わると、クロザピン服用への気持ちはどう変わりますか？</p>
-      <div class="seg">
-        <label><input type="radio" name="support_current" value="positive"> より前向きになる</label>
-        <label><input type="radio" name="support_current" value="neutral"> あまり変わらない</label>
-        <label><input type="radio" name="support_current" value="negative"> むしろ前向きに考えにくくなる</label>
-        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
-      </div>
-      <p class="small">選択すると次へ進みます。</p>
-    `;
-  } else {
-    document.getElementById('supportDescription').textContent = 'この通院頻度だけでは安全面が不安な場合に、訪問看護が加われば前向きに考えられるかを伺います。';
-    choices.innerHTML = `
-      <p class="question">この条件ならクロザピン服用を前向きに考えたいですか？</p>
-      <div class="seg">
-        <label><input type="radio" name="support_current" value="accepted"> はい</label>
-        <label><input type="radio" name="support_current" value="refused"> いいえ</label>
-        <label><input type="radio" name="support_current" value="unsure"> わからない</label>
-      </div>
-      <p class="small">選択すると次へ進みます。</p>
-    `;
-  }
+  document.getElementById('supportDescription').textContent = '医師からこの確認頻度が安全上必要だと説明された場合を想像してください。';
+  choices.innerHTML = `
+    <p class="question">この条件までなら、クロザピン服用を前向きに考えたいですか？</p>
+    <div class="seg">
+      <label><input type="radio" name="support_current" value="accepted"> はい</label>
+      <label><input type="radio" name="support_current" value="refused"> いいえ</label>
+      <label><input type="radio" name="support_current" value="unsure"> わからない</label>
+    </div>
+    <p class="small">「いいえ」または「わからない」の場合は、確認頻度を少なくした条件へ進みます。</p>
+  `;
   document.querySelectorAll('input[name="support_current"]').forEach(input => {
     input.checked = supportAnswers[key] === input.value;
     input.onchange = () => answerSupport(input.value);
@@ -509,21 +449,17 @@ function answerSupport(answer){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   const key = options[supportIndex];
   supportAnswers[key] = answer;
-  if(supportMode === 'safety_conversion' && answer === 'accepted'){
+  if(answer === 'accepted'){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 10; renderStep(); return;
+    current = 9; renderStep(); return;
   }
   if(supportIndex < options.length - 1){
     supportIndex++;
     renderSupportQuestion();
     return;
   }
-  if(supportMode === 'accepted_addon'){
-    document.getElementById('supportSummary').textContent = '訪問看護追加の影響を回答済み';
-  } else {
-    document.getElementById('supportSummary').textContent = '訪問看護追加でも前向きに考えにくい/不明';
-  }
-  current = 10; renderStep();
+  document.getElementById('supportSummary').textContent = '訪問看護追加は前向きに考えにくい/不明';
+  current = 9; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -531,7 +467,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = supportMode === 'accepted_addon' ? 7 : 8;
+  current = 7;
   renderStep();
 }
 function clearChecked(name){
@@ -554,35 +490,21 @@ function resetAfterInpatient(){
 function resetAfterOutpatient(){
   visitIndex = 0;
   threshold = null;
-  currentRejectedVisit = null;
   supportBaseVisit = null;
   document.getElementById('thresholdSummary').textContent = '未回答';
-  clearChecked('visit_rejection_reason');
-  Object.keys(visitRejectionReasons).forEach(key => delete visitRejectionReasons[key]);
-  resetAfterVisitReason();
+  resetAfterVisit();
 }
 function resetAfterVisit(){
-  const currentVisit = visitQuestions[visitIndex]?.[0];
-  if(currentVisit){
-    delete visitRejectionReasons[currentVisit];
-  }
-  currentRejectedVisit = null;
-  clearChecked('visit_rejection_reason');
-  resetAfterVisitReason();
-}
-function resetAfterVisitReason(){
   supportIndex = 0;
   supportBaseVisit = null;
-  supportMode = null;
   Object.keys(supportAnswers).forEach(key => delete supportAnswers[key]);
   document.getElementById('supportSummary').textContent = '該当なし/未回答';
   clearChecked('support_current');
 }
 function resetAfterSupport(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'] || [];
-  const key = options[supportIndex];
-  if(key){
-    delete supportAnswers[key];
+  for(let i = supportIndex; i < options.length; i++){
+    delete supportAnswers[options[i]];
   }
   clearChecked('support_current');
 }

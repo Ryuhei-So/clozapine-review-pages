@@ -8,17 +8,24 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="230" y="30" class="title">図3. 訪問看護を含む確認頻度threshold</text>
-<text x="218" y="93" text-anchor="end" class="label">外来導入受容者</text>
+<text x="230" y="30" class="title">図5. 回答前提別にみた訪問看護確認頻度threshold</text>
+<text x="218" y="93" text-anchor="end" class="label">現在の状態で回答</text>
 <rect x="230.0" y="66" width="219.3" height="38" fill="#245b67"/>
-<text x="339.7" y="91" text-anchor="middle" class="inside">38</text>
-<rect x="449.3" y="66" width="150.1" height="38" fill="#2f7d8c"/>
-<text x="524.4" y="91" text-anchor="middle" class="inside">26</text>
-<rect x="599.4" y="66" width="63.5" height="38" fill="#8bbbc3"/>
-<text x="631.1" y="91" text-anchor="middle" class="inside">11</text>
-<rect x="662.9" y="66" width="225.1" height="38" fill="#d8dee4"/>
-<text x="775.4" y="91" text-anchor="middle" class="inside">39</text>
-<text x="896" y="91" class="num">n=114</text>
+<text x="339.7" y="91" text-anchor="middle" class="inside">10</text>
+<rect x="449.3" y="66" width="263.2" height="38" fill="#2f7d8c"/>
+<text x="580.9" y="91" text-anchor="middle" class="inside">12</text>
+<rect x="712.5" y="66" width="175.5" height="38" fill="#d8dee4"/>
+<text x="800.3" y="91" text-anchor="middle" class="inside">8</text>
+<text x="896" y="91" class="num">n=30</text>
+<text x="218" y="161" text-anchor="end" class="label">将来TRS相当を想定</text>
+<rect x="230.0" y="134" width="240.7" height="38" fill="#245b67"/>
+<text x="350.4" y="159" text-anchor="middle" class="inside">30</text>
+<rect x="470.7" y="134" width="128.4" height="38" fill="#2f7d8c"/>
+<text x="534.9" y="159" text-anchor="middle" class="inside">16</text>
+<rect x="599.1" y="134" width="32.1" height="38" fill="#8bbbc3"/>
+<rect x="631.2" y="134" width="256.8" height="38" fill="#d8dee4"/>
+<text x="759.6" y="159" text-anchor="middle" class="inside">32</text>
+<text x="896" y="159" class="num">n=82</text>
 <rect x="230" y="322" width="14" height="14" fill="#245b67"/>
 <text x="250" y="334" class="legend">週5回確認まで受容</text>
 <rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>
