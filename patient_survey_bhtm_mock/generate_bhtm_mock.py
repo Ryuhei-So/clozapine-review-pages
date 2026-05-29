@@ -586,6 +586,56 @@ def matrix_svg(path: Path, title: str, both: int, physician_only: int, patient_o
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def univariate_or(exposed: list[bool], outcome: list[bool]) -> tuple[float, float, float, int, int]:
+    a = sum(1 for e, y in zip(exposed, outcome) if e and y)
+    b = sum(1 for e, y in zip(exposed, outcome) if e and not y)
+    c = sum(1 for e, y in zip(exposed, outcome) if not e and y)
+    d = sum(1 for e, y in zip(exposed, outcome) if not e and not y)
+    # Haldane-Anscombe correction keeps mock estimates finite.
+    aa, bb, cc, dd = a + 0.5, b + 0.5, c + 0.5, d + 0.5
+    log_or = math.log((aa * dd) / (bb * cc))
+    se = math.sqrt(1 / aa + 1 / bb + 1 / cc + 1 / dd)
+    return math.exp(log_or), math.exp(log_or - 1.96 * se), math.exp(log_or + 1.96 * se), a, a + b
+
+
+def forest_or_svg(path: Path, title: str, rows: list[dict[str, str | float | int]]) -> None:
+    width, height = 980, 92 + 44 * len(rows)
+    left, top, right, bottom = 310, 58, 230, 54
+    plot_w = width - left - right
+    xmin, xmax = 0.25, 4.0
+    log_min, log_max = math.log(xmin), math.log(xmax)
+
+    def x_pos(value: float) -> float:
+        value = min(max(value, xmin), xmax)
+        return left + plot_w * (math.log(value) - log_min) / (log_max - log_min)
+
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for tick in [0.25, 0.5, 1, 2, 4]:
+        x = x_pos(tick)
+        stroke = "#1f2933" if tick == 1 else "#e5eaf0"
+        parts.append(f'<line x1="{x:.1f}" y1="{top-10}" x2="{x:.1f}" y2="{height-bottom}" stroke="{stroke}" stroke-width="{1.4 if tick == 1 else 1}"/>')
+        parts.append(f'<text x="{x:.1f}" y="{height-22}" text-anchor="middle" class="axis">{tick:g}</text>')
+    for i, row in enumerate(rows):
+        y = top + i * 44
+        label = str(row["label"])
+        orv = float(row["or"])
+        lo = float(row["lo"])
+        hi = float(row["hi"])
+        n_event = int(row["events"])
+        n_exp = int(row["exposed_n"])
+        x1, x2, xm = x_pos(lo), x_pos(hi), x_pos(orv)
+        parts.append(f'<text x="{left-12}" y="{y+6}" text-anchor="end" class="label">{esc(label)}</text>')
+        parts.append(f'<line x1="{x1:.1f}" y1="{y}" x2="{x2:.1f}" y2="{y}" stroke="#2f7d8c" stroke-width="2"/>')
+        parts.append(f'<circle cx="{xm:.1f}" cy="{y}" r="5.5" fill="#2f7d8c"/>')
+        parts.append(f'<text x="{left+plot_w+18}" y="{y+5}" class="num">{orv:.2f} ({lo:.2f}-{hi:.2f})</text>')
+        parts.append(f'<text x="{width-right+122}" y="{y+5}" class="axis">{n_event}/{n_exp}</text>')
+    parts.append(f'<text x="{left+plot_w/2}" y="{height-8}" text-anchor="middle" class="axis">Odds ratio（対数軸）</text>')
+    parts.append(f'<text x="{left+plot_w+18}" y="{top-24}" class="axis">OR (95% CI)</text>')
+    parts.append(f'<text x="{width-right+122}" y="{top-24}" class="axis">該当者中の過小評価</text>')
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def stacked_category_svg(path: Path, title: str, counts: Counter, labels: list[tuple[str, str]]) -> None:
     width, height = 980, 430
     left, top, right, bottom = 70, 70, 50, 96
@@ -750,6 +800,33 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     p = FIG / f"bhtm_v{version}_fig7_gap.svg"
     matrix_svg(p, "図7. 医師予測と患者本人の外来受容性", both, physician_only, patient_only, neither)
     fig_paths["fig7"] = rel(p)
+
+    threshold_by_id = {r["participant_id"]: r for r in threshold}
+    vignette_by_id = {r["participant_id"]: r for r in vignette}
+    underestimation = [
+        r["physician_expected_outpatient_acceptance"] == "0" and r["patient_outpatient_acceptance"] == "1"
+        for r in gap
+    ]
+    ids = [r["participant_id"] for r in gap]
+    factor_specs: list[tuple[str, list[bool]]] = [
+        ("現在の状態で回答", [participants[pid]["response_frame"] == "actual_current" for pid in ids]),
+        ("臨床家評価mGAF-F 40以下", [int(participants[pid]["clinician_mgaf_function"]) <= 40 for pid in ids]),
+        ("現在治療で困りごとあり", [participants[pid]["current_unmet_need"] == "あり" for pid in ids]),
+        ("主観的困りごと/つらさあり", [participants[pid]["subjective_distress"] == "あり" for pid in ids]),
+        ("入院導入は前向きに考えにくい", [vignette_by_id[pid]["inpatient_asked_accept"] == "0" for pid in ids]),
+        ("外来週1回通院なら受容", [threshold_by_id[pid]["threshold"] == "V1" for pid in ids]),
+        ("週5回確認まで受容", [support_level(threshold_by_id[pid]["support_accept_condition"]) == "S5" for pid in ids]),
+        ("副作用懸念が強い（最大4以上）", [int(threshold_by_id[pid]["side_effect_max_impact"]) >= 4 for pid in ids]),
+        ("有効性は十分（4以上）", [int(threshold_by_id[pid]["efficacy_sufficiency"]) >= 4 for pid in ids]),
+        ("過去拒否記載あり", [participants[pid]["past_clozapine_refusal_documented"] == "あり" for pid in ids]),
+    ]
+    or_rows: list[dict[str, str | float | int]] = []
+    for label, exposed in factor_specs:
+        orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
+        or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
+    p = FIG / f"bhtm_v{version}_fig8_underestimation_factors.svg"
+    forest_or_svg(p, "図8. 医師が外来導入受容性を過小評価しやすい患者特徴", or_rows)
+    fig_paths["fig8"] = rel(p)
     return fig_paths
 
 
@@ -786,7 +863,7 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
 
 def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: dict[str, str]) -> str:
     v = VERSIONS[version]
-    visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7"]
+    visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8"]
     reasons = {
         "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
@@ -795,6 +872,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
         "fig6": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig7": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
+        "fig8": "図7の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する因子を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像を探索的に記述する目的で置く。",
     }
     links = """
       <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="532" viewBox="0 0 980 532" role="img">
+<style>
+.title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.num{font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
+.axis,.legend,.note{font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#52616b}
+.inside{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:white}
+.big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="310" y="30" class="title">図8. 医師が外来導入受容性を過小評価しやすい患者特徴</text>
+<line x1="310.0" y1="48" x2="310.0" y2="478" stroke="#e5eaf0" stroke-width="1"/>
+<text x="310.0" y="510" text-anchor="middle" class="axis">0.25</text>
+<line x1="420.0" y1="48" x2="420.0" y2="478" stroke="#e5eaf0" stroke-width="1"/>
+<text x="420.0" y="510" text-anchor="middle" class="axis">0.5</text>
+<line x1="530.0" y1="48" x2="530.0" y2="478" stroke="#1f2933" stroke-width="1.4"/>
+<text x="530.0" y="510" text-anchor="middle" class="axis">1</text>
+<line x1="640.0" y1="48" x2="640.0" y2="478" stroke="#e5eaf0" stroke-width="1"/>
+<text x="640.0" y="510" text-anchor="middle" class="axis">2</text>
+<line x1="750.0" y1="48" x2="750.0" y2="478" stroke="#e5eaf0" stroke-width="1"/>
+<text x="750.0" y="510" text-anchor="middle" class="axis">4</text>
+<text x="298" y="64" text-anchor="end" class="label">現在の状態で回答</text>
+<line x1="359.3" y1="58" x2="554.7" y2="58" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="457.0" cy="58" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="63" class="num">0.63 (0.34-1.17)</text>
+<text x="872" y="63" class="axis">24/74</text>
+<text x="298" y="108" text-anchor="end" class="label">臨床家評価mGAF-F 40以下</text>
+<line x1="359.3" y1="102" x2="554.7" y2="102" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="457.0" cy="102" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="107" class="num">0.63 (0.34-1.17)</text>
+<text x="872" y="107" class="axis">24/74</text>
+<text x="298" y="152" text-anchor="end" class="label">現在治療で困りごとあり</text>
+<line x1="406.5" y1="146" x2="597.8" y2="146" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="502.2" cy="146" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="151" class="num">0.84 (0.46-1.53)</text>
+<text x="872" y="151" class="axis">39/105</text>
+<text x="298" y="196" text-anchor="end" class="label">主観的困りごと/つらさあり</text>
+<line x1="495.2" y1="190" x2="687.4" y2="190" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="591.3" cy="190" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="195" class="num">1.47 (0.80-2.70)</text>
+<text x="872" y="195" class="axis">43/100</text>
+<text x="298" y="240" text-anchor="end" class="label">入院導入は前向きに考えにくい</text>
+<line x1="446.9" y1="234" x2="636.0" y2="234" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="541.4" cy="234" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="239" class="num">1.07 (0.59-1.95)</text>
+<text x="872" y="239" class="axis">35/88</text>
+<text x="298" y="284" text-anchor="end" class="label">外来週1回通院なら受容</text>
+<line x1="577.1" y1="278" x2="750.0" y2="278" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="683.6" cy="278" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="283" class="num">2.63 (1.35-5.15)</text>
+<text x="872" y="283" class="axis">27/48</text>
+<text x="298" y="328" text-anchor="end" class="label">週5回確認まで受容</text>
+<line x1="591.1" y1="322" x2="750.0" y2="322" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="706.9" cy="322" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="327" class="num">3.05 (1.47-6.32)</text>
+<text x="872" y="327" class="axis">23/38</text>
+<text x="298" y="372" text-anchor="end" class="label">副作用懸念が強い（最大4以上）</text>
+<line x1="310.0" y1="366" x2="620.6" y2="366" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="452.5" cy="366" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="371" class="num">0.61 (0.21-1.77)</text>
+<text x="872" y="371" class="axis">63/166</text>
+<text x="298" y="416" text-anchor="end" class="label">有効性は十分（4以上）</text>
+<line x1="391.8" y1="410" x2="581.4" y2="410" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="486.6" cy="410" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="415" class="num">0.76 (0.42-1.38)</text>
+<text x="872" y="415" class="axis">34/95</text>
+<text x="298" y="460" text-anchor="end" class="label">過去拒否記載あり</text>
+<line x1="441.8" y1="454" x2="690.1" y2="454" stroke="#2f7d8c" stroke-width="2"/>
+<circle cx="566.0" cy="454" r="5.5" fill="#2f7d8c"/>
+<text x="768" y="459" class="num">1.25 (0.57-2.74)</text>
+<text x="872" y="459" class="axis">13/30</text>
+<text x="530.0" y="524" text-anchor="middle" class="axis">Odds ratio（対数軸）</text>
+<text x="768" y="34" class="axis">OR (95% CI)</text>
+<text x="872" y="34" class="axis">該当者中の過小評価</text>
+</svg>
