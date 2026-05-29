@@ -912,13 +912,13 @@ def questionnaire_html(version: int) -> str:
       </section>
 
       <section class="step" data-step="2">
-        <h2>回答の前提</h2>
-        <p>このデモでは、回答する前提を選んで確認できます。実際の研究では、事前の臨床家調査での評価に基づいて前提を設定します。</p>
-        <label class="choice"><input type="radio" name="response_frame" value="actual_current"> 現在の状態で答える（臨床家評価でmGAF-F 40以下など、クロザピン適応相当候補）</label>
-        <label class="choice"><input type="radio" name="response_frame" value="hypothetical_future"> もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合として答える</label>
+        <h2>参加者コード</h2>
+        <p>研究スタッフから渡された参加者コードを入力してください。入力されたコードに基づいて、回答していただく前提をシステム側で設定します。</p>
+        <label class="field-label" for="participantCode">参加者コード</label>
+        <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
         <div id="scenarioBox" class="notice hidden"></div>
-        <p class="small">選択すると次へ進みます。</p>
-        <div class="nav"><button onclick="prev()">前へ</button></div>
+        <p class="small">デモ用コード: <code>ACT001</code> は現在の状態で回答、<code>HYP001</code> は将来TRS相当を想定して回答します。本番では対応表を調査システム側で管理します。</p>
+        <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="3">
@@ -1074,6 +1074,13 @@ let currentRejectedVisit = null;
 let supportBaseVisit = null;
 let inpatientAccept = null;
 let outpatientAccept = null;
+let participantCode = null;
+const participantCodeMap = {
+  ACT001: {frame:'actual_current', label:'現在の状態で回答'},
+  ACT002: {frame:'actual_current', label:'現在の状態で回答'},
+  HYP001: {frame:'hypothetical_future', label:'将来TRS相当を想定して回答'},
+  HYP002: {frame:'hypothetical_future', label:'将来TRS相当を想定して回答'}
+};
 const sideEffects = [
   ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
   ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -1124,7 +1131,12 @@ function renderStep(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
-  document.querySelectorAll('input[name="response_frame"]').forEach(input => input.addEventListener('change', nextResponseFrame));
+  document.getElementById('participantCode')?.addEventListener('keydown', event => {
+    if(event.key === 'Enter'){
+      event.preventDefault();
+      nextParticipantCode();
+    }
+  });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
   document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
@@ -1143,8 +1155,9 @@ function prev(){
   if(current > 0){
     const target = current - 1;
     if(target === 2){
-      clearChecked('response_frame');
       responseFrame = null;
+      participantCode = null;
+      document.getElementById('participantCode').value = '';
       const box = document.getElementById('scenarioBox');
       box.textContent = '';
       box.classList.add('hidden');
@@ -1167,13 +1180,21 @@ function prev(){
     renderStep();
   }
 }
-function nextResponseFrame(){
-  const val = document.querySelector('input[name="response_frame"]:checked')?.value;
+function nextParticipantCode(){
+  const input = document.getElementById('participantCode');
+  const raw = input.value.trim().toUpperCase();
   const box = document.getElementById('scenarioBox');
-  if(!val){ box.textContent = '回答の前提を選んでください。'; box.classList.remove('hidden'); return; }
+  const match = participantCodeMap[raw];
+  if(!match){
+    box.textContent = '参加者コードを確認できませんでした。研究スタッフから渡されたコードを入力してください。';
+    box.classList.remove('hidden');
+    input.focus();
+    return;
+  }
   resetAfterNeed();
-  responseFrame = val;
-  box.textContent = scenarioText();
+  participantCode = raw;
+  responseFrame = match.frame;
+  box.textContent = `${match.label}: ${scenarioText()}`;
   box.classList.remove('hidden');
   next();
 }
@@ -1478,6 +1499,8 @@ def questionnaire_css() -> str:
     h2{font-size:19px;margin:4px 0 10px}h3{font-size:18px;margin:4px 0}.subq,.question{font-weight:700;margin-top:16px}.small{font-size:13px;color:#52616b}
     .choice,.seg label{display:block;border:1px solid #cbd5df;border-radius:8px;padding:12px;margin:8px 0;background:#fbfcfd;font-weight:600}
     input{margin-right:8px}.seg{display:grid;gap:0}.seg.two{grid-template-columns:1fr 1fr;gap:8px}
+    .field-label{display:block;font-weight:700;margin-top:12px}.text-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:13px 12px;font-size:16px;text-transform:uppercase;background:white}
+    code{background:#eef2f6;border:1px solid #d8dee4;border-radius:4px;padding:1px 5px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
     .full{width:100%}
