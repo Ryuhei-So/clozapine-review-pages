@@ -10,23 +10,25 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="230" y="30" class="title">図1. 回答前提別にみた入院導入・外来導入の受容パターン</text>
 <text x="218" y="95" text-anchor="end" class="label">現在の状態で回答</text>
-<rect x="230.0" y="68" width="313.6" height="42" fill="#2f7d8c"/>
-<text x="386.8" y="96" text-anchor="middle" class="inside">31</text>
-<rect x="543.6" y="68" width="151.8" height="42" fill="#0f766e"/>
-<text x="619.5" y="96" text-anchor="middle" class="inside">15</text>
-<rect x="695.4" y="68" width="70.8" height="42" fill="#9aa6b2"/>
-<text x="730.8" y="96" text-anchor="middle" class="inside">7</text>
-<rect x="766.2" y="68" width="151.8" height="42" fill="#d8dee4"/>
-<text x="842.1" y="96" text-anchor="middle" class="inside">15</text>
-<text x="926" y="95" class="num">n=68</text>
+<rect x="230.0" y="68" width="209.4" height="42" fill="#2f7d8c"/>
+<text x="334.7" y="96" text-anchor="middle" class="inside">21</text>
+<rect x="439.4" y="68" width="129.6" height="42" fill="#0f766e"/>
+<text x="504.2" y="96" text-anchor="middle" class="inside">13</text>
+<rect x="569.0" y="68" width="129.6" height="42" fill="#9aa6b2"/>
+<text x="633.8" y="96" text-anchor="middle" class="inside">13</text>
+<rect x="698.6" y="68" width="219.4" height="42" fill="#d8dee4"/>
+<text x="808.3" y="96" text-anchor="middle" class="inside">22</text>
+<text x="926" y="95" class="num">n=69</text>
 <text x="218" y="181" text-anchor="end" class="label">将来TRS相当を想定</text>
-<rect x="230.0" y="154" width="245.7" height="42" fill="#2f7d8c"/>
-<text x="352.9" y="182" text-anchor="middle" class="inside">40</text>
-<rect x="475.7" y="154" width="374.7" height="42" fill="#0f766e"/>
-<text x="663.1" y="182" text-anchor="middle" class="inside">61</text>
-<rect x="850.4" y="154" width="30.7" height="42" fill="#9aa6b2"/>
-<rect x="881.1" y="154" width="36.9" height="42" fill="#d8dee4"/>
-<text x="926" y="181" class="num">n=112</text>
+<rect x="230.0" y="154" width="204.5" height="42" fill="#2f7d8c"/>
+<text x="332.3" y="182" text-anchor="middle" class="inside">33</text>
+<rect x="434.5" y="154" width="278.9" height="42" fill="#0f766e"/>
+<text x="574.0" y="182" text-anchor="middle" class="inside">45</text>
+<rect x="713.5" y="154" width="99.2" height="42" fill="#9aa6b2"/>
+<text x="763.0" y="182" text-anchor="middle" class="inside">16</text>
+<rect x="812.6" y="154" width="105.4" height="42" fill="#d8dee4"/>
+<text x="865.3" y="182" text-anchor="middle" class="inside">17</text>
+<text x="926" y="181" class="num">n=111</text>
 <rect x="230" y="344" width="14" height="14" fill="#2f7d8c"/>
 <text x="250" y="356" class="legend">入院は難しいが外来なら前向き</text>
 <rect x="230" y="368" width="14" height="14" fill="#0f766e"/>

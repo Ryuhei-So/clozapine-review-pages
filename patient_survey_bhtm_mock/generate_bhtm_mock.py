@@ -51,7 +51,10 @@ VERSIONS = {
         "focus": "科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。",
         "improvements": [
             "臨床家調査のmGAF-Fに基づき、mGAF-F 40以下は現在の状態で回答、41以上は将来TRS相当となった場合の仮想シナリオで回答する2層構造にした。",
+            "参加者コードで回答前提と有効性/副作用の提示順を内部設定し、提示順によるプライミングを探索できるようにした。",
+            "クロザピン服用意向の前に、有効性の十分性評価と副作用別の服用判断への影響を取得する。",
             "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
+            "抽象的な外来導入Yes/Noは削除し、外来導入受容性は週3/週2/週1通院条件のいずれかを受容したかで定義する。",
             "通院のみ条件を拒否した場合は理由を記録し、安全面不安が含まれる場合だけ訪問看護追加モジュールへ進む。",
             "通院頻度ごとに拒否理由を集計し、安全面不安を含む拒否者の中で訪問看護追加がどの程度受容性を改善するかを示す。",
             "医師判断との接続図表を加え、臨床家調査と患者調査を別論文でも接続できる構成にした。",
@@ -133,12 +136,14 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         if target == "広い未使用外来患者" and not unmet:
             mgaf_function = max(mgaf_function, int(RNG.normalvariate(55, 5)))
         response_frame = "actual_current" if mgaf_function <= 40 else "hypothetical_future"
+        info_order = RNG.choice(["efficacy_first", "side_effect_first"])
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
                 "target_group": target,
                 "clinician_mgaf_function": str(mgaf_function),
                 "response_frame": response_frame,
+                "info_order": info_order,
                 "age": str(age),
                 "sex": RNG.choice(["女性", "男性", "回答しない"]),
                 "current_unmet_need": "あり" if unmet else "なし/軽度",
@@ -183,6 +188,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             }[key]
             side_effect_ratings[key] = min(5, max(1, int(round(RNG.normalvariate(base + 0.35 * past_refusal, 0.9)))))
         max_side_effect_impact = max(side_effect_ratings.values())
+        efficacy_sufficiency = min(5, max(1, int(round(RNG.normalvariate(3.1 + 0.45 * unmet + 0.25 * subjective_distress, 0.9)))))
         score = RNG.random()
         if not method_outpatient_accept:
             th = "NONE"
@@ -289,6 +295,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "threshold_label": max_burden,
                 "any_safety_concern_in_visit_refusal": str(int(any_safety_concern)),
                 **visit_reason_values,
+                "efficacy_sufficiency": str(efficacy_sufficiency),
                 "side_effect_max_impact": str(max_side_effect_impact),
                 **{f"side_effect_{key}": str(value) for key, value in side_effect_ratings.items()},
                 "support_eligible": str(int(support_eligible)),
@@ -300,8 +307,12 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "support_final_refusal_reason": support_final_refusal_reason,
             }
         )
+        # In the revised questionnaire, outpatient initiation acceptance is
+        # defined by accepting at least one concrete outpatient visit-frequency
+        # condition, not by an abstract outpatient yes/no item.
+        vignette[-1]["outpatient_asked_accept"] = str(int(th != "NONE"))
         physician_expect = RNG.random() < (0.30 + 0.20 * unmet - 0.10 * past_refusal)
-        patient_accept_outpatient = method_outpatient_accept and (th != "NONE" or support_accept_any)
+        patient_accept_outpatient = th != "NONE" or support_accept_any
         gap.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -820,7 +831,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     v = VERSIONS[version]
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7"]
     reasons = {
-        "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
+        "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "通院のみ条件を拒否した理由を、週3回・週2回・週1回の各通院頻度ごとに示す図。同じ“拒否”でも、頻度が高いと通院負担が中心なのか、頻度が下がると安全面不安が相対的に増えるのかを確認する。",
         "fig4": "各通院頻度で安全面不安を含む回答をした人に限定し、同じ通院頻度のまま訪問看護を何回上乗せすると受容へ転じるかを示す図。外来導入レジメン改善に直結する実装可能な情報として位置づける。",
@@ -917,22 +928,36 @@ def questionnaire_html(version: int) -> str:
         <label class="field-label" for="participantCode">参加者コード</label>
         <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
         <div id="scenarioBox" class="notice hidden"></div>
-        <p class="small">デモ用コード: <code>ACT001</code> は現在の状態で回答、<code>HYP001</code> は将来TRS相当を想定して回答します。本番では対応表を調査システム側で管理します。</p>
+        <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
       <section class="step" data-step="3">
+        <img class="hero" id="infoStepHero1" src="{ASSET_PREFIX}/clozapine_info.png" alt="">
+        <h2 id="infoStepTitle1">クロザピンの情報</h2>
+        <div id="infoStepBody1"></div>
+        <div class="nav" id="infoStepNav1"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="4">
+        <img class="hero" id="infoStepHero2" src="{ASSET_PREFIX}/clozapine_info.png" alt="">
+        <h2 id="infoStepTitle2">クロザピンの情報</h2>
+        <div id="infoStepBody2"></div>
+        <div class="nav" id="infoStepNav2"><button onclick="prev()">前へ</button></div>
+      </section>
+
+      <section class="step" data-step="5">
         <img class="hero" src="{ASSET_PREFIX}/clozapine_info.png" alt="">
         <h2>クロザピン服用について</h2>
         <p class="scenarioText"></p>
-        <p>主治医からクロザピンを勧められたとします。</p>
-        <p class="question">クロザピン服用を前向きに考えたいですか？</p>
+        <p>ここまでの有効性、副作用、採血・体調確認の説明を踏まえてお答えください。</p>
+        <p class="question">クロザピンという薬を使うこと自体を前向きに考えたいですか？</p>
         {yes_no_choices("clozapine_accept")}
         <p class="small">選択すると次へ進みます。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="4">
+      <section class="step" data-step="6">
         <img class="hero" src="{ASSET_PREFIX}/inpatient_start.png" alt="">
         <h2>入院して始める場合</h2>
         <p class="scenarioText"></p>
@@ -944,24 +969,11 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="5">
-        <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
-        <h2>外来で始める場合</h2>
-        <p class="scenarioText"></p>
-        <p>前の質問で伺った入院して始める方法とは別に、外来で始める方法について伺います。</p>
-        <p>主治医から、入院せず外来でクロザピンを始める方法を勧められたとします。通院、採血、体調確認を続けながら開始します。</p>
-        <p class="small">体調に異常があれば、必要時は入院へ切り替えます。</p>
-        <p class="question">この方法ならクロザピン服用を前向きに考えたいですか？</p>
-        {yes_no_choices("outpatient_accept")}
-        <p class="small">選択すると次へ進みます。</p>
-        <div class="nav"><button onclick="prev()">前へ</button></div>
-      </section>
-
-      <section class="step" data-step="6">
+      <section class="step" data-step="7">
         <img class="hero" src="{ASSET_PREFIX}/monitoring.png" alt="">
         <h2>通院だけで始める場合</h2>
         <p class="scenarioText"></p>
-        <p>入院せず外来でクロザピンを始める場合、最初6週間の通院頻度について、負担が大きい条件から順に伺います。</p>
+        <p>ここからは、入院せず外来でクロザピンを始める具体的な条件について伺います。最初6週間の通院頻度について、負担が大きい条件から順に伺います。</p>
         <div class="tt-card">
           <span class="pill" id="visitProgress">1/3</span>
           <h3 id="visitQuestion">最初6週間は週3回通院</h3>
@@ -971,15 +983,15 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button class="primary" onclick="answerVisit(true)">はい</button><button onclick="answerVisit(false)">いいえ</button><button onclick="prevVisit()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="7">
+      <section class="step" data-step="8">
         <h2>前向きに考えにくい理由</h2>
         <p><strong id="rejectionVisitLabel">この通院頻度</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="visit_burden"> 通院回数・移動の負担が大きい</label>
         <label class="choice"><input type="checkbox" name="visit_rejection_reason" value="safety_concern"> この通院回数だけでは安全面が不安</label>
-        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=6; renderStep()">前へ</button></div>
+        <div class="nav"><button class="primary" onclick="saveVisitReason()">次へ</button><button onclick="current=7; renderStep()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="8">
+      <section class="step" data-step="9">
         <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
         <h2>訪問看護を加える場合</h2>
         <p>通院だけでは安全面が不安な場合に、同じ通院頻度のまま訪問看護を加える条件を伺います。</p>
@@ -992,7 +1004,7 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button class="primary" onclick="answerSupport(true)">はい</button><button onclick="answerSupport(false)">いいえ</button><button onclick="prevSupport()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="9">
+      <section class="step" data-step="10">
         <h2>訪問看護を加えても前向きに考えにくい理由</h2>
         <p><strong id="supportReasonLabel">この条件</strong>を前向きに考えにくい理由を選んでください。</p>
         <label class="choice"><input type="radio" name="support_refusal_reason" value="home_nursing_dislike"> 訪問看護が入ること自体が嫌</label>
@@ -1003,33 +1015,12 @@ def questionnaire_html(version: int) -> str:
         <div class="nav"><button onclick="prevSupportReason()">前へ</button></div>
       </section>
 
-      <section class="step" data-step="10">
-        <h2>副作用可能性の影響</h2>
-        <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
-        <div class="tt-card">
-          <span class="pill" id="sideEffectProgress">1/6</span>
-          <h3 id="sideEffectLabel">眠気・だるさ</h3>
-          <p class="small"><strong id="sideEffectFrequency">比較的よくみられる</strong></p>
-          <p class="small" id="sideEffectDescription">日中の眠気や活動しづらさにつながることがあります。</p>
-        </div>
-        <div class="seg">
-          <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
-          <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
-          <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げになる</label>
-          <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
-          <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
-        </div>
-        <p class="small">選択すると次へ進みます。</p>
-        <div class="nav"><button onclick="prevSideEffect()">前へ</button></div>
-      </section>
-
       <section class="step" data-step="11">
         <h2>回答ありがとうございました</h2>
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
           <strong>入院導入:</strong> <span id="inpatientSummary">未回答</span><br>
-          <strong>外来導入:</strong> <span id="outpatientSummary">未回答</span><br>
-          <strong>通院頻度threshold:</strong> <span id="thresholdSummary">未回答</span><br>
+          <strong>外来導入の通院条件:</strong> <span id="thresholdSummary">未回答</span><br>
           <strong>訪問看護追加:</strong> <span id="supportSummary">該当なし/未回答</span>
         </div>
         <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
@@ -1073,13 +1064,14 @@ let reasonSource = null;
 let currentRejectedVisit = null;
 let supportBaseVisit = null;
 let inpatientAccept = null;
-let outpatientAccept = null;
 let participantCode = null;
+let infoOrder = null;
+let effectivenessAnswer = null;
 const participantCodeMap = {
-  ACT001: {frame:'actual_current', label:'現在の状態で回答'},
-  ACT002: {frame:'actual_current', label:'現在の状態で回答'},
-  HYP001: {frame:'hypothetical_future', label:'将来TRS相当を想定して回答'},
-  HYP002: {frame:'hypothetical_future', label:'将来TRS相当を想定して回答'}
+  ACT001: {frame:'actual_current', order:'efficacy_first', label:'現在の状態で回答'},
+  ACT002: {frame:'actual_current', order:'side_effect_first', label:'現在の状態で回答'},
+  HYP001: {frame:'hypothetical_future', order:'efficacy_first', label:'将来TRS相当を想定して回答'},
+  HYP002: {frame:'hypothetical_future', order:'side_effect_first', label:'将来TRS相当を想定して回答'}
 };
 const sideEffects = [
   ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
@@ -1123,11 +1115,11 @@ function renderStep(){
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
-  if(current === 6) renderVisitQuestion();
-  if(current === 7) renderVisitReason();
-  if(current === 8) renderSupportQuestion();
-  if(current === 9) renderSupportReason();
-  if(current === 10) renderSideEffectQuestion();
+  if(current === 3 || current === 4) renderInfoStep(current);
+  if(current === 7) renderVisitQuestion();
+  if(current === 8) renderVisitReason();
+  if(current === 9) renderSupportQuestion();
+  if(current === 10) renderSupportReason();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
@@ -1139,42 +1131,40 @@ function wireAutoAdvance(){
   });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
-  document.querySelectorAll('input[name="outpatient_accept"]').forEach(input => input.addEventListener('change', nextOutpatient));
-  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.addEventListener('change', nextSideEffect));
   document.querySelectorAll('input[name="support_refusal_reason"]').forEach(input => input.addEventListener('change', saveSupportReason));
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 11){ current = 10; renderStep(); return; }
-  if(current === 10 && threshold === 'NO_CLOZAPINE'){ current = 3; renderStep(); return; }
-  if(current === 10 && threshold === 'NO_OUTPATIENT'){ current = 5; renderStep(); return; }
-  if(current === 10 && supportWasAsked()){ current = 8; renderStep(); return; }
-  if(current === 10 && !supportWasAsked()){ current = 6; renderStep(); return; }
+  if(current === 11){
+    if(threshold === 'NO_CLOZAPINE') current = 5;
+    else if(supportWasAsked()) current = 9;
+    else current = 7;
+    renderStep(); return;
+  }
+  if(current === 9){ current = 8; renderStep(); return; }
   if(current === 8){ current = 7; renderStep(); return; }
-  if(current === 7){ current = 6; renderStep(); return; }
   if(current > 0){
     const target = current - 1;
     if(target === 2){
       responseFrame = null;
       participantCode = null;
+      infoOrder = null;
       document.getElementById('participantCode').value = '';
       const box = document.getElementById('scenarioBox');
       box.textContent = '';
       box.classList.add('hidden');
       resetAfterNeed();
     } else if(target === 3){
+      resetInfoAnswers();
+      resetAfterNeed();
+    } else if(target === 4){
       clearChecked('clozapine_accept');
       resetAfterClozapine();
-    } else if(target === 4){
+    } else if(target === 5){
       clearChecked('inpatient_accept');
       inpatientAccept = null;
       document.getElementById('inpatientSummary').textContent = '未回答';
       resetAfterInpatient();
-    } else if(target === 5){
-      clearChecked('outpatient_accept');
-      outpatientAccept = null;
-      document.getElementById('outpatientSummary').textContent = '未回答';
-      resetAfterOutpatient();
     }
     current = target;
     renderStep();
@@ -1194,18 +1184,75 @@ function nextParticipantCode(){
   resetAfterNeed();
   participantCode = raw;
   responseFrame = match.frame;
+  infoOrder = match.order;
   box.textContent = `${match.label}: ${scenarioText()}`;
   box.classList.remove('hidden');
   next();
 }
-function renderSideEffectQuestion(){
+function firstInfoKind(){
+  return infoOrder === 'side_effect_first' ? 'side_effect' : 'efficacy';
+}
+function infoKindForStep(step){
+  const first = firstInfoKind();
+  if(step === 3) return first;
+  return first === 'efficacy' ? 'side_effect' : 'efficacy';
+}
+function renderInfoStep(step){
+  const kind = infoKindForStep(step);
+  const suffix = step === 3 ? '1' : '2';
+  document.getElementById(`infoStepHero${suffix}`)?.setAttribute('src', kind === 'efficacy' ? '../patient_survey_mock/assets/clozapine_info.png' : '../patient_survey_mock/assets/monitoring.png');
+  if(kind === 'efficacy') renderEfficacyQuestion(suffix);
+  else renderSideEffectQuestion(suffix);
+}
+function renderEfficacyQuestion(suffix){
+  document.getElementById(`infoStepTitle${suffix}`).textContent = '期待される有効性';
+  document.getElementById(`infoStepBody${suffix}`).innerHTML = `
+    <p class="scenarioText">${scenarioText()}</p>
+    <p>クロザピンは、複数の抗精神病薬で十分に改善しない統合失調症に対して、症状や生活のしづらさを改善する可能性がある薬です。</p>
+    <p>すべての人に十分効くわけではありませんが、他の治療で改善が乏しい場合に、改善を期待して検討されます。</p>
+    <p class="question">このような改善可能性は、クロザピンを試す理由としてどの程度十分だと思いますか？</p>
+    <div class="seg">
+      <label><input type="radio" name="efficacy_sufficiency" value="1"> 1. まったく十分ではない</label>
+      <label><input type="radio" name="efficacy_sufficiency" value="2"> 2. あまり十分ではない</label>
+      <label><input type="radio" name="efficacy_sufficiency" value="3"> 3. どちらともいえない</label>
+      <label><input type="radio" name="efficacy_sufficiency" value="4"> 4. ある程度十分だと思う</label>
+      <label><input type="radio" name="efficacy_sufficiency" value="5"> 5. 十分だと思う</label>
+    </div>
+    <p class="small">選択すると次へ進みます。</p>
+  `;
+  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prev()">前へ</button>';
+  document.querySelectorAll('input[name="efficacy_sufficiency"]').forEach(input => {
+    input.checked = effectivenessAnswer === input.value;
+    input.addEventListener('change', () => {
+      effectivenessAnswer = input.value;
+      next();
+    });
+  });
+}
+function renderSideEffectQuestion(suffix){
+  document.getElementById(`infoStepTitle${suffix}`).textContent = '副作用可能性の影響';
   const [key, label, frequency, description] = sideEffects[sideEffectIndex];
-  document.getElementById('sideEffectProgress').textContent = `${sideEffectIndex + 1}/${sideEffects.length}`;
-  document.getElementById('sideEffectLabel').textContent = label;
-  document.getElementById('sideEffectFrequency').textContent = frequency;
-  document.getElementById('sideEffectDescription').textContent = description;
+  document.getElementById(`infoStepBody${suffix}`).innerHTML = `
+    <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
+    <div class="tt-card">
+      <span class="pill">${sideEffectIndex + 1}/${sideEffects.length}</span>
+      <h3>${label}</h3>
+      <p class="small"><strong>${frequency}</strong></p>
+      <p class="small">${description}</p>
+    </div>
+    <div class="seg">
+      <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
+      <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
+      <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げになる</label>
+      <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
+      <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
+    </div>
+    <p class="small">選択すると次へ進みます。</p>
+  `;
+  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prevSideEffect()">前へ</button>';
   document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
     input.checked = sideEffectAnswers[key] === input.value;
+    input.addEventListener('change', nextSideEffect);
   });
 }
 function nextSideEffect(){
@@ -1216,21 +1263,18 @@ function nextSideEffect(){
   if(sideEffectIndex < sideEffects.length - 1){
     sideEffectIndex++;
     document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.checked = false);
-    renderSideEffectQuestion();
+    renderStep();
     return;
   }
-  current = 11; renderStep();
+  next();
 }
 function prevSideEffect(){
   if(sideEffectIndex > 0){
     sideEffectIndex--;
-    renderSideEffectQuestion();
+    renderStep();
     return;
   }
-  if(threshold === 'NO_CLOZAPINE') current = 3;
-  else if(threshold === 'NO_OUTPATIENT') current = 5;
-  else if(supportWasAsked()) current = 8;
-  else current = 6;
+  prev();
   renderStep();
 }
 function nextClozapine(){
@@ -1241,7 +1285,7 @@ function nextClozapine(){
     reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 10; renderStep(); return;
+    current = 11; renderStep(); return;
   }
   next();
 }
@@ -1251,21 +1295,6 @@ function nextInpatient(){
   resetAfterInpatient();
   inpatientAccept = val === 'yes';
   document.getElementById('inpatientSummary').textContent = inpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
-  next();
-}
-function nextOutpatient(){
-  const val = document.querySelector('input[name="outpatient_accept"]:checked')?.value;
-  if(!val){ alert('はい、または、いいえを選んでください。'); return; }
-  resetAfterOutpatient();
-  outpatientAccept = val === 'yes';
-  document.getElementById('outpatientSummary').textContent = outpatientAccept ? '前向きに考えたい' : '前向きに考えにくい';
-  if(!outpatientAccept){
-    threshold = 'NO_OUTPATIENT';
-    document.getElementById('thresholdSummary').textContent = '外来導入を前向きに考えにくい';
-    current = 10;
-    renderStep();
-    return;
-  }
   next();
 }
 function renderVisitQuestion(){
@@ -1283,7 +1312,7 @@ function answerVisit(accepted){
     return;
   }
   currentRejectedVisit = visitQuestions[visitIndex][0];
-  current = 7; renderStep();
+  current = 8; renderStep();
 }
 function prevVisit(){
   if(visitIndex > 0){
@@ -1311,12 +1340,12 @@ function saveVisitReason(){
   visitRejectionReasons[currentRejectedVisit] = reasons;
   if(reasons.includes('safety_concern')){
     supportBaseVisit = currentRejectedVisit;
-    current = 8; renderStep();
+    current = 9; renderStep();
     return;
   }
   if(visitIndex < visitQuestions.length - 1){
     visitIndex++;
-    current = 6; renderStep();
+    current = 7; renderStep();
     return;
   }
   threshold = 'NONE';
@@ -1333,11 +1362,11 @@ function afterVisitSequence(){
   supportIndex = 0;
   if(safetyConcernRecorded()){
     supportBaseVisit = Object.keys(visitRejectionReasons).find(key => visitRejectionReasons[key].includes('safety_concern')) || threshold;
-    current = 8;
+    current = 9;
     renderStep();
     return;
   }
-  current = 10;
+  current = 11;
   renderStep();
 }
 function renderSupportQuestion(){
@@ -1354,9 +1383,9 @@ function answerSupport(accepted){
   supportAnswers[key] = accepted ? 'accepted' : 'refused';
   if(accepted){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 10; renderStep(); return;
+    current = 11; renderStep(); return;
   }
-  current = 9; renderStep();
+  current = 10; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -1364,7 +1393,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = 7; renderStep();
+  current = 8; renderStep();
 }
 function renderSupportReason(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
@@ -1383,34 +1412,29 @@ function saveSupportReason(){
   supportRefusalReasons[key] = reason;
   if(reason === 'still_safety_concern' && supportIndex < options.length - 1){
     supportIndex++;
-    current = 8; renderStep(); return;
+    current = 9; renderStep(); return;
   }
   document.getElementById('supportSummary').textContent = `${supportLabels[key]}でも前向きに考えにくい（理由: ${supportRefusalLabels[reason]}）`;
-  current = 10; renderStep();
+  current = 11; renderStep();
 }
 function prevSupportReason(){
-  current = 8; renderStep();
+  current = 9; renderStep();
 }
 function clearChecked(name){
   document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = false);
 }
 function resetAfterNeed(){
+  resetInfoAnswers();
   clearChecked('clozapine_accept');
   resetAfterClozapine();
 }
 function resetAfterClozapine(){
   inpatientAccept = null;
-  outpatientAccept = null;
   clearChecked('inpatient_accept');
-  clearChecked('outpatient_accept');
   document.getElementById('inpatientSummary').textContent = '未回答';
-  document.getElementById('outpatientSummary').textContent = '未回答';
   resetAfterOutpatient();
 }
 function resetAfterInpatient(){
-  outpatientAccept = null;
-  clearChecked('outpatient_accept');
-  document.getElementById('outpatientSummary').textContent = '未回答';
   resetAfterOutpatient();
 }
 function resetAfterOutpatient(){
@@ -1452,9 +1476,14 @@ function resetAfterSupport(){
   resetAfterSupportReason();
 }
 function resetAfterSupportReason(){
+  clearChecked('support_refusal_reason');
+}
+function resetInfoAnswers(){
   sideEffectIndex = 0;
+  effectivenessAnswer = null;
   Object.keys(sideEffectAnswers).forEach(key => delete sideEffectAnswers[key]);
   clearChecked('side_effect_current');
+  clearChecked('efficacy_sufficiency');
 }
 function scenarioText(){
   if(responseFrame === 'actual_current') return '以下では、現在のあなたの状態で、主治医からクロザピンを勧められた場面を想像してください。';

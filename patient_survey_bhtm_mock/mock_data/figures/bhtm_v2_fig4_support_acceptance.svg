@@ -10,23 +10,23 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="230" y="30" class="title">図4. 安全面不安を含む拒否者での訪問看護追加後の受容</text>
 <text x="218" y="93" text-anchor="end" class="label">週3回通院で安全面不安</text>
-<rect x="230.0" y="66" width="130.7" height="38" fill="#245b67"/>
-<text x="295.3" y="91" text-anchor="middle" class="inside">5</text>
-<rect x="360.7" y="66" width="627.3" height="38" fill="#d8dee4"/>
-<text x="674.3" y="91" text-anchor="middle" class="inside">24</text>
-<text x="996" y="91" class="num">n=29</text>
+<rect x="230.0" y="66" width="197.7" height="38" fill="#245b67"/>
+<text x="328.9" y="91" text-anchor="middle" class="inside">6</text>
+<rect x="427.7" y="66" width="560.3" height="38" fill="#d8dee4"/>
+<text x="707.9" y="91" text-anchor="middle" class="inside">17</text>
+<text x="996" y="91" class="num">n=23</text>
 <text x="218" y="165" text-anchor="end" class="label">週2回通院で安全面不安</text>
-<rect x="230.0" y="138" width="296.6" height="38" fill="#2f7d8c"/>
-<text x="378.3" y="163" text-anchor="middle" class="inside">9</text>
-<rect x="526.6" y="138" width="461.4" height="38" fill="#d8dee4"/>
-<text x="757.3" y="163" text-anchor="middle" class="inside">14</text>
-<text x="996" y="163" class="num">n=23</text>
+<rect x="230.0" y="138" width="189.5" height="38" fill="#2f7d8c"/>
+<text x="324.8" y="163" text-anchor="middle" class="inside">5</text>
+<rect x="419.5" y="138" width="75.8" height="38" fill="#5f9ea8"/>
+<text x="457.4" y="163" text-anchor="middle" class="inside">2</text>
+<rect x="495.3" y="138" width="492.7" height="38" fill="#d8dee4"/>
+<text x="741.6" y="163" text-anchor="middle" class="inside">13</text>
+<text x="996" y="163" class="num">n=20</text>
 <text x="218" y="237" text-anchor="end" class="label">週1回通院で安全面不安</text>
-<rect x="230.0" y="210" width="216.6" height="38" fill="#0f766e"/>
-<text x="338.3" y="235" text-anchor="middle" class="inside">2</text>
-<rect x="446.6" y="210" width="541.4" height="38" fill="#d8dee4"/>
-<text x="717.3" y="235" text-anchor="middle" class="inside">5</text>
-<text x="996" y="235" class="num">n=7</text>
+<rect x="230.0" y="210" width="758.0" height="38" fill="#d8dee4"/>
+<text x="609.0" y="235" text-anchor="middle" class="inside">2</text>
+<text x="996" y="235" class="num">n=2</text>
 <rect x="230" y="376" width="14" height="14" fill="#245b67"/>
 <text x="250" y="388" class="legend">週5回確認: 週3回通院+週2回訪問看護</text>
 <rect x="230" y="400" width="14" height="14" fill="#2f7d8c"/>
