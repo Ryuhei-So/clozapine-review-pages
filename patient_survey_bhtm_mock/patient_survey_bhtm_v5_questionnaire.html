@@ -15,6 +15,8 @@
     .choice,.seg label{display:block;border:1px solid #cbd5df;border-radius:8px;padding:12px;margin:8px 0;background:#fbfcfd;font-weight:600}
     input{margin-right:8px}.seg{display:grid;gap:0}.seg.two{grid-template-columns:1fr 1fr;gap:8px}
     .field-label{display:block;font-weight:700;margin-top:12px}.text-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:13px 12px;font-size:16px;text-transform:uppercase;background:white}
+    .select-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:12px;font-size:16px;background:white}
+    .background-block{border-top:1px solid #d8dee4;margin-top:14px;padding-top:10px}
     code{background:#eef2f6;border:1px solid #d8dee4;border-radius:4px;padding:1px 5px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
@@ -59,6 +61,66 @@
         <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
         <div id="scenarioBox" class="notice hidden"></div>
         <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
+
+        <div class="background-block">
+          <h3>生活・通院背景</h3>
+          <p class="small">生年月日、性別、診断などは電子カルテから取得します。ここでは入院・通院・訪問看護の負担に関係する項目だけ伺います。</p>
+          <label class="field-label" for="dayActivity">日中活動</label>
+          <select class="select-input bg-required" id="dayActivity" name="day_activity">
+            <option value="">選択してください</option>
+            <option>就労中</option><option>就学中</option><option>福祉的就労</option><option>デイケア等</option><option>主に自宅</option><option>その他</option>
+          </select>
+          <label class="field-label" for="dayActivityFrequency">日中活動の頻度</label>
+          <select class="select-input bg-required" id="dayActivityFrequency" name="day_activity_frequency">
+            <option value="">選択してください</option>
+            <option>週0-1日</option><option>週2-3日</option><option>週4日以上</option><option>該当なし</option>
+          </select>
+          <label class="field-label" for="livingArrangement">同居状況</label>
+          <select class="select-input bg-required" id="livingArrangement" name="living_arrangement">
+            <option value="">選択してください</option>
+            <option>一人暮らし</option><option>家族等と同居</option><option>施設・グループホーム</option><option>その他</option>
+          </select>
+          <label class="field-label" for="familySupport">同居家族からの支援</label>
+          <select class="select-input bg-required" id="familySupport" name="family_support">
+            <option value="">選択してください</option>
+            <option>受けられる</option><option>少し受けられる</option><option>ほぼ受けられない</option><option>同居なし</option>
+          </select>
+          <label class="field-label" for="caregivingRole">本人が誰かのケアを担っていますか</label>
+          <select class="select-input bg-required" id="caregivingRole" name="caregiving_role">
+            <option value="">選択してください</option>
+            <option>なし</option><option>子どものケア</option><option>親・配偶者等のケア</option><option>その他</option>
+          </select>
+          <label class="field-label" for="travelTimeOneWay">通院にかかる片道時間</label>
+          <select class="select-input bg-required" id="travelTimeOneWay" name="travel_time_one_way">
+            <option value="">選択してください</option>
+            <option>30分未満</option><option>30-60分</option><option>60-90分</option><option>90分以上</option>
+          </select>
+          <label class="field-label" for="transport">主な通院手段</label>
+          <select class="select-input bg-required" id="transport" name="transport">
+            <option value="">選択してください</option>
+            <option>自分で運転</option><option>公共交通</option><option>家族送迎</option><option>福祉交通・タクシー</option><option>徒歩・自転車</option><option>その他</option>
+          </select>
+          <label class="field-label" for="homeNursingCurrent">訪問看護の現在利用</label>
+          <select class="select-input bg-required" id="homeNursingCurrent" name="home_nursing_current">
+            <option value="">選択してください</option>
+            <option>あり</option><option>過去あり</option><option>なし</option>
+          </select>
+          <label class="field-label" for="mainIncomeSource">主な収入源</label>
+          <select class="select-input bg-required" id="mainIncomeSource" name="main_income_source">
+            <option value="">選択してください</option>
+            <option>就労収入</option><option>障害年金</option><option>生活保護</option><option>家族支援</option><option>その他</option><option>答えたくない</option>
+          </select>
+          <label class="field-label" for="publicAssistance">生活保護</label>
+          <select class="select-input bg-required" id="publicAssistance" name="public_assistance">
+            <option value="">選択してください</option>
+            <option>あり</option><option>なし</option><option>答えたくない</option>
+          </select>
+          <label class="field-label" for="economicStrain">経済的余裕</label>
+          <select class="select-input bg-required" id="economicStrain" name="economic_strain">
+            <option value="">選択してください</option>
+            <option>困っていない</option><option>少し困る</option><option>かなり困る</option><option>答えたくない</option>
+          </select>
+        </div>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -262,6 +324,7 @@ function nextParticipantCode(){
     input.focus();
     return;
   }
+  if(!validateBackgroundFields()) return;
   resetAfterNeed();
   participantCode = raw;
   responseFrame = match.frame;
@@ -269,6 +332,15 @@ function nextParticipantCode(){
   box.textContent = `${match.label}: ${scenarioText()}`;
   box.classList.remove('hidden');
   next();
+}
+function validateBackgroundFields(){
+  const missing = Array.from(document.querySelectorAll('.bg-required')).filter(el => !el.value);
+  if(missing.length){
+    missing[0].focus();
+    alert('生活・通院背景で未回答の項目があります。');
+    return false;
+  }
+  return true;
 }
 function firstInfoKind(){
   return infoOrder === 'side_effect_first' ? 'side_effect' : 'efficacy';

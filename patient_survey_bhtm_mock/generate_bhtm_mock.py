@@ -104,6 +104,20 @@ SUPPORT_THRESHOLD_LABELS = {
     "SNONE": "訪問看護追加は非受容/保留",
 }
 
+BACKGROUND_OPTIONS = {
+    "day_activity": ["就労中", "就学中", "福祉的就労", "デイケア等", "主に自宅", "その他"],
+    "day_activity_frequency": ["週0-1日", "週2-3日", "週4日以上", "該当なし"],
+    "living_arrangement": ["一人暮らし", "家族等と同居", "施設・グループホーム", "その他"],
+    "family_support": ["受けられる", "少し受けられる", "ほぼ受けられない", "同居なし"],
+    "caregiving_role": ["なし", "子どものケア", "親・配偶者等のケア", "その他"],
+    "travel_time_one_way": ["30分未満", "30-60分", "60-90分", "90分以上"],
+    "transport": ["自分で運転", "公共交通", "家族送迎", "福祉交通・タクシー", "徒歩・自転車", "その他"],
+    "home_nursing_current": ["あり", "過去あり", "なし"],
+    "main_income_source": ["就労収入", "障害年金", "生活保護", "家族支援", "その他", "答えたくない"],
+    "public_assistance": ["あり", "なし", "答えたくない"],
+    "economic_strain": ["困っていない", "少し困る", "かなり困る", "答えたくない"],
+}
+
 
 def ensure_dirs() -> None:
     DATA.mkdir(exist_ok=True)
@@ -160,6 +174,32 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             mgaf_function = max(mgaf_function, int(RNG.normalvariate(55, 5)))
         response_frame = "actual_current" if mgaf_function <= 40 else "hypothetical_future"
         info_order = RNG.choice(["efficacy_first", "side_effect_first"])
+        living_arrangement = RNG.choices(
+            BACKGROUND_OPTIONS["living_arrangement"],
+            weights=[0.32, 0.48, 0.14, 0.06],
+            k=1,
+        )[0]
+        family_support = (
+            RNG.choices(["受けられる", "少し受けられる", "ほぼ受けられない"], weights=[0.42, 0.38, 0.20], k=1)[0]
+            if living_arrangement == "家族等と同居"
+            else "同居なし"
+        )
+        day_activity = RNG.choices(
+            BACKGROUND_OPTIONS["day_activity"],
+            weights=[0.18, 0.02, 0.18, 0.18, 0.38, 0.06],
+            k=1,
+        )[0]
+        day_activity_frequency = (
+            RNG.choices(["週0-1日", "週2-3日", "週4日以上"], weights=[0.22, 0.42, 0.36], k=1)[0]
+            if day_activity not in {"主に自宅", "その他"}
+            else "該当なし"
+        )
+        main_income_source = RNG.choices(
+            BACKGROUND_OPTIONS["main_income_source"],
+            weights=[0.18, 0.36, 0.18, 0.14, 0.08, 0.06],
+            k=1,
+        )[0]
+        public_assistance = "あり" if main_income_source == "生活保護" else RNG.choices(["なし", "答えたくない"], weights=[0.92, 0.08], k=1)[0]
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -173,6 +213,17 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "current_unmet_need": "あり" if unmet else "なし/軽度",
                 "subjective_distress": "あり" if subjective_distress else "なし/軽度",
                 "past_clozapine_refusal_documented": "あり" if past_refusal else "なし",
+                "day_activity": day_activity,
+                "day_activity_frequency": day_activity_frequency,
+                "living_arrangement": living_arrangement,
+                "family_support": family_support,
+                "caregiving_role": RNG.choices(BACKGROUND_OPTIONS["caregiving_role"], weights=[0.78, 0.08, 0.10, 0.04], k=1)[0],
+                "travel_time_one_way": RNG.choices(BACKGROUND_OPTIONS["travel_time_one_way"], weights=[0.44, 0.38, 0.14, 0.04], k=1)[0],
+                "transport": RNG.choices(BACKGROUND_OPTIONS["transport"], weights=[0.18, 0.32, 0.18, 0.12, 0.16, 0.04], k=1)[0],
+                "home_nursing_current": RNG.choices(BACKGROUND_OPTIONS["home_nursing_current"], weights=[0.26, 0.13, 0.61], k=1)[0],
+                "main_income_source": main_income_source,
+                "public_assistance": public_assistance,
+                "economic_strain": RNG.choices(BACKGROUND_OPTIONS["economic_strain"], weights=[0.35, 0.38, 0.20, 0.07], k=1)[0],
             }
         )
 
@@ -864,6 +915,13 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         ("副作用懸念が強い（最大4以上）", [int(threshold_by_id[pid]["side_effect_max_impact"]) >= 4 for pid in ids]),
         ("有効性は十分（4以上）", [int(threshold_by_id[pid]["efficacy_sufficiency"]) >= 4 for pid in ids]),
         ("過去拒否記載あり", [participants[pid]["past_clozapine_refusal_documented"] == "あり" for pid in ids]),
+        ("日中活動あり", [participants[pid]["day_activity"] in {"就労中", "就学中", "福祉的就労", "デイケア等"} for pid in ids]),
+        ("同居家族から支援あり", [participants[pid]["family_support"] == "受けられる" for pid in ids]),
+        ("ケア役割あり", [participants[pid]["caregiving_role"] != "なし" for pid in ids]),
+        ("通院片道60分以上", [participants[pid]["travel_time_one_way"] in {"60-90分", "90分以上"} for pid in ids]),
+        ("訪問看護を現在利用", [participants[pid]["home_nursing_current"] == "あり" for pid in ids]),
+        ("生活保護あり", [participants[pid]["public_assistance"] == "あり" for pid in ids]),
+        ("経済的にかなり困る", [participants[pid]["economic_strain"] == "かなり困る" for pid in ids]),
     ]
     physician_factor_specs: list[tuple[str, list[bool]]] = [
         ("精神科経験15年以上", [int(physicians[participants[pid]["physician_id"]]["psychiatry_experience_years"]) >= 15 for pid in ids]),
@@ -907,6 +965,15 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
     distress = Counter(r["subjective_distress"] for r in participants)
     frame = Counter(r["response_frame"] for r in participants)
     mgaf_le40 = sum(1 for r in participants if int(r["clinician_mgaf_function"]) <= 40)
+
+    def count_row(label: str, field: str, key: str) -> tuple[str, str]:
+        count = sum(1 for r in participants if r[field] == key)
+        return label, f"{count} ({count/n*100:.1f}%)"
+
+    def count_if(label: str, predicate) -> tuple[str, str]:
+        count = sum(1 for r in participants if predicate(r))
+        return label, f"{count} ({count/n*100:.1f}%)"
+
     rows = [
         ("解析対象者", f"{n}"),
         ("TRS適格候補", f"{target['TRS適格候補']} ({target['TRS適格候補']/n*100:.1f}%)"),
@@ -916,6 +983,22 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
         ("将来TRS相当を想定して回答", f"{frame['hypothetical_future']} ({frame['hypothetical_future']/n*100:.1f}%)"),
         ("現在の治療で残る困りごとあり", f"{unmet['あり']} ({unmet['あり']/n*100:.1f}%)"),
         ("主観的困りごと/つらさあり", f"{distress['あり']} ({distress['あり']/n*100:.1f}%)"),
+        count_if("日中活動あり（就労/就学/福祉的就労/デイケア等）", lambda r: r["day_activity"] in {"就労中", "就学中", "福祉的就労", "デイケア等"}),
+        count_row("福祉的就労", "day_activity", "福祉的就労"),
+        count_row("デイケア等", "day_activity", "デイケア等"),
+        count_row("主に自宅", "day_activity", "主に自宅"),
+        count_row("週4日以上の日中活動", "day_activity_frequency", "週4日以上"),
+        count_row("一人暮らし", "living_arrangement", "一人暮らし"),
+        count_row("家族等と同居", "living_arrangement", "家族等と同居"),
+        count_row("同居家族から支援を受けられる", "family_support", "受けられる"),
+        count_if("本人が誰かのケアを担っている", lambda r: r["caregiving_role"] != "なし"),
+        count_if("通院片道60分以上", lambda r: r["travel_time_one_way"] in {"60-90分", "90分以上"}),
+        count_row("通院手段: 公共交通", "transport", "公共交通"),
+        count_row("通院手段: 家族送迎", "transport", "家族送迎"),
+        count_row("訪問看護を現在利用", "home_nursing_current", "あり"),
+        count_row("主な収入源: 障害年金", "main_income_source", "障害年金"),
+        count_row("生活保護あり", "public_assistance", "あり"),
+        count_row("経済的にかなり困る", "economic_strain", "かなり困る"),
     ]
     return "<table><tr><th>項目</th><th>値</th></tr>" + "".join(f"<tr><td>{a}</td><td>{b}</td></tr>" for a, b in rows) + "</table>"
 
@@ -1023,6 +1106,66 @@ def questionnaire_html(version: int) -> str:
         <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
         <div id="scenarioBox" class="notice hidden"></div>
         <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
+
+        <div class="background-block">
+          <h3>生活・通院背景</h3>
+          <p class="small">生年月日、性別、診断などは電子カルテから取得します。ここでは入院・通院・訪問看護の負担に関係する項目だけ伺います。</p>
+          <label class="field-label" for="dayActivity">日中活動</label>
+          <select class="select-input bg-required" id="dayActivity" name="day_activity">
+            <option value="">選択してください</option>
+            <option>就労中</option><option>就学中</option><option>福祉的就労</option><option>デイケア等</option><option>主に自宅</option><option>その他</option>
+          </select>
+          <label class="field-label" for="dayActivityFrequency">日中活動の頻度</label>
+          <select class="select-input bg-required" id="dayActivityFrequency" name="day_activity_frequency">
+            <option value="">選択してください</option>
+            <option>週0-1日</option><option>週2-3日</option><option>週4日以上</option><option>該当なし</option>
+          </select>
+          <label class="field-label" for="livingArrangement">同居状況</label>
+          <select class="select-input bg-required" id="livingArrangement" name="living_arrangement">
+            <option value="">選択してください</option>
+            <option>一人暮らし</option><option>家族等と同居</option><option>施設・グループホーム</option><option>その他</option>
+          </select>
+          <label class="field-label" for="familySupport">同居家族からの支援</label>
+          <select class="select-input bg-required" id="familySupport" name="family_support">
+            <option value="">選択してください</option>
+            <option>受けられる</option><option>少し受けられる</option><option>ほぼ受けられない</option><option>同居なし</option>
+          </select>
+          <label class="field-label" for="caregivingRole">本人が誰かのケアを担っていますか</label>
+          <select class="select-input bg-required" id="caregivingRole" name="caregiving_role">
+            <option value="">選択してください</option>
+            <option>なし</option><option>子どものケア</option><option>親・配偶者等のケア</option><option>その他</option>
+          </select>
+          <label class="field-label" for="travelTimeOneWay">通院にかかる片道時間</label>
+          <select class="select-input bg-required" id="travelTimeOneWay" name="travel_time_one_way">
+            <option value="">選択してください</option>
+            <option>30分未満</option><option>30-60分</option><option>60-90分</option><option>90分以上</option>
+          </select>
+          <label class="field-label" for="transport">主な通院手段</label>
+          <select class="select-input bg-required" id="transport" name="transport">
+            <option value="">選択してください</option>
+            <option>自分で運転</option><option>公共交通</option><option>家族送迎</option><option>福祉交通・タクシー</option><option>徒歩・自転車</option><option>その他</option>
+          </select>
+          <label class="field-label" for="homeNursingCurrent">訪問看護の現在利用</label>
+          <select class="select-input bg-required" id="homeNursingCurrent" name="home_nursing_current">
+            <option value="">選択してください</option>
+            <option>あり</option><option>過去あり</option><option>なし</option>
+          </select>
+          <label class="field-label" for="mainIncomeSource">主な収入源</label>
+          <select class="select-input bg-required" id="mainIncomeSource" name="main_income_source">
+            <option value="">選択してください</option>
+            <option>就労収入</option><option>障害年金</option><option>生活保護</option><option>家族支援</option><option>その他</option><option>答えたくない</option>
+          </select>
+          <label class="field-label" for="publicAssistance">生活保護</label>
+          <select class="select-input bg-required" id="publicAssistance" name="public_assistance">
+            <option value="">選択してください</option>
+            <option>あり</option><option>なし</option><option>答えたくない</option>
+          </select>
+          <label class="field-label" for="economicStrain">経済的余裕</label>
+          <select class="select-input bg-required" id="economicStrain" name="economic_strain">
+            <option value="">選択してください</option>
+            <option>困っていない</option><option>少し困る</option><option>かなり困る</option><option>答えたくない</option>
+          </select>
+        </div>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -1242,6 +1385,7 @@ function nextParticipantCode(){
     input.focus();
     return;
   }
+  if(!validateBackgroundFields()) return;
   resetAfterNeed();
   participantCode = raw;
   responseFrame = match.frame;
@@ -1249,6 +1393,15 @@ function nextParticipantCode(){
   box.textContent = `${match.label}: ${scenarioText()}`;
   box.classList.remove('hidden');
   next();
+}
+function validateBackgroundFields(){
+  const missing = Array.from(document.querySelectorAll('.bg-required')).filter(el => !el.value);
+  if(missing.length){
+    missing[0].focus();
+    alert('生活・通院背景で未回答の項目があります。');
+    return false;
+  }
+  return true;
 }
 function firstInfoKind(){
   return infoOrder === 'side_effect_first' ? 'side_effect' : 'efficacy';
@@ -1539,6 +1692,8 @@ def questionnaire_css() -> str:
     .choice,.seg label{display:block;border:1px solid #cbd5df;border-radius:8px;padding:12px;margin:8px 0;background:#fbfcfd;font-weight:600}
     input{margin-right:8px}.seg{display:grid;gap:0}.seg.two{grid-template-columns:1fr 1fr;gap:8px}
     .field-label{display:block;font-weight:700;margin-top:12px}.text-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:13px 12px;font-size:16px;text-transform:uppercase;background:white}
+    .select-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:12px;font-size:16px;background:white}
+    .background-block{border-top:1px solid #d8dee4;margin-top:14px;padding-top:10px}
     code{background:#eef2f6;border:1px solid #d8dee4;border-radius:4px;padding:1px 5px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
