@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="430" viewBox="0 0 980 430" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" role="img">
 <style>
 .title{font:700 19px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 .label{font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#24323d}
@@ -8,41 +8,93 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="70" y="32" class="title">図5. 最も前向きに考えやすい外来モニタリング条件</text>
-<rect x="70.0" y="70" width="119.4" height="64" fill="#004d40"/>
-<text x="129.7" y="108" text-anchor="middle" class="inside">25</text>
-<rect x="189.4" y="70" width="47.8" height="64" fill="#00695c"/>
-<text x="213.3" y="108" text-anchor="middle" class="inside">10</text>
-<rect x="237.2" y="70" width="43.0" height="64" fill="#0f766e"/>
-<text x="258.7" y="108" text-anchor="middle" class="inside">9</text>
-<rect x="280.2" y="70" width="62.1" height="64" fill="#2f7d8c"/>
-<text x="311.3" y="108" text-anchor="middle" class="inside">13</text>
-<rect x="342.3" y="70" width="76.4" height="64" fill="#5f9ea8"/>
-<text x="380.6" y="108" text-anchor="middle" class="inside">16</text>
-<rect x="418.8" y="70" width="143.3" height="64" fill="#8bbbc3"/>
-<text x="490.4" y="108" text-anchor="middle" class="inside">30</text>
-<rect x="562.1" y="70" width="71.7" height="64" fill="#b7d5da"/>
-<text x="597.9" y="108" text-anchor="middle" class="inside">15</text>
-<rect x="633.8" y="70" width="119.4" height="64" fill="#d7e8eb"/>
-<text x="693.5" y="108" text-anchor="middle" class="inside">25</text>
-<rect x="753.2" y="70" width="176.8" height="64" fill="#d8dee4"/>
-<text x="841.6" y="108" text-anchor="middle" class="inside">37</text>
-<rect x="70" y="170" width="14" height="14" fill="#004d40"/>
-<text x="90" y="182" class="legend">週5回確認: 週3回通院+週2回訪問看護</text>
-<rect x="70" y="194" width="14" height="14" fill="#00695c"/>
-<text x="90" y="206" class="legend">週5回確認: 週2回通院+週3回訪問看護</text>
-<rect x="70" y="218" width="14" height="14" fill="#0f766e"/>
-<text x="90" y="230" class="legend">週5回確認: 週1回通院+週4回訪問看護</text>
-<rect x="70" y="242" width="14" height="14" fill="#2f7d8c"/>
-<text x="90" y="254" class="legend">週3回確認: 週3回通院</text>
-<rect x="70" y="266" width="14" height="14" fill="#5f9ea8"/>
-<text x="90" y="278" class="legend">週3回確認: 週2回通院+週1回訪問看護</text>
-<rect x="70" y="290" width="14" height="14" fill="#8bbbc3"/>
-<text x="90" y="302" class="legend">週3回確認: 週1回通院+週2回訪問看護</text>
-<rect x="70" y="314" width="14" height="14" fill="#b7d5da"/>
-<text x="90" y="326" class="legend">週2回確認: 週2回通院</text>
-<rect x="70" y="338" width="14" height="14" fill="#d7e8eb"/>
-<text x="90" y="350" class="legend">週2回確認: 週1回通院+週1回訪問看護</text>
-<rect x="70" y="362" width="14" height="14" fill="#d8dee4"/>
-<text x="90" y="374" class="legend">どれも難しい</text>
+<text x="250" y="30" class="title">図5. 訪問看護を加えた場合の服用判断への方向性</text>
+<text x="238" y="86" text-anchor="end" class="label">週5回確認: 週3回通院+週2回訪問看護</text>
+<rect x="250.0" y="67" width="224.2" height="26" fill="#2f7d8c"/>
+<text x="362.1" y="85" text-anchor="middle" class="inside">13</text>
+<rect x="474.2" y="67" width="155.2" height="26" fill="#b7d5da"/>
+<text x="551.9" y="85" text-anchor="middle" class="inside">9</text>
+<rect x="629.5" y="67" width="207.0" height="26" fill="#c47f4f"/>
+<text x="733.0" y="85" text-anchor="middle" class="inside">12</text>
+<rect x="836.5" y="67" width="103.5" height="26" fill="#d8dee4"/>
+<text x="888.2" y="85" text-anchor="middle" class="inside">6</text>
+<text x="948" y="86" class="num">n=40</text>
+<text x="238" y="128" text-anchor="end" class="label">週5回確認: 週2回通院+週3回訪問看護</text>
+<rect x="250.0" y="109" width="213.6" height="26" fill="#2f7d8c"/>
+<text x="356.8" y="127" text-anchor="middle" class="inside">13</text>
+<rect x="463.6" y="109" width="164.3" height="26" fill="#b7d5da"/>
+<text x="545.7" y="127" text-anchor="middle" class="inside">10</text>
+<rect x="627.9" y="109" width="213.6" height="26" fill="#c47f4f"/>
+<text x="734.6" y="127" text-anchor="middle" class="inside">13</text>
+<rect x="841.4" y="109" width="98.6" height="26" fill="#d8dee4"/>
+<text x="890.7" y="127" text-anchor="middle" class="inside">6</text>
+<text x="948" y="128" class="num">n=42</text>
+<text x="238" y="170" text-anchor="end" class="label">週5回確認: 週1回通院+週4回訪問看護</text>
+<rect x="250.0" y="151" width="218.3" height="26" fill="#2f7d8c"/>
+<text x="359.1" y="169" text-anchor="middle" class="inside">31</text>
+<rect x="468.3" y="151" width="133.8" height="26" fill="#b7d5da"/>
+<text x="535.2" y="169" text-anchor="middle" class="inside">19</text>
+<rect x="602.0" y="151" width="253.5" height="26" fill="#c47f4f"/>
+<text x="728.8" y="169" text-anchor="middle" class="inside">36</text>
+<rect x="855.5" y="151" width="84.5" height="26" fill="#d8dee4"/>
+<text x="897.8" y="169" text-anchor="middle" class="inside">12</text>
+<text x="948" y="170" class="num">n=98</text>
+<text x="238" y="212" text-anchor="end" class="label">週3回確認: 週3回通院</text>
+<rect x="250.0" y="193" width="155.2" height="26" fill="#2f7d8c"/>
+<text x="327.6" y="211" text-anchor="middle" class="inside">9</text>
+<rect x="405.2" y="193" width="310.5" height="26" fill="#b7d5da"/>
+<text x="560.5" y="211" text-anchor="middle" class="inside">18</text>
+<rect x="715.8" y="193" width="172.5" height="26" fill="#c47f4f"/>
+<text x="802.0" y="211" text-anchor="middle" class="inside">10</text>
+<rect x="888.2" y="193" width="51.8" height="26" fill="#d8dee4"/>
+<text x="914.1" y="211" text-anchor="middle" class="inside">3</text>
+<text x="948" y="212" class="num">n=40</text>
+<text x="238" y="254" text-anchor="end" class="label">週3回確認: 週2回通院+週1回訪問看護</text>
+<rect x="250.0" y="235" width="197.1" height="26" fill="#2f7d8c"/>
+<text x="348.6" y="253" text-anchor="middle" class="inside">12</text>
+<rect x="447.1" y="235" width="213.6" height="26" fill="#b7d5da"/>
+<text x="553.9" y="253" text-anchor="middle" class="inside">13</text>
+<rect x="660.7" y="235" width="230.0" height="26" fill="#c47f4f"/>
+<text x="775.7" y="253" text-anchor="middle" class="inside">14</text>
+<rect x="890.7" y="235" width="49.3" height="26" fill="#d8dee4"/>
+<text x="915.4" y="253" text-anchor="middle" class="inside">3</text>
+<text x="948" y="254" class="num">n=42</text>
+<text x="238" y="296" text-anchor="end" class="label">週3回確認: 週1回通院+週2回訪問看護</text>
+<rect x="250.0" y="277" width="316.8" height="26" fill="#2f7d8c"/>
+<text x="408.4" y="295" text-anchor="middle" class="inside">45</text>
+<rect x="566.8" y="277" width="225.3" height="26" fill="#b7d5da"/>
+<text x="679.5" y="295" text-anchor="middle" class="inside">32</text>
+<rect x="792.1" y="277" width="105.6" height="26" fill="#c47f4f"/>
+<text x="844.9" y="295" text-anchor="middle" class="inside">15</text>
+<rect x="897.8" y="277" width="42.2" height="26" fill="#d8dee4"/>
+<text x="918.9" y="295" text-anchor="middle" class="inside">6</text>
+<text x="948" y="296" class="num">n=98</text>
+<text x="238" y="338" text-anchor="end" class="label">週2回確認: 週2回通院</text>
+<rect x="250.0" y="319" width="65.7" height="26" fill="#2f7d8c"/>
+<text x="282.9" y="337" text-anchor="middle" class="inside">4</text>
+<rect x="315.7" y="319" width="476.4" height="26" fill="#b7d5da"/>
+<text x="553.9" y="337" text-anchor="middle" class="inside">29</text>
+<rect x="792.1" y="319" width="82.1" height="26" fill="#c47f4f"/>
+<text x="833.2" y="337" text-anchor="middle" class="inside">5</text>
+<rect x="874.3" y="319" width="65.7" height="26" fill="#d8dee4"/>
+<text x="907.1" y="337" text-anchor="middle" class="inside">4</text>
+<text x="948" y="338" class="num">n=42</text>
+<text x="238" y="380" text-anchor="end" class="label">週2回確認: 週1回通院+週1回訪問看護</text>
+<rect x="250.0" y="361" width="218.3" height="26" fill="#2f7d8c"/>
+<text x="359.1" y="379" text-anchor="middle" class="inside">31</text>
+<rect x="468.3" y="361" width="232.3" height="26" fill="#b7d5da"/>
+<text x="584.4" y="379" text-anchor="middle" class="inside">33</text>
+<rect x="700.6" y="361" width="126.7" height="26" fill="#c47f4f"/>
+<text x="764.0" y="379" text-anchor="middle" class="inside">18</text>
+<rect x="827.3" y="361" width="112.7" height="26" fill="#d8dee4"/>
+<text x="883.7" y="379" text-anchor="middle" class="inside">16</text>
+<text x="948" y="380" class="num">n=98</text>
+<rect x="250" y="502" width="14" height="14" fill="#2f7d8c"/>
+<text x="270" y="514" class="legend">より前向きになる</text>
+<rect x="430" y="502" width="14" height="14" fill="#b7d5da"/>
+<text x="450" y="514" class="legend">変わらない</text>
+<rect x="610" y="502" width="14" height="14" fill="#c47f4f"/>
+<text x="630" y="514" class="legend">むしろ後ろ向きになる</text>
+<rect x="790" y="502" width="14" height="14" fill="#d8dee4"/>
+<text x="810" y="514" class="legend">わからない</text>
 </svg>

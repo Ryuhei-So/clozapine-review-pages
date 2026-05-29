@@ -76,66 +76,51 @@
 
       <section class="step" data-step="4">
         <h2>副作用可能性の影響</h2>
-        <p>クロザピンの副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
-        <div class="seg">
-          <label><input type="radio" name="side_effect_impact" value="1"> 1. まったく妨げにならない</label>
-          <label><input type="radio" name="side_effect_impact" value="2"> 2. あまり妨げにならない</label>
-          <label><input type="radio" name="side_effect_impact" value="3"> 3. どちらともいえない</label>
-          <label><input type="radio" name="side_effect_impact" value="4"> 4. かなり妨げになる</label>
-          <label><input type="radio" name="side_effect_impact" value="5"> 5. 服用を考えられないほど妨げになる</label>
+        <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
+        <div class="tt-card">
+          <span class="pill" id="sideEffectProgress">1/6</span>
+          <h3 id="sideEffectLabel">眠気・だるさ</h3>
         </div>
-        <div class="nav"><button class="primary" onclick="next()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="seg">
+          <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
+          <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
+          <label><input type="radio" name="side_effect_current" value="3"> 3. どちらともいえない</label>
+          <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
+          <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
+        </div>
+        <div class="nav"><button class="primary" onclick="nextSideEffect()">次へ</button><button onclick="prevSideEffect()">前へ</button></div>
       </section>
 
       <section class="step" data-step="5">
         <img class="hero" src="../patient_survey_mock/assets/monitoring.png" alt="">
         <h2>通院だけで始める場合</h2>
         <p class="scenarioText"></p>
-        <p>入院せず外来でクロザピンを始める場合、以下の通院頻度だけで前向きに考えられるかを選んでください。</p>
-        <div class="mini-question">
-          <p class="question">最初6週間は週3回通院</p>
-          
-        <div class="seg two">
-          <label><input type="radio" name="visit3" value="yes"> はい</label>
-          <label><input type="radio" name="visit3" value="no"> いいえ</label>
-        </div>
-        </div>
-        <div class="mini-question">
-          <p class="question">最初6週間は週2回通院</p>
-          
-        <div class="seg two">
-          <label><input type="radio" name="visit2" value="yes"> はい</label>
-          <label><input type="radio" name="visit2" value="no"> いいえ</label>
-        </div>
-        </div>
-        <div class="mini-question">
-          <p class="question">最初6週間は週1回通院</p>
-          
-        <div class="seg two">
-          <label><input type="radio" name="visit1" value="yes"> はい</label>
-          <label><input type="radio" name="visit1" value="no"> いいえ</label>
-        </div>
+        <p>入院せず外来でクロザピンを始める場合、最初6週間の通院頻度について、負担が大きい条件から順に伺います。</p>
+        <div class="tt-card">
+          <span class="pill" id="visitProgress">1/3</span>
+          <h3 id="visitQuestion">最初6週間は週3回通院</h3>
+          <p class="small">この条件でクロザピン服用を前向きに考えたいですか？</p>
         </div>
         <p class="small">7週目以降も定期通院と採血は続きます。体調に異常があれば、必要時は入院へ切り替えます。</p>
-        <div class="nav"><button class="primary" onclick="nextVisit()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="nav"><button class="primary" onclick="answerVisit(true)">はい</button><button onclick="answerVisit(false)">いいえ</button><button onclick="prevVisit()">前へ</button></div>
       </section>
 
       <section class="step" data-step="6">
         <img class="hero" src="../patient_survey_mock/assets/outpatient_visit.png" alt="">
         <h2>訪問看護を含む場合</h2>
-        <p>通院に訪問看護を組み合わせる場合、最も前向きに考えやすい条件を1つ選んでください。</p>
-        <div class="support-grid">
-          <label class="choice"><input type="radio" name="support_package" value="V3N2"> 週5回確認: 週3回通院+週2回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N3"> 週5回確認: 週2回通院+週3回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N4"> 週5回確認: 週1回通院+週4回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V3N0"> 週3回確認: 週3回通院</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N1"> 週3回確認: 週2回通院+週1回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N2"> 週3回確認: 週1回通院+週2回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N0"> 週2回確認: 週2回通院</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N1"> 週2回確認: 週1回通院+週1回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="NONE"> どれも前向きに考えにくい</label>
+        <p>通院のみの条件に訪問看護を組み合わせると、クロザピン服用を考える気持ちはどう変わりますか？ 比較のため、同じ総確認回数の「訪問看護なし」条件が入る場合があります。</p>
+        <div class="tt-card">
+          <span class="pill" id="supportProgress">1/3</span>
+          <h3 id="supportQuestion">週5回確認</h3>
+          <p class="small" id="supportDescription"></p>
         </div>
-        <div class="nav"><button class="primary" onclick="nextSupport()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="seg">
+          <label><input type="radio" name="support_direction_current" value="positive"> より前向きになる</label>
+          <label><input type="radio" name="support_direction_current" value="neutral"> 変わらない</label>
+          <label><input type="radio" name="support_direction_current" value="negative"> むしろ後ろ向きになる</label>
+          <label><input type="radio" name="support_direction_current" value="unsure"> わからない</label>
+        </div>
+        <div class="nav"><button class="primary" onclick="nextSupport()">次へ</button><button onclick="prevSupport()">前へ</button></div>
       </section>
 
       <section class="step optional" data-step="7">
@@ -154,7 +139,7 @@
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
           <strong>通院頻度threshold:</strong> <span id="thresholdSummary">未回答</span><br>
-          <strong>選んだモニタリング条件:</strong> <span id="supportSummary">未回答</span>
+          <strong>訪問看護追加の評価:</strong> <span id="supportSummary">未回答</span>
         </div>
         <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
       </section>
@@ -165,8 +150,31 @@
 const steps = Array.from(document.querySelectorAll('.step'));
 let current = 0;
 let threshold = null;
-let supportChoice = null;
+let visitIndex = 0;
+let sideEffectIndex = 0;
+let supportIndex = 0;
 let assumedState = null;
+let reasonSource = null;
+const sideEffects = [
+  ['sedation','眠気・だるさ'],
+  ['hypersalivation','よだれ・流涎'],
+  ['weight_metabolic','体重増加・代謝異常'],
+  ['constipation','便秘'],
+  ['infection_blood','採血異常・感染リスク'],
+  ['myocarditis','心筋炎など重い副作用']
+];
+const sideEffectAnswers = {};
+const visitQuestions = [
+  ['V3','最初6週間は週3回通院'],
+  ['V2','最初6週間は週2回通院'],
+  ['V1','最初6週間は週1回通院']
+];
+const supportByThreshold = {
+  V3: ['V3N2','V3N0'],
+  V2: ['V2N3','V2N1','V2N0'],
+  V1: ['V1N4','V1N2','V1N1'],
+  NONE: ['V1N4','V1N2','V1N1']
+};
 const supportLabels = {
   V3N2:'週5回確認: 週3回通院+週2回訪問看護',
   V2N3:'週5回確認: 週2回通院+週3回訪問看護',
@@ -175,19 +183,29 @@ const supportLabels = {
   V2N1:'週3回確認: 週2回通院+週1回訪問看護',
   V1N2:'週3回確認: 週1回通院+週2回訪問看護',
   V2N0:'週2回確認: 週2回通院',
-  V1N1:'週2回確認: 週1回通院+週1回訪問看護',
-  NONE:'どれも前向きに考えにくい'
+  V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
+const directionLabels = {
+  positive:'より前向きになる',
+  neutral:'変わらない',
+  negative:'むしろ後ろ向きになる',
+  unsure:'わからない'
+};
+const supportAnswers = {};
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
+  if(current === 4) renderSideEffectQuestion();
+  if(current === 5) renderVisitQuestion();
+  if(current === 6) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 8){ current = supportChoice === 'NONE' ? 7 : 6; renderStep(); return; }
+  if(current === 8){ current = 6; renderStep(); return; }
+  if(current === 7 && reasonSource === 'clozapine_no'){ current = 3; renderStep(); return; }
   if(current > 0){ current--; renderStep(); }
 }
 function nextNeed(){
@@ -204,36 +222,116 @@ function nextNeed(){
   }
   next();
 }
+function renderSideEffectQuestion(){
+  const [key, label] = sideEffects[sideEffectIndex];
+  document.getElementById('sideEffectProgress').textContent = `${sideEffectIndex + 1}/${sideEffects.length}`;
+  document.getElementById('sideEffectLabel').textContent = label;
+  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
+    input.checked = sideEffectAnswers[key] === input.value;
+  });
+}
+function nextSideEffect(){
+  const val = document.querySelector('input[name="side_effect_current"]:checked')?.value;
+  if(!val){ alert('1つ選んでください。'); return; }
+  const [key] = sideEffects[sideEffectIndex];
+  sideEffectAnswers[key] = val;
+  if(sideEffectIndex < sideEffects.length - 1){
+    sideEffectIndex++;
+    document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.checked = false);
+    renderSideEffectQuestion();
+    return;
+  }
+  next();
+}
+function prevSideEffect(){
+  if(sideEffectIndex > 0){
+    sideEffectIndex--;
+    renderSideEffectQuestion();
+    return;
+  }
+  prev();
+}
 function nextClozapine(){
   const val = document.querySelector('input[name="clozapine_accept"]:checked')?.value;
   if(!val){ alert('はい、または、いいえを選んでください。'); return; }
   if(val === 'no'){
+    reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
     current = 7; renderStep(); return;
   }
   next();
 }
-function nextVisit(){
-  const v3 = document.querySelector('input[name="visit3"]:checked')?.value;
-  const v2 = document.querySelector('input[name="visit2"]:checked')?.value;
-  const v1 = document.querySelector('input[name="visit1"]:checked')?.value;
-  if(!v3 || !v2 || !v1){ alert('3つの通院頻度すべてについて選んでください。'); return; }
-  if(v1 === 'yes') threshold = 'V1';
-  else if(v2 === 'yes') threshold = 'V2';
-  else if(v3 === 'yes') threshold = 'V3';
-  else threshold = 'NONE';
-  const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
-  document.getElementById('thresholdSummary').textContent = labels[threshold];
+function renderVisitQuestion(){
+  const [key, label] = visitQuestions[visitIndex];
+  document.getElementById('visitProgress').textContent = `${visitIndex + 1}/${visitQuestions.length}`;
+  document.getElementById('visitQuestion').textContent = label;
+}
+function answerVisit(accepted){
+  if(accepted){
+    threshold = visitQuestions[visitIndex][0];
+    setThresholdSummary();
+    supportIndex = 0;
+    next();
+    return;
+  }
+  if(visitIndex < visitQuestions.length - 1){
+    visitIndex++;
+    renderVisitQuestion();
+    return;
+  }
+  threshold = 'NONE';
+  setThresholdSummary();
+  supportIndex = 0;
   next();
 }
+function prevVisit(){
+  if(visitIndex > 0){
+    visitIndex--;
+    renderVisitQuestion();
+    return;
+  }
+  prev();
+}
+function setThresholdSummary(){
+  const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
+  document.getElementById('thresholdSummary').textContent = labels[threshold];
+}
+function renderSupportQuestion(){
+  const options = supportByThreshold[threshold || 'NONE'];
+  const key = options[supportIndex];
+  document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
+  document.getElementById('supportQuestion').textContent = supportLabels[key];
+  document.getElementById('supportDescription').textContent = threshold === 'NONE'
+    ? '通院のみでは前向きに考えにくい場合、この条件なら気持ちはどう変わりますか？'
+    : '通院のみの場合と比べて、この条件はクロザピン服用を考える気持ちにどう影響しますか？';
+  document.querySelectorAll('input[name="support_direction_current"]').forEach(input => {
+    input.checked = supportAnswers[key] === input.value;
+  });
+}
 function nextSupport(){
-  const val = document.querySelector('input[name="support_package"]:checked')?.value;
-  if(!val){ alert('最も前向きに考えやすい条件を選んでください。'); return; }
-  supportChoice = val;
-  document.getElementById('supportSummary').textContent = supportLabels[val];
-  if(val === 'NONE'){ current = 7; renderStep(); return; }
+  const val = document.querySelector('input[name="support_direction_current"]:checked')?.value;
+  if(!val){ alert('1つ選んでください。'); return; }
+  const options = supportByThreshold[threshold || 'NONE'];
+  const key = options[supportIndex];
+  supportAnswers[key] = val;
+  if(supportIndex < options.length - 1){
+    supportIndex++;
+    document.querySelectorAll('input[name="support_direction_current"]').forEach(input => input.checked = false);
+    renderSupportQuestion();
+    return;
+  }
+  document.getElementById('supportSummary').textContent = options.map(k => `${supportLabels[k]}: ${directionLabels[supportAnswers[k]]}`).join(' / ');
+  if(threshold === 'NONE' && !options.some(k => supportAnswers[k] === 'positive')){ reasonSource = 'support_none'; current = 7; renderStep(); return; }
   current = 8; renderStep();
+}
+function prevSupport(){
+  if(supportIndex > 0){
+    supportIndex--;
+    renderSupportQuestion();
+    return;
+  }
+  prev();
 }
 function scenarioText(){
   if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';

@@ -1,181 +1,181 @@
-participant_id,clozapine_accept,threshold,threshold_label,side_effect_impact,preferred_support_package,preferred_support_label,biggest_burden
-P001,0,NONE,通院のみ条件は非受容/保留,4,NONE,どれも難しい,副作用への不安
-P002,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,入院になる可能性
-P003,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,通院回数
-P004,1,NONE,通院のみ条件は非受容/保留,1,NONE,どれも難しい,通院回数
-P005,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,副作用への不安
-P006,1,V1,週1回通院なら受容,4,V3N0,週3回確認: 週3回通院,通院回数
-P007,1,V3,週3回通院なら受容,1,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P008,1,V1,週1回通院なら受容,2,NONE,どれも難しい,採血
-P009,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,家族・仕事・生活調整
-P010,1,V1,週1回通院なら受容,2,V1N4,週5回確認: 週1回通院+週4回訪問看護,通院回数
-P011,1,V1,週1回通院なら受容,4,V1N4,週5回確認: 週1回通院+週4回訪問看護,入院になる可能性
-P012,1,V3,週3回通院なら受容,3,NONE,どれも難しい,採血
-P013,1,NONE,通院のみ条件は非受容/保留,2,NONE,どれも難しい,通院回数
-P014,1,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,家族・仕事・生活調整
-P015,1,V3,週3回通院なら受容,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P016,1,V1,週1回通院なら受容,2,NONE,どれも難しい,通院回数
-P017,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P018,1,V3,週3回通院なら受容,2,V3N0,週3回確認: 週3回通院,家族・仕事・生活調整
-P019,1,NONE,通院のみ条件は非受容/保留,4,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P020,1,V3,週3回通院なら受容,5,V3N2,週5回確認: 週3回通院+週2回訪問看護,副作用への不安
-P021,1,NONE,通院のみ条件は非受容/保留,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,家族・仕事・生活調整
-P022,1,NONE,通院のみ条件は非受容/保留,4,V2N3,週5回確認: 週2回通院+週3回訪問看護,採血
-P023,1,NONE,通院のみ条件は非受容/保留,1,NONE,どれも難しい,採血
-P024,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,副作用への不安
-P025,1,V1,週1回通院なら受容,5,V3N0,週3回確認: 週3回通院,入院になる可能性
-P026,1,V1,週1回通院なら受容,3,V1N1,週2回確認: 週1回通院+週1回訪問看護,入院になる可能性
-P027,1,V1,週1回通院なら受容,3,NONE,どれも難しい,通院回数
-P028,1,V2,週2回通院なら受容,4,V2N0,週2回確認: 週2回通院,副作用への不安
-P029,1,V3,週3回通院なら受容,2,V3N0,週3回確認: 週3回通院,通院回数
-P030,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P031,1,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,家族・仕事・生活調整
-P032,1,V1,週1回通院なら受容,2,NONE,どれも難しい,家族・仕事・生活調整
-P033,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,家族・仕事・生活調整
-P034,1,V1,週1回通院なら受容,3,V1N1,週2回確認: 週1回通院+週1回訪問看護,副作用への不安
-P035,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P036,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P037,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,副作用への不安
-P038,1,V3,週3回通院なら受容,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,採血
-P039,1,V2,週2回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P040,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P041,1,V2,週2回通院なら受容,1,V2N0,週2回確認: 週2回通院,副作用への不安
-P042,1,NONE,通院のみ条件は非受容/保留,5,V1N4,週5回確認: 週1回通院+週4回訪問看護,入院になる可能性
-P043,1,V3,週3回通院なら受容,4,V3N2,週5回確認: 週3回通院+週2回訪問看護,通院回数
-P044,1,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,入院になる可能性
-P045,1,V2,週2回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P046,1,V2,週2回通院なら受容,3,V2N3,週5回確認: 週2回通院+週3回訪問看護,採血
-P047,1,V2,週2回通院なら受容,2,V2N3,週5回確認: 週2回通院+週3回訪問看護,入院になる可能性
-P048,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P049,1,V2,週2回通院なら受容,4,NONE,どれも難しい,入院になる可能性
-P050,1,NONE,通院のみ条件は非受容/保留,2,NONE,どれも難しい,通院回数
-P051,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P052,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P053,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P054,1,V2,週2回通院なら受容,3,V2N0,週2回確認: 週2回通院,通院回数
-P055,1,V2,週2回通院なら受容,3,NONE,どれも難しい,副作用への不安
-P056,1,NONE,通院のみ条件は非受容/保留,2,NONE,どれも難しい,採血
-P057,1,V3,週3回通院なら受容,3,NONE,どれも難しい,家族・仕事・生活調整
-P058,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,家族・仕事・生活調整
-P059,1,V3,週3回通院なら受容,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P060,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,家族・仕事・生活調整
-P061,1,NONE,通院のみ条件は非受容/保留,4,V2N3,週5回確認: 週2回通院+週3回訪問看護,採血
-P062,1,V3,週3回通院なら受容,4,V3N0,週3回確認: 週3回通院,副作用への不安
-P063,1,V3,週3回通院なら受容,2,V3N0,週3回確認: 週3回通院,副作用への不安
-P064,1,V2,週2回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P065,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P066,1,V3,週3回通院なら受容,4,V3N2,週5回確認: 週3回通院+週2回訪問看護,副作用への不安
-P067,1,NONE,通院のみ条件は非受容/保留,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,副作用への不安
-P068,1,V3,週3回通院なら受容,4,V3N2,週5回確認: 週3回通院+週2回訪問看護,採血
-P069,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P070,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,採血
-P071,1,NONE,通院のみ条件は非受容/保留,2,NONE,どれも難しい,通院回数
-P072,1,V3,週3回通院なら受容,4,V3N0,週3回確認: 週3回通院,採血
-P073,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P074,1,NONE,通院のみ条件は非受容/保留,5,NONE,どれも難しい,採血
-P075,1,V2,週2回通院なら受容,2,V2N1,週3回確認: 週2回通院+週1回訪問看護,家族・仕事・生活調整
-P076,1,V3,週3回通院なら受容,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,通院回数
-P077,0,NONE,通院のみ条件は非受容/保留,4,V1N4,週5回確認: 週1回通院+週4回訪問看護,家族・仕事・生活調整
-P078,1,V1,週1回通院なら受容,2,V1N4,週5回確認: 週1回通院+週4回訪問看護,採血
-P079,0,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,通院回数
-P080,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P081,1,V1,週1回通院なら受容,3,NONE,どれも難しい,家族・仕事・生活調整
-P082,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P083,1,V2,週2回通院なら受容,1,V2N0,週2回確認: 週2回通院,通院回数
-P084,1,V2,週2回通院なら受容,2,V2N3,週5回確認: 週2回通院+週3回訪問看護,通院回数
-P085,1,V3,週3回通院なら受容,4,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P086,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,副作用への不安
-P087,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,家族・仕事・生活調整
-P088,1,NONE,通院のみ条件は非受容/保留,2,NONE,どれも難しい,副作用への不安
-P089,1,V1,週1回通院なら受容,5,NONE,どれも難しい,通院回数
-P090,1,V1,週1回通院なら受容,3,NONE,どれも難しい,通院回数
-P091,1,V1,週1回通院なら受容,4,V1N4,週5回確認: 週1回通院+週4回訪問看護,採血
-P092,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P093,1,V2,週2回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P094,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P095,1,V2,週2回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P096,1,V1,週1回通院なら受容,5,V1N1,週2回確認: 週1回通院+週1回訪問看護,通院回数
-P097,1,V2,週2回通院なら受容,4,V2N3,週5回確認: 週2回通院+週3回訪問看護,家族・仕事・生活調整
-P098,1,V3,週3回通院なら受容,3,V3N0,週3回確認: 週3回通院,副作用への不安
-P099,1,V1,週1回通院なら受容,3,NONE,どれも難しい,家族・仕事・生活調整
-P100,1,V2,週2回通院なら受容,3,V2N0,週2回確認: 週2回通院,通院回数
-P101,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,副作用への不安
-P102,1,V1,週1回通院なら受容,4,V3N0,週3回確認: 週3回通院,入院になる可能性
-P103,1,V1,週1回通院なら受容,3,NONE,どれも難しい,通院回数
-P104,1,V2,週2回通院なら受容,5,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P105,1,V2,週2回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P106,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,通院回数
-P107,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,通院回数
-P108,0,NONE,通院のみ条件は非受容/保留,5,NONE,どれも難しい,通院回数
-P109,1,NONE,通院のみ条件は非受容/保留,1,NONE,どれも難しい,副作用への不安
-P110,1,V1,週1回通院なら受容,3,V1N4,週5回確認: 週1回通院+週4回訪問看護,入院になる可能性
-P111,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,入院になる可能性
-P112,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P113,1,V1,週1回通院なら受容,3,NONE,どれも難しい,採血
-P114,1,V2,週2回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P115,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P116,1,NONE,通院のみ条件は非受容/保留,2,V2N3,週5回確認: 週2回通院+週3回訪問看護,副作用への不安
-P117,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P118,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,入院になる可能性
-P119,1,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,通院回数
-P120,1,V2,週2回通院なら受容,5,V2N3,週5回確認: 週2回通院+週3回訪問看護,通院回数
-P121,1,V2,週2回通院なら受容,5,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P122,1,V1,週1回通院なら受容,3,V1N1,週2回確認: 週1回通院+週1回訪問看護,家族・仕事・生活調整
-P123,1,V2,週2回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P124,1,V1,週1回通院なら受容,4,NONE,どれも難しい,入院になる可能性
-P125,1,V1,週1回通院なら受容,4,V1N4,週5回確認: 週1回通院+週4回訪問看護,副作用への不安
-P126,1,V1,週1回通院なら受容,4,NONE,どれも難しい,入院になる可能性
-P127,1,NONE,通院のみ条件は非受容/保留,5,NONE,どれも難しい,採血
-P128,1,V2,週2回通院なら受容,2,NONE,どれも難しい,通院回数
-P129,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P130,1,V1,週1回通院なら受容,2,NONE,どれも難しい,通院回数
-P131,1,V3,週3回通院なら受容,1,V3N0,週3回確認: 週3回通院,通院回数
-P132,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P133,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,通院回数
-P134,1,V1,週1回通院なら受容,2,NONE,どれも難しい,採血
-P135,1,V3,週3回通院なら受容,2,V3N0,週3回確認: 週3回通院,入院になる可能性
-P136,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,副作用への不安
-P137,1,V2,週2回通院なら受容,3,V2N0,週2回確認: 週2回通院,採血
-P138,1,NONE,通院のみ条件は非受容/保留,4,NONE,どれも難しい,通院回数
-P139,1,V1,週1回通院なら受容,3,V1N1,週2回確認: 週1回通院+週1回訪問看護,家族・仕事・生活調整
-P140,1,V1,週1回通院なら受容,4,NONE,どれも難しい,家族・仕事・生活調整
-P141,1,V2,週2回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,採血
-P142,1,V2,週2回通院なら受容,2,V2N3,週5回確認: 週2回通院+週3回訪問看護,採血
-P143,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P144,1,NONE,通院のみ条件は非受容/保留,3,V1N4,週5回確認: 週1回通院+週4回訪問看護,通院回数
-P145,1,V1,週1回通院なら受容,2,NONE,どれも難しい,通院回数
-P146,1,V1,週1回通院なら受容,5,NONE,どれも難しい,通院回数
-P147,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P148,1,V1,週1回通院なら受容,4,V1N1,週2回確認: 週1回通院+週1回訪問看護,採血
-P149,1,V1,週1回通院なら受容,2,V1N1,週2回確認: 週1回通院+週1回訪問看護,家族・仕事・生活調整
-P150,1,V3,週3回通院なら受容,5,V3N0,週3回確認: 週3回通院,家族・仕事・生活調整
-P151,1,V1,週1回通院なら受容,3,NONE,どれも難しい,通院回数
-P152,1,V1,週1回通院なら受容,3,V1N4,週5回確認: 週1回通院+週4回訪問看護,通院回数
-P153,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,入院になる可能性
-P154,1,V3,週3回通院なら受容,3,V3N2,週5回確認: 週3回通院+週2回訪問看護,採血
-P155,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,家族・仕事・生活調整
-P156,0,NONE,通院のみ条件は非受容/保留,3,NONE,どれも難しい,採血
-P157,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
-P158,1,V3,週3回通院なら受容,3,NONE,どれも難しい,採血
-P159,0,NONE,通院のみ条件は非受容/保留,4,NONE,どれも難しい,入院になる可能性
-P160,1,V3,週3回通院なら受容,3,V2N1,週3回確認: 週2回通院+週1回訪問看護,入院になる可能性
-P161,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P162,1,V3,週3回通院なら受容,2,V3N0,週3回確認: 週3回通院,入院になる可能性
-P163,1,V2,週2回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P164,1,V2,週2回通院なら受容,3,V2N3,週5回確認: 週2回通院+週3回訪問看護,副作用への不安
-P165,1,NONE,通院のみ条件は非受容/保留,4,NONE,どれも難しい,通院回数
-P166,1,V2,週2回通院なら受容,3,V2N0,週2回確認: 週2回通院,通院回数
-P167,1,V1,週1回通院なら受容,3,V1N4,週5回確認: 週1回通院+週4回訪問看護,通院回数
-P168,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,家族・仕事・生活調整
-P169,1,V1,週1回通院なら受容,4,V1N2,週3回確認: 週1回通院+週2回訪問看護,入院になる可能性
-P170,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,採血
-P171,1,V1,週1回通院なら受容,2,V1N2,週3回確認: 週1回通院+週2回訪問看護,採血
-P172,1,V1,週1回通院なら受容,3,V1N4,週5回確認: 週1回通院+週4回訪問看護,通院回数
-P173,1,V3,週3回通院なら受容,2,V3N2,週5回確認: 週3回通院+週2回訪問看護,入院になる可能性
-P174,1,V1,週1回通院なら受容,3,V3N0,週3回確認: 週3回通院,家族・仕事・生活調整
-P175,1,V1,週1回通院なら受容,4,NONE,どれも難しい,通院回数
-P176,1,NONE,通院のみ条件は非受容/保留,3,V2N3,週5回確認: 週2回通院+週3回訪問看護,副作用への不安
-P177,1,V1,週1回通院なら受容,1,V3N0,週3回確認: 週3回通院,入院になる可能性
-P178,1,V2,週2回通院なら受容,3,V2N3,週5回確認: 週2回通院+週3回訪問看護,採血
-P179,1,V2,週2回通院なら受容,4,V2N1,週3回確認: 週2回通院+週1回訪問看護,通院回数
-P180,1,V1,週1回通院なら受容,3,V1N2,週3回確認: 週1回通院+週2回訪問看護,通院回数
+participant_id,clozapine_accept,threshold,threshold_label,side_effect_max_impact,side_effect_sedation,side_effect_hypersalivation,side_effect_weight_metabolic,side_effect_constipation,side_effect_infection_blood,side_effect_myocarditis,support_v3n2,support_v2n3,support_v1n4,support_v3n0,support_v2n1,support_v1n2,support_v2n0,support_v1n1,support_any_more_positive,biggest_burden
+P001,1,NONE,通院のみ条件は非受容/保留,4,1,2,3,3,4,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,0,通院回数
+P002,1,V3,週3回通院なら受容,5,3,5,3,2,3,3,negative,not_asked,not_asked,negative,not_asked,not_asked,not_asked,not_asked,0,採血
+P003,1,V2,週2回通院なら受容,4,3,2,4,1,3,4,not_asked,positive,not_asked,not_asked,unsure,not_asked,neutral,not_asked,1,家族・仕事・生活調整
+P004,1,V1,週1回通院なら受容,4,2,2,3,2,4,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,positive,1,通院回数
+P005,1,V1,週1回通院なら受容,5,5,2,3,4,2,3,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,副作用への不安
+P006,1,V1,週1回通院なら受容,5,5,4,3,4,5,5,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,1,通院回数
+P007,1,V2,週2回通院なら受容,4,2,2,2,1,1,4,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,not_asked,0,入院になる可能性
+P008,1,V2,週2回通院なら受容,4,4,2,1,3,3,3,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,入院になる可能性
+P009,1,V2,週2回通院なら受容,4,4,1,1,3,3,3,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,not_asked,0,入院になる可能性
+P010,1,V2,週2回通院なら受容,4,1,2,3,4,4,3,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,家族・仕事・生活調整
+P011,1,NONE,通院のみ条件は非受容/保留,5,2,5,3,3,2,5,not_asked,not_asked,negative,not_asked,not_asked,unsure,not_asked,neutral,0,入院になる可能性
+P012,1,V3,週3回通院なら受容,5,3,1,5,3,3,3,unsure,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,採血
+P013,1,V3,週3回通院なら受容,4,2,2,3,4,4,3,positive,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,1,採血
+P014,1,V1,週1回通院なら受容,4,4,1,4,3,3,3,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,1,通院回数
+P015,1,V1,週1回通院なら受容,4,3,2,3,2,4,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,positive,1,入院になる可能性
+P016,1,V2,週2回通院なら受容,5,3,2,5,5,3,5,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,通院回数
+P017,1,V2,週2回通院なら受容,3,3,2,3,2,3,3,not_asked,unsure,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,入院になる可能性
+P018,1,V1,週1回通院なら受容,4,2,3,2,2,4,2,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,negative,0,通院回数
+P019,1,V3,週3回通院なら受容,5,2,4,3,5,3,5,negative,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,入院になる可能性
+P020,1,NONE,通院のみ条件は非受容/保留,5,1,2,3,3,2,5,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,neutral,1,家族・仕事・生活調整
+P021,1,V1,週1回通院なら受容,5,2,3,4,3,5,3,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P022,1,V1,週1回通院なら受容,5,3,2,3,4,3,5,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,unsure,1,副作用への不安
+P023,1,NONE,通院のみ条件は非受容/保留,4,2,3,3,2,4,2,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,1,採血
+P024,0,NONE,通院のみ条件は非受容/保留,4,3,2,2,4,2,4,not_asked,not_asked,positive,not_asked,not_asked,unsure,not_asked,positive,1,入院になる可能性
+P025,1,NONE,通院のみ条件は非受容/保留,5,2,3,5,2,4,4,not_asked,not_asked,negative,not_asked,not_asked,unsure,not_asked,negative,0,通院回数
+P026,1,V3,週3回通院なら受容,4,2,4,4,2,4,3,negative,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P027,1,V2,週2回通院なら受容,5,2,2,3,3,5,2,not_asked,neutral,not_asked,not_asked,negative,not_asked,positive,not_asked,1,通院回数
+P028,1,NONE,通院のみ条件は非受容/保留,5,3,2,2,3,2,5,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,1,入院になる可能性
+P029,1,V3,週3回通院なら受容,4,4,1,2,3,3,2,neutral,not_asked,not_asked,negative,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P030,1,V1,週1回通院なら受容,4,3,1,2,3,4,2,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,negative,1,家族・仕事・生活調整
+P031,1,NONE,通院のみ条件は非受容/保留,5,3,3,2,1,3,5,not_asked,not_asked,neutral,not_asked,not_asked,positive,not_asked,negative,1,通院回数
+P032,1,V2,週2回通院なら受容,4,2,3,4,3,3,4,not_asked,positive,not_asked,not_asked,negative,not_asked,positive,not_asked,1,通院回数
+P033,1,NONE,通院のみ条件は非受容/保留,5,3,1,4,3,3,5,not_asked,not_asked,negative,not_asked,not_asked,negative,not_asked,positive,1,副作用への不安
+P034,1,V2,週2回通院なら受容,5,2,3,5,2,4,5,not_asked,positive,not_asked,not_asked,negative,not_asked,unsure,not_asked,1,副作用への不安
+P035,1,NONE,通院のみ条件は非受容/保留,5,5,3,2,3,5,5,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,1,通院回数
+P036,1,V1,週1回通院なら受容,5,3,3,5,3,5,5,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,副作用への不安
+P037,1,V1,週1回通院なら受容,5,5,3,3,2,4,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,positive,1,副作用への不安
+P038,1,V2,週2回通院なら受容,4,3,3,4,2,2,3,not_asked,neutral,not_asked,not_asked,negative,not_asked,neutral,not_asked,0,副作用への不安
+P039,1,V1,週1回通院なら受容,5,2,1,5,2,4,4,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,1,入院になる可能性
+P040,1,V1,週1回通院なら受容,5,2,3,3,4,5,5,not_asked,not_asked,neutral,not_asked,not_asked,neutral,not_asked,negative,0,家族・仕事・生活調整
+P041,1,NONE,通院のみ条件は非受容/保留,5,3,2,5,5,3,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,negative,1,通院回数
+P042,1,V2,週2回通院なら受容,4,3,2,4,4,4,3,not_asked,neutral,not_asked,not_asked,positive,not_asked,negative,not_asked,1,通院回数
+P043,1,V2,週2回通院なら受容,4,2,2,4,4,4,4,not_asked,negative,not_asked,not_asked,negative,not_asked,neutral,not_asked,0,通院回数
+P044,1,V1,週1回通院なら受容,4,3,2,2,4,1,3,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,unsure,1,採血
+P045,1,NONE,通院のみ条件は非受容/保留,5,3,2,2,3,4,5,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,採血
+P046,1,V2,週2回通院なら受容,5,3,3,4,2,5,3,not_asked,neutral,not_asked,not_asked,negative,not_asked,positive,not_asked,1,入院になる可能性
+P047,1,V1,週1回通院なら受容,4,3,3,2,3,3,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,副作用への不安
+P048,1,V1,週1回通院なら受容,5,2,2,3,2,5,3,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,家族・仕事・生活調整
+P049,1,V1,週1回通院なら受容,3,2,3,3,2,3,3,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,negative,1,副作用への不安
+P050,1,NONE,通院のみ条件は非受容/保留,5,2,3,5,4,4,3,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,positive,1,入院になる可能性
+P051,1,V2,週2回通院なら受容,5,3,3,3,3,5,5,not_asked,neutral,not_asked,not_asked,negative,not_asked,negative,not_asked,0,副作用への不安
+P052,1,V1,週1回通院なら受容,4,1,2,4,1,3,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,1,通院回数
+P053,1,V1,週1回通院なら受容,5,2,2,1,3,3,5,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,1,入院になる可能性
+P054,1,NONE,通院のみ条件は非受容/保留,5,2,4,2,2,3,5,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,1,通院回数
+P055,1,V3,週3回通院なら受容,4,4,2,2,2,4,3,negative,not_asked,not_asked,negative,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P056,1,V1,週1回通院なら受容,5,4,3,3,3,5,2,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,neutral,1,採血
+P057,1,V3,週3回通院なら受容,4,2,2,2,2,4,3,unsure,not_asked,not_asked,negative,not_asked,not_asked,not_asked,not_asked,0,副作用への不安
+P058,1,V2,週2回通院なら受容,5,4,3,5,2,5,3,not_asked,unsure,not_asked,not_asked,negative,not_asked,negative,not_asked,0,家族・仕事・生活調整
+P059,1,V2,週2回通院なら受容,4,4,1,3,3,4,4,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,not_asked,0,入院になる可能性
+P060,1,V1,週1回通院なら受容,4,3,3,2,3,4,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,negative,0,家族・仕事・生活調整
+P061,1,V3,週3回通院なら受容,5,2,4,5,1,3,5,neutral,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P062,1,V3,週3回通院なら受容,5,1,2,2,2,5,4,positive,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,入院になる可能性
+P063,1,V1,週1回通院なら受容,4,3,3,2,4,3,4,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,0,採血
+P064,1,V1,週1回通院なら受容,4,2,2,3,4,3,3,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,negative,1,入院になる可能性
+P065,1,V3,週3回通院なら受容,5,2,2,3,3,3,5,unsure,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P066,1,V1,週1回通院なら受容,4,3,4,3,2,4,4,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,通院回数
+P067,1,V1,週1回通院なら受容,5,2,4,2,3,4,5,not_asked,not_asked,unsure,not_asked,not_asked,positive,not_asked,negative,1,家族・仕事・生活調整
+P068,1,V2,週2回通院なら受容,4,2,1,4,3,3,2,not_asked,negative,not_asked,not_asked,unsure,not_asked,unsure,not_asked,0,通院回数
+P069,1,V3,週3回通院なら受容,4,1,2,2,3,3,4,neutral,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,入院になる可能性
+P070,1,V2,週2回通院なら受容,4,4,4,2,3,3,3,not_asked,positive,not_asked,not_asked,positive,not_asked,negative,not_asked,1,採血
+P071,1,V2,週2回通院なら受容,5,4,3,3,2,5,2,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,not_asked,1,入院になる可能性
+P072,1,V1,週1回通院なら受容,4,3,3,3,3,4,3,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,negative,0,入院になる可能性
+P073,1,NONE,通院のみ条件は非受容/保留,5,2,2,4,2,5,4,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,negative,1,採血
+P074,1,V2,週2回通院なら受容,5,3,2,5,3,4,2,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,通院回数
+P075,1,V1,週1回通院なら受容,5,3,2,3,2,5,5,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,neutral,0,入院になる可能性
+P076,1,V1,週1回通院なら受容,4,4,3,3,4,4,4,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,通院回数
+P077,1,V3,週3回通院なら受容,5,2,2,4,4,5,3,positive,not_asked,not_asked,unsure,not_asked,not_asked,not_asked,not_asked,1,入院になる可能性
+P078,1,V3,週3回通院なら受容,5,5,2,3,3,3,5,neutral,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,入院になる可能性
+P079,1,V1,週1回通院なら受容,4,3,1,3,1,4,4,not_asked,not_asked,neutral,not_asked,not_asked,positive,not_asked,positive,1,入院になる可能性
+P080,1,V1,週1回通院なら受容,3,3,3,2,3,3,2,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,入院になる可能性
+P081,1,V1,週1回通院なら受容,4,2,3,4,2,3,4,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,negative,0,通院回数
+P082,1,V2,週2回通院なら受容,4,3,3,2,2,3,4,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,副作用への不安
+P083,1,V1,週1回通院なら受容,4,1,2,4,3,3,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,unsure,0,副作用への不安
+P084,1,V2,週2回通院なら受容,4,2,2,4,2,4,3,not_asked,neutral,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,入院になる可能性
+P085,1,V2,週2回通院なら受容,3,2,2,3,3,3,3,not_asked,negative,not_asked,not_asked,positive,not_asked,negative,not_asked,1,通院回数
+P086,1,V3,週3回通院なら受容,5,4,4,4,2,2,5,negative,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,副作用への不安
+P087,1,V1,週1回通院なら受容,3,2,1,3,3,2,3,not_asked,not_asked,neutral,not_asked,not_asked,positive,not_asked,negative,1,入院になる可能性
+P088,1,V2,週2回通院なら受容,4,3,2,4,2,4,4,not_asked,positive,not_asked,not_asked,neutral,not_asked,unsure,not_asked,1,通院回数
+P089,1,V2,週2回通院なら受容,4,2,2,2,2,4,4,not_asked,positive,not_asked,not_asked,negative,not_asked,neutral,not_asked,1,入院になる可能性
+P090,1,V2,週2回通院なら受容,3,3,2,2,2,3,2,not_asked,negative,not_asked,not_asked,positive,not_asked,unsure,not_asked,1,家族・仕事・生活調整
+P091,1,NONE,通院のみ条件は非受容/保留,4,2,2,2,1,4,4,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,positive,1,家族・仕事・生活調整
+P092,1,V1,週1回通院なら受容,3,3,3,2,2,3,3,not_asked,not_asked,unsure,not_asked,not_asked,negative,not_asked,positive,1,入院になる可能性
+P093,1,V1,週1回通院なら受容,5,2,3,4,2,5,2,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,採血
+P094,1,NONE,通院のみ条件は非受容/保留,5,4,2,3,1,4,5,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,採血
+P095,1,NONE,通院のみ条件は非受容/保留,4,3,2,4,3,4,3,not_asked,not_asked,unsure,not_asked,not_asked,negative,not_asked,neutral,0,家族・仕事・生活調整
+P096,1,V2,週2回通院なら受容,5,3,1,1,4,5,5,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,家族・仕事・生活調整
+P097,1,V3,週3回通院なら受容,4,2,2,3,3,4,4,unsure,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P098,1,V1,週1回通院なら受容,4,4,2,3,3,3,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,unsure,1,通院回数
+P099,1,V1,週1回通院なら受容,5,3,1,2,2,5,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,positive,1,副作用への不安
+P100,1,NONE,通院のみ条件は非受容/保留,4,2,3,2,2,3,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,unsure,1,副作用への不安
+P101,1,NONE,通院のみ条件は非受容/保留,4,3,2,3,2,2,4,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,1,家族・仕事・生活調整
+P102,1,V3,週3回通院なら受容,4,3,1,2,3,4,4,positive,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P103,1,V2,週2回通院なら受容,5,4,2,3,3,3,5,not_asked,positive,not_asked,not_asked,unsure,not_asked,positive,not_asked,1,入院になる可能性
+P104,1,V1,週1回通院なら受容,5,3,2,5,2,5,2,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,通院回数
+P105,1,V1,週1回通院なら受容,5,3,2,4,2,3,5,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,positive,1,通院回数
+P106,1,V2,週2回通院なら受容,5,2,3,3,5,4,2,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,not_asked,0,副作用への不安
+P107,1,V1,週1回通院なら受容,4,3,3,2,2,3,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P108,1,V2,週2回通院なら受容,4,3,4,2,3,4,4,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,採血
+P109,0,NONE,通院のみ条件は非受容/保留,4,2,2,2,4,4,4,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,入院になる可能性
+P110,1,V1,週1回通院なら受容,4,3,3,4,3,3,2,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,1,採血
+P111,1,V2,週2回通院なら受容,4,3,1,3,4,4,3,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,採血
+P112,1,V2,週2回通院なら受容,5,4,2,3,3,2,5,not_asked,neutral,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,通院回数
+P113,1,V1,週1回通院なら受容,5,4,3,3,2,3,5,not_asked,not_asked,negative,not_asked,not_asked,negative,not_asked,negative,0,入院になる可能性
+P114,1,V3,週3回通院なら受容,5,2,2,2,2,4,5,neutral,not_asked,not_asked,unsure,not_asked,not_asked,not_asked,not_asked,0,採血
+P115,1,V1,週1回通院なら受容,4,4,2,4,3,2,4,not_asked,not_asked,neutral,not_asked,not_asked,positive,not_asked,negative,1,採血
+P116,1,V3,週3回通院なら受容,5,5,1,3,2,3,2,positive,not_asked,not_asked,unsure,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P117,1,NONE,通院のみ条件は非受容/保留,5,4,3,2,3,5,4,not_asked,not_asked,neutral,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P118,1,V3,週3回通院なら受容,4,4,2,4,3,4,3,unsure,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P119,0,NONE,通院のみ条件は非受容/保留,5,4,3,3,2,3,5,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,副作用への不安
+P120,1,V3,週3回通院なら受容,4,3,2,3,2,2,4,neutral,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,通院回数
+P121,1,V2,週2回通院なら受容,4,4,4,2,2,4,4,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,通院回数
+P122,1,NONE,通院のみ条件は非受容/保留,4,4,2,2,2,4,2,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,unsure,1,通院回数
+P123,1,V1,週1回通院なら受容,5,2,1,4,3,2,5,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,negative,1,通院回数
+P124,1,V1,週1回通院なら受容,4,4,3,1,4,3,4,not_asked,not_asked,negative,not_asked,not_asked,negative,not_asked,positive,1,通院回数
+P125,0,NONE,通院のみ条件は非受容/保留,5,3,1,2,3,3,5,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,1,副作用への不安
+P126,1,NONE,通院のみ条件は非受容/保留,5,2,2,5,2,4,3,not_asked,not_asked,neutral,not_asked,not_asked,neutral,not_asked,neutral,0,入院になる可能性
+P127,1,NONE,通院のみ条件は非受容/保留,5,4,2,3,2,5,4,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,negative,0,通院回数
+P128,1,V2,週2回通院なら受容,4,3,2,3,1,2,4,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,not_asked,1,通院回数
+P129,1,V1,週1回通院なら受容,3,3,1,2,3,3,3,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,neutral,1,入院になる可能性
+P130,1,V3,週3回通院なら受容,4,3,3,3,3,4,3,unsure,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,入院になる可能性
+P131,1,V3,週3回通院なら受容,3,2,3,2,3,3,3,positive,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,1,入院になる可能性
+P132,1,V1,週1回通院なら受容,4,4,2,3,3,2,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,neutral,0,通院回数
+P133,1,V1,週1回通院なら受容,4,3,4,2,2,3,3,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,negative,1,入院になる可能性
+P134,1,NONE,通院のみ条件は非受容/保留,4,2,3,2,3,2,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,unsure,1,家族・仕事・生活調整
+P135,1,V2,週2回通院なら受容,4,3,3,3,3,4,4,not_asked,negative,not_asked,not_asked,negative,not_asked,positive,not_asked,1,通院回数
+P136,1,NONE,通院のみ条件は非受容/保留,5,3,2,3,1,5,4,not_asked,not_asked,unsure,not_asked,not_asked,positive,not_asked,negative,1,家族・仕事・生活調整
+P137,1,V1,週1回通院なら受容,4,4,3,3,3,3,3,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,positive,1,通院回数
+P138,1,V1,週1回通院なら受容,5,3,3,3,1,5,4,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,1,通院回数
+P139,1,NONE,通院のみ条件は非受容/保留,5,4,3,4,3,5,3,not_asked,not_asked,unsure,not_asked,not_asked,unsure,not_asked,positive,1,採血
+P140,1,V2,週2回通院なら受容,4,4,3,3,2,3,4,not_asked,positive,not_asked,not_asked,unsure,not_asked,positive,not_asked,1,通院回数
+P141,1,V1,週1回通院なら受容,4,3,2,3,3,1,4,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,neutral,0,採血
+P142,1,V3,週3回通院なら受容,4,4,2,4,2,3,3,positive,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P143,1,V1,週1回通院なら受容,4,4,2,3,2,2,3,not_asked,not_asked,neutral,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P144,1,V2,週2回通院なら受容,4,2,1,2,2,3,4,not_asked,positive,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,副作用への不安
+P145,1,V2,週2回通院なら受容,4,3,2,4,2,3,3,not_asked,negative,not_asked,not_asked,neutral,not_asked,unsure,not_asked,0,通院回数
+P146,1,V1,週1回通院なら受容,4,2,3,3,4,3,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,negative,1,副作用への不安
+P147,1,NONE,通院のみ条件は非受容/保留,5,4,3,3,3,4,5,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,positive,1,入院になる可能性
+P148,1,V1,週1回通院なら受容,4,2,3,4,3,2,2,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,positive,1,副作用への不安
+P149,1,V3,週3回通院なら受容,4,4,3,3,2,3,1,negative,not_asked,not_asked,positive,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P150,1,V1,週1回通院なら受容,5,5,1,2,4,2,3,not_asked,not_asked,positive,not_asked,not_asked,positive,not_asked,negative,1,入院になる可能性
+P151,1,V2,週2回通院なら受容,4,2,1,4,2,3,3,not_asked,positive,not_asked,not_asked,negative,not_asked,neutral,not_asked,1,入院になる可能性
+P152,1,NONE,通院のみ条件は非受容/保留,5,2,4,5,4,5,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P153,1,V2,週2回通院なら受容,5,3,3,3,5,4,3,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,通院回数
+P154,0,NONE,通院のみ条件は非受容/保留,5,2,3,4,1,5,4,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,positive,1,通院回数
+P155,1,V2,週2回通院なら受容,5,5,3,4,2,3,5,not_asked,negative,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,通院回数
+P156,1,V1,週1回通院なら受容,4,3,3,3,3,4,4,not_asked,not_asked,negative,not_asked,not_asked,negative,not_asked,negative,0,入院になる可能性
+P157,1,V2,週2回通院なら受容,4,4,4,4,4,3,4,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,not_asked,1,入院になる可能性
+P158,1,V1,週1回通院なら受容,4,2,4,3,2,4,3,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P159,1,NONE,通院のみ条件は非受容/保留,5,4,2,4,3,4,5,not_asked,not_asked,positive,not_asked,not_asked,negative,not_asked,unsure,1,入院になる可能性
+P160,1,V1,週1回通院なら受容,5,2,4,3,3,4,5,not_asked,not_asked,neutral,not_asked,not_asked,negative,not_asked,neutral,0,入院になる可能性
+P161,1,V1,週1回通院なら受容,3,2,3,3,3,2,3,not_asked,not_asked,neutral,not_asked,not_asked,unsure,not_asked,unsure,0,通院回数
+P162,1,V1,週1回通院なら受容,4,2,1,4,3,4,4,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,negative,1,家族・仕事・生活調整
+P163,0,NONE,通院のみ条件は非受容/保留,5,3,2,4,4,3,5,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,positive,1,入院になる可能性
+P164,1,V3,週3回通院なら受容,5,2,2,5,2,3,1,positive,not_asked,not_asked,negative,not_asked,not_asked,not_asked,not_asked,1,通院回数
+P165,1,V3,週3回通院なら受容,5,4,3,4,3,5,4,negative,not_asked,not_asked,neutral,not_asked,not_asked,not_asked,not_asked,0,採血
+P166,1,V1,週1回通院なら受容,4,1,3,2,2,4,3,not_asked,not_asked,negative,not_asked,not_asked,neutral,not_asked,positive,1,通院回数
+P167,1,V1,週1回通院なら受容,5,3,1,3,3,4,5,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,1,採血
+P168,1,V1,週1回通院なら受容,4,4,3,3,2,3,4,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,1,通院回数
+P169,1,V1,週1回通院なら受容,5,1,3,5,2,3,3,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,negative,1,採血
+P170,1,V2,週2回通院なら受容,4,3,2,4,3,3,3,not_asked,positive,not_asked,not_asked,positive,not_asked,positive,not_asked,1,通院回数
+P171,1,NONE,通院のみ条件は非受容/保留,4,2,1,2,2,3,4,not_asked,not_asked,negative,not_asked,not_asked,negative,not_asked,negative,0,副作用への不安
+P172,1,V1,週1回通院なら受容,5,3,3,2,4,5,3,not_asked,not_asked,negative,not_asked,not_asked,positive,not_asked,positive,1,副作用への不安
+P173,1,V1,週1回通院なら受容,4,2,2,4,2,4,3,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,neutral,1,通院回数
+P174,0,NONE,通院のみ条件は非受容/保留,4,1,2,2,3,4,1,not_asked,not_asked,negative,not_asked,not_asked,unsure,not_asked,positive,1,採血
+P175,1,V1,週1回通院なら受容,4,3,2,2,1,4,4,not_asked,not_asked,unsure,not_asked,not_asked,neutral,not_asked,neutral,0,採血
+P176,1,V1,週1回通院なら受容,4,3,3,3,2,1,4,not_asked,not_asked,neutral,not_asked,not_asked,unsure,not_asked,unsure,0,家族・仕事・生活調整
+P177,1,V2,週2回通院なら受容,4,4,2,3,3,4,3,not_asked,unsure,not_asked,not_asked,positive,not_asked,neutral,not_asked,1,入院になる可能性
+P178,1,V2,週2回通院なら受容,5,4,2,5,2,3,2,not_asked,positive,not_asked,not_asked,positive,not_asked,negative,not_asked,1,副作用への不安
+P179,1,NONE,通院のみ条件は非受容/保留,5,2,2,4,3,5,3,not_asked,not_asked,positive,not_asked,not_asked,neutral,not_asked,positive,1,副作用への不安
+P180,1,V2,週2回通院なら受容,4,4,3,2,2,2,4,not_asked,positive,not_asked,not_asked,unsure,not_asked,neutral,not_asked,1,入院になる可能性

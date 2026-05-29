@@ -73,7 +73,29 @@ SUPPORT_PACKAGES = [
     ("V1N2", "週3回確認: 週1回通院+週2回訪問看護"),
     ("V2N0", "週2回確認: 週2回通院"),
     ("V1N1", "週2回確認: 週1回通院+週1回訪問看護"),
-    ("NONE", "どれも難しい"),
+]
+
+SIDE_EFFECTS = [
+    ("sedation", "眠気・だるさ"),
+    ("hypersalivation", "よだれ・流涎"),
+    ("weight_metabolic", "体重増加・代謝異常"),
+    ("constipation", "便秘"),
+    ("infection_blood", "採血異常・感染リスク"),
+    ("myocarditis", "心筋炎など重い副作用"),
+]
+
+SUPPORT_BY_THRESHOLD = {
+    "V3": ["V3N2", "V3N0"],
+    "V2": ["V2N3", "V2N1", "V2N0"],
+    "V1": ["V1N4", "V1N2", "V1N1"],
+    "NONE": ["V1N4", "V1N2", "V1N1"],
+}
+
+SUPPORT_DIRECTIONS = [
+    ("positive", "より前向きになる"),
+    ("neutral", "変わらない"),
+    ("negative", "むしろ後ろ向きになる"),
+    ("unsure", "わからない"),
 ]
 
 
@@ -132,27 +154,41 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
             }
         )
 
-        side_effect_impact = min(5, max(1, int(round(RNG.normalvariate(3.1 + 0.45 * past_refusal, 1.0)))))
+        side_effect_ratings: dict[str, int] = {}
+        for key, _ in SIDE_EFFECTS:
+            base = {
+                "sedation": 2.8,
+                "hypersalivation": 2.4,
+                "weight_metabolic": 3.0,
+                "constipation": 2.7,
+                "infection_blood": 3.3,
+                "myocarditis": 3.6,
+            }[key]
+            side_effect_ratings[key] = min(5, max(1, int(round(RNG.normalvariate(base + 0.35 * past_refusal, 0.9)))))
+        max_side_effect_impact = max(side_effect_ratings.values())
         score = RNG.random()
         if not outpatient_now and not outpatient_worse:
             th = "NONE" if score < 0.58 else "V1"
-        elif score < 0.18 + 0.06 * unmet - 0.04 * (side_effect_impact >= 4):
+        elif score < 0.18 + 0.06 * unmet - 0.04 * (max_side_effect_impact >= 4):
             th = "V3"
         elif score < 0.45 + 0.08 * unmet:
             th = "V2"
-        elif score < 0.84 - 0.05 * (side_effect_impact >= 5):
+        elif score < 0.84 - 0.05 * (max_side_effect_impact >= 5):
             th = "V1"
         else:
             th = "NONE"
         max_burden = dict(THRESHOLDS)[th]
-        if th == "V3":
-            support = weighted_choice([("V3N2", 0.45), ("V3N0", 0.35), ("V2N1", 0.12), ("NONE", 0.08)])
-        elif th == "V2":
-            support = weighted_choice([("V2N3", 0.18), ("V2N1", 0.34), ("V2N0", 0.24), ("V1N2", 0.16), ("NONE", 0.08)])
-        elif th == "V1":
-            support = weighted_choice([("V1N4", 0.10), ("V1N2", 0.26), ("V1N1", 0.34), ("V3N0", 0.08), ("NONE", 0.22)])
-        else:
-            support = weighted_choice([("V3N2", 0.08), ("V2N3", 0.10), ("V1N4", 0.12), ("V1N1", 0.12), ("NONE", 0.58)])
+        support_answers: dict[str, str] = {key: "not_asked" for key, _ in SUPPORT_PACKAGES}
+        for support_key in SUPPORT_BY_THRESHOLD[th]:
+            if support_key.endswith("N0"):
+                weights = [("positive", 0.16), ("neutral", 0.54), ("negative", 0.18), ("unsure", 0.12)]
+            elif support_key in {"V3N2", "V2N3", "V1N4"}:
+                weights = [("positive", 0.34), ("neutral", 0.22), ("negative", 0.32), ("unsure", 0.12)]
+            else:
+                weights = [("positive", 0.30), ("neutral", 0.34), ("negative", 0.23), ("unsure", 0.13)]
+            if max_side_effect_impact >= 4:
+                weights = [(k, w + (0.08 if k == "positive" else 0)) for k, w in weights]
+            support_answers[support_key] = weighted_choice(weights)
         biggest = weighted_choice(
             [
                 ("通院回数", 0.33),
@@ -168,14 +204,15 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "clozapine_accept": str(int(outpatient_now or outpatient_worse or th != "NONE")),
                 "threshold": th,
                 "threshold_label": max_burden,
-                "side_effect_impact": str(side_effect_impact),
-                "preferred_support_package": support,
-                "preferred_support_label": dict(SUPPORT_PACKAGES)[support],
+                "side_effect_max_impact": str(max_side_effect_impact),
+                **{f"side_effect_{key}": str(value) for key, value in side_effect_ratings.items()},
+                **{f"support_{key.lower()}": value for key, value in support_answers.items()},
+                "support_any_more_positive": str(int(any(v == "positive" for v in support_answers.values()))),
                 "biggest_burden": biggest,
             }
         )
         physician_expect = RNG.random() < (0.30 + 0.20 * unmet - 0.10 * past_refusal)
-        patient_accept_outpatient = th != "NONE" or support != "NONE"
+        patient_accept_outpatient = th != "NONE" or any(v == "positive" for v in support_answers.values())
         gap.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -339,6 +376,61 @@ def stacked_category_svg(path: Path, title: str, counts: Counter, labels: list[t
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
+def mean_bar_svg(path: Path, title: str, labels: list[str], means: list[float], xlab: str = "平均スコア") -> None:
+    width, height = 900, 460
+    left, top, right, bottom = 260, 58, 58, 56
+    plot_w, plot_h = width - left - right, height - top - bottom
+    row_h = plot_h / len(labels)
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for tick in range(1, 6):
+        x = left + plot_w * (tick - 1) / 4
+        parts.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{height-bottom}" stroke="#eef2f6"/>')
+        parts.append(f'<text x="{x:.1f}" y="{height-bottom+20}" text-anchor="middle" class="axis">{tick}</text>')
+    for i, (lab, mean) in enumerate(zip(labels, means)):
+        y = top + i * row_h + row_h * 0.22
+        w = plot_w * (mean - 1) / 4
+        parts.append(f'<text x="{left-12}" y="{y+row_h*0.32:.1f}" text-anchor="end" class="label">{esc(lab)}</text>')
+        parts.append(f'<rect x="{left}" y="{y:.1f}" width="{w:.1f}" height="{row_h*0.46:.1f}" fill="#2f7d8c"/>')
+        parts.append(f'<text x="{left+w+8:.1f}" y="{y+row_h*0.32:.1f}" class="num">{mean:.1f}</text>')
+    parts.append(f'<text x="{left+plot_w/2}" y="{height-12}" text-anchor="middle" class="axis">{esc(xlab)}（1=妨げにならない、5=服用を考えられないほど妨げる）</text>')
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
+def support_direction_svg(path: Path, title: str, rows: dict[str, Counter]) -> None:
+    width, height = 980, 560
+    left, top, right, bottom = 250, 62, 40, 92
+    plot_w = width - left - right
+    row_h = 42
+    colors = {"positive": "#2f7d8c", "neutral": "#b7d5da", "negative": "#c47f4f", "unsure": "#d8dee4"}
+    parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
+    for i, (key, label) in enumerate(SUPPORT_PACKAGES):
+        counts = rows.get(key, Counter())
+        total = sum(counts.values())
+        y = top + i * row_h
+        parts.append(f'<text x="{left-12}" y="{y+24}" text-anchor="end" class="label">{esc(label)}</text>')
+        x = left
+        if total == 0:
+            parts.append(f'<text x="{left}" y="{y+24}" class="axis">該当者なし</text>')
+            continue
+        for direction, direction_label in SUPPORT_DIRECTIONS:
+            val = counts.get(direction, 0)
+            w = plot_w * val / total
+            if w > 0:
+                parts.append(f'<rect x="{x:.1f}" y="{y+5}" width="{w:.1f}" height="26" fill="{colors[direction]}"/>')
+                if w > 38:
+                    parts.append(f'<text x="{x+w/2:.1f}" y="{y+23}" text-anchor="middle" class="inside">{val}</text>')
+            x += w
+        parts.append(f'<text x="{left+plot_w+8}" y="{y+24}" class="num">n={total}</text>')
+    lx, ly = left, height - 58
+    for direction, direction_label in SUPPORT_DIRECTIONS:
+        parts.append(f'<rect x="{lx}" y="{ly}" width="14" height="14" fill="{colors[direction]}"/>')
+        parts.append(f'<text x="{lx+20}" y="{ly+12}" class="legend">{esc(direction_label)}</text>')
+        lx += 180
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def svg_head(width: int, height: int) -> str:
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img">
 <style>
@@ -386,16 +478,23 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     stacked_svg(p, "図3. 対象集団別のburden threshold", dict(rows))
     fig_paths["fig3"] = rel(p)
 
-    burden_counts = Counter(r["side_effect_impact"] for r in threshold)
-    ordered = ["1", "2", "3", "4", "5"]
+    effect_labels = [label for _, label in SIDE_EFFECTS]
+    effect_means = [
+        sum(int(r[f"side_effect_{key}"]) for r in threshold) / len(threshold)
+        for key, _ in SIDE_EFFECTS
+    ]
     p = FIG / f"bhtm_v{version}_fig4_burden.svg"
-    bar_svg(p, "図4. 副作用可能性が服用判断を妨げる程度", ordered, [burden_counts[k] for k in ordered], "Likert score")
+    mean_bar_svg(p, "図4. 副作用別にみた服用判断への影響", effect_labels, effect_means)
     fig_paths["fig4"] = rel(p)
 
-    support_counts = Counter(r["preferred_support_package"] for r in threshold)
-    ordered_s = SUPPORT_PACKAGES
+    support_rows: dict[str, Counter] = defaultdict(Counter)
+    for r in threshold:
+        for key, _ in SUPPORT_PACKAGES:
+            value = r.get(f"support_{key.lower()}", "not_asked")
+            if value != "not_asked":
+                support_rows[key][value] += 1
     p = FIG / f"bhtm_v{version}_fig5_recruit.svg"
-    stacked_category_svg(p, "図5. 最も前向きに考えやすい外来モニタリング条件", support_counts, ordered_s)
+    support_direction_svg(p, "図5. 訪問看護を加えた場合の服用判断への方向性", support_rows)
     fig_paths["fig5"] = rel(p)
 
     both = physician_only = patient_only = neither = 0
@@ -457,8 +556,8 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig1": "外来導入レジメン以前に、クロザピン服用そのものを前向きに考えられるかを示す入口の図。Gee 2017やJakobsen 2025で示されたように、患者本人の受容性は医療者の想定より高い可能性があるため、まず服用自体の受容性を切り出す。",
         "fig2": "通院頻度をprimary thresholdとして扱う中核図。訪問看護の有無はここでは動かさず、外来導入を受け入れるために必要な初期通院頻度を示す。",
         "fig3": "対象集団をTRS適格候補と広い未使用外来患者に分けることで、来年度安全性検証研究の潜在対象者と、一般的な潜在ニーズを分けて議論できる。",
-        "fig4": "副作用の不安そのものではなく、服用判断への影響度として測定する。クロザピン服用自体の受容性や、高頻度モニタリング/訪問看護選好を修飾する因子として扱う。",
-        "fig5": "訪問看護は負担にも安心材料にもなりうるため、通院頻度thresholdとは別にsupport modifierとして提示する。週あたり総モニタリング回数が5回、3回、2回になるよう通院頻度ごとに訪問看護頻度を調整した条件を比較する。",
+        "fig4": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
+        "fig5": "訪問看護は単なる負担追加ではなく安心材料にもなりうる。通院のみthresholdを決めた後、その通院頻度に訪問看護を加え、総モニタリング回数が週5、週3、週2になる条件が前向き/後ろ向きのどちらに働くかを示す。",
         "fig6": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
     }
     links = """
@@ -566,54 +665,51 @@ def questionnaire_html(version: int) -> str:
 
       <section class="step" data-step="4">
         <h2>副作用可能性の影響</h2>
-        <p>クロザピンの副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
-        <div class="seg">
-          <label><input type="radio" name="side_effect_impact" value="1"> 1. まったく妨げにならない</label>
-          <label><input type="radio" name="side_effect_impact" value="2"> 2. あまり妨げにならない</label>
-          <label><input type="radio" name="side_effect_impact" value="3"> 3. どちらともいえない</label>
-          <label><input type="radio" name="side_effect_impact" value="4"> 4. かなり妨げになる</label>
-          <label><input type="radio" name="side_effect_impact" value="5"> 5. 服用を考えられないほど妨げになる</label>
+        <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
+        <div class="tt-card">
+          <span class="pill" id="sideEffectProgress">1/6</span>
+          <h3 id="sideEffectLabel">眠気・だるさ</h3>
         </div>
-        <div class="nav"><button class="primary" onclick="next()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="seg">
+          <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
+          <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
+          <label><input type="radio" name="side_effect_current" value="3"> 3. どちらともいえない</label>
+          <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
+          <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
+        </div>
+        <div class="nav"><button class="primary" onclick="nextSideEffect()">次へ</button><button onclick="prevSideEffect()">前へ</button></div>
       </section>
 
       <section class="step" data-step="5">
         <img class="hero" src="{ASSET_PREFIX}/monitoring.png" alt="">
         <h2>通院だけで始める場合</h2>
         <p class="scenarioText"></p>
-        <p>入院せず外来でクロザピンを始める場合、以下の通院頻度だけで前向きに考えられるかを選んでください。</p>
-        <div class="mini-question">
-          <p class="question">最初6週間は週3回通院</p>
-          {yes_no_choices("visit3")}
-        </div>
-        <div class="mini-question">
-          <p class="question">最初6週間は週2回通院</p>
-          {yes_no_choices("visit2")}
-        </div>
-        <div class="mini-question">
-          <p class="question">最初6週間は週1回通院</p>
-          {yes_no_choices("visit1")}
+        <p>入院せず外来でクロザピンを始める場合、最初6週間の通院頻度について、負担が大きい条件から順に伺います。</p>
+        <div class="tt-card">
+          <span class="pill" id="visitProgress">1/3</span>
+          <h3 id="visitQuestion">最初6週間は週3回通院</h3>
+          <p class="small">この条件でクロザピン服用を前向きに考えたいですか？</p>
         </div>
         <p class="small">7週目以降も定期通院と採血は続きます。体調に異常があれば、必要時は入院へ切り替えます。</p>
-        <div class="nav"><button class="primary" onclick="nextVisit()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="nav"><button class="primary" onclick="answerVisit(true)">はい</button><button onclick="answerVisit(false)">いいえ</button><button onclick="prevVisit()">前へ</button></div>
       </section>
 
       <section class="step" data-step="6">
         <img class="hero" src="{ASSET_PREFIX}/outpatient_visit.png" alt="">
         <h2>訪問看護を含む場合</h2>
-        <p>通院に訪問看護を組み合わせる場合、最も前向きに考えやすい条件を1つ選んでください。</p>
-        <div class="support-grid">
-          <label class="choice"><input type="radio" name="support_package" value="V3N2"> 週5回確認: 週3回通院+週2回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N3"> 週5回確認: 週2回通院+週3回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N4"> 週5回確認: 週1回通院+週4回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V3N0"> 週3回確認: 週3回通院</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N1"> 週3回確認: 週2回通院+週1回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N2"> 週3回確認: 週1回通院+週2回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="V2N0"> 週2回確認: 週2回通院</label>
-          <label class="choice"><input type="radio" name="support_package" value="V1N1"> 週2回確認: 週1回通院+週1回訪問看護</label>
-          <label class="choice"><input type="radio" name="support_package" value="NONE"> どれも前向きに考えにくい</label>
+        <p>通院のみの条件に訪問看護を組み合わせると、クロザピン服用を考える気持ちはどう変わりますか？ 比較のため、同じ総確認回数の「訪問看護なし」条件が入る場合があります。</p>
+        <div class="tt-card">
+          <span class="pill" id="supportProgress">1/3</span>
+          <h3 id="supportQuestion">週5回確認</h3>
+          <p class="small" id="supportDescription"></p>
         </div>
-        <div class="nav"><button class="primary" onclick="nextSupport()">次へ</button><button onclick="prev()">前へ</button></div>
+        <div class="seg">
+          <label><input type="radio" name="support_direction_current" value="positive"> より前向きになる</label>
+          <label><input type="radio" name="support_direction_current" value="neutral"> 変わらない</label>
+          <label><input type="radio" name="support_direction_current" value="negative"> むしろ後ろ向きになる</label>
+          <label><input type="radio" name="support_direction_current" value="unsure"> わからない</label>
+        </div>
+        <div class="nav"><button class="primary" onclick="nextSupport()">次へ</button><button onclick="prevSupport()">前へ</button></div>
       </section>
 
       <section class="step optional" data-step="7">
@@ -632,7 +728,7 @@ def questionnaire_html(version: int) -> str:
         <p>ダミー質問票の確認はここまでです。実際の調査では、この回答内容を保存して解析します。</p>
         <div class="summary">
           <strong>通院頻度threshold:</strong> <span id="thresholdSummary">未回答</span><br>
-          <strong>選んだモニタリング条件:</strong> <span id="supportSummary">未回答</span>
+          <strong>訪問看護追加の評価:</strong> <span id="supportSummary">未回答</span>
         </div>
         <div class="nav"><button class="primary" onclick="finish()">完了</button><button onclick="prev()">前へ</button></div>
       </section>
@@ -667,8 +763,31 @@ def questionnaire_js(final: bool, compact: bool) -> str:
 const steps = Array.from(document.querySelectorAll('.step'));
 let current = 0;
 let threshold = null;
-let supportChoice = null;
+let visitIndex = 0;
+let sideEffectIndex = 0;
+let supportIndex = 0;
 let assumedState = null;
+let reasonSource = null;
+const sideEffects = [
+  ['sedation','眠気・だるさ'],
+  ['hypersalivation','よだれ・流涎'],
+  ['weight_metabolic','体重増加・代謝異常'],
+  ['constipation','便秘'],
+  ['infection_blood','採血異常・感染リスク'],
+  ['myocarditis','心筋炎など重い副作用']
+];
+const sideEffectAnswers = {};
+const visitQuestions = [
+  ['V3','最初6週間は週3回通院'],
+  ['V2','最初6週間は週2回通院'],
+  ['V1','最初6週間は週1回通院']
+];
+const supportByThreshold = {
+  V3: ['V3N2','V3N0'],
+  V2: ['V2N3','V2N1','V2N0'],
+  V1: ['V1N4','V1N2','V1N1'],
+  NONE: ['V1N4','V1N2','V1N1']
+};
 const supportLabels = {
   V3N2:'週5回確認: 週3回通院+週2回訪問看護',
   V2N3:'週5回確認: 週2回通院+週3回訪問看護',
@@ -677,19 +796,29 @@ const supportLabels = {
   V2N1:'週3回確認: 週2回通院+週1回訪問看護',
   V1N2:'週3回確認: 週1回通院+週2回訪問看護',
   V2N0:'週2回確認: 週2回通院',
-  V1N1:'週2回確認: 週1回通院+週1回訪問看護',
-  NONE:'どれも前向きに考えにくい'
+  V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
+const directionLabels = {
+  positive:'より前向きになる',
+  neutral:'変わらない',
+  negative:'むしろ後ろ向きになる',
+  unsure:'わからない'
+};
+const supportAnswers = {};
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
+  if(current === 4) renderSideEffectQuestion();
+  if(current === 5) renderVisitQuestion();
+  if(current === 6) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 8){ current = supportChoice === 'NONE' ? 7 : 6; renderStep(); return; }
+  if(current === 8){ current = 6; renderStep(); return; }
+  if(current === 7 && reasonSource === 'clozapine_no'){ current = 3; renderStep(); return; }
   if(current > 0){ current--; renderStep(); }
 }
 function nextNeed(){
@@ -706,36 +835,116 @@ function nextNeed(){
   }
   next();
 }
+function renderSideEffectQuestion(){
+  const [key, label] = sideEffects[sideEffectIndex];
+  document.getElementById('sideEffectProgress').textContent = `${sideEffectIndex + 1}/${sideEffects.length}`;
+  document.getElementById('sideEffectLabel').textContent = label;
+  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
+    input.checked = sideEffectAnswers[key] === input.value;
+  });
+}
+function nextSideEffect(){
+  const val = document.querySelector('input[name="side_effect_current"]:checked')?.value;
+  if(!val){ alert('1つ選んでください。'); return; }
+  const [key] = sideEffects[sideEffectIndex];
+  sideEffectAnswers[key] = val;
+  if(sideEffectIndex < sideEffects.length - 1){
+    sideEffectIndex++;
+    document.querySelectorAll('input[name="side_effect_current"]').forEach(input => input.checked = false);
+    renderSideEffectQuestion();
+    return;
+  }
+  next();
+}
+function prevSideEffect(){
+  if(sideEffectIndex > 0){
+    sideEffectIndex--;
+    renderSideEffectQuestion();
+    return;
+  }
+  prev();
+}
 function nextClozapine(){
   const val = document.querySelector('input[name="clozapine_accept"]:checked')?.value;
   if(!val){ alert('はい、または、いいえを選んでください。'); return; }
   if(val === 'no'){
+    reasonSource = 'clozapine_no';
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
     current = 7; renderStep(); return;
   }
   next();
 }
-function nextVisit(){
-  const v3 = document.querySelector('input[name="visit3"]:checked')?.value;
-  const v2 = document.querySelector('input[name="visit2"]:checked')?.value;
-  const v1 = document.querySelector('input[name="visit1"]:checked')?.value;
-  if(!v3 || !v2 || !v1){ alert('3つの通院頻度すべてについて選んでください。'); return; }
-  if(v1 === 'yes') threshold = 'V1';
-  else if(v2 === 'yes') threshold = 'V2';
-  else if(v3 === 'yes') threshold = 'V3';
-  else threshold = 'NONE';
-  const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
-  document.getElementById('thresholdSummary').textContent = labels[threshold];
+function renderVisitQuestion(){
+  const [key, label] = visitQuestions[visitIndex];
+  document.getElementById('visitProgress').textContent = `${visitIndex + 1}/${visitQuestions.length}`;
+  document.getElementById('visitQuestion').textContent = label;
+}
+function answerVisit(accepted){
+  if(accepted){
+    threshold = visitQuestions[visitIndex][0];
+    setThresholdSummary();
+    supportIndex = 0;
+    next();
+    return;
+  }
+  if(visitIndex < visitQuestions.length - 1){
+    visitIndex++;
+    renderVisitQuestion();
+    return;
+  }
+  threshold = 'NONE';
+  setThresholdSummary();
+  supportIndex = 0;
   next();
 }
+function prevVisit(){
+  if(visitIndex > 0){
+    visitIndex--;
+    renderVisitQuestion();
+    return;
+  }
+  prev();
+}
+function setThresholdSummary(){
+  const labels = {V1:'週1回通院なら受容', V2:'週2回通院なら受容', V3:'週3回通院なら受容', NONE:'通院のみ条件は非受容/保留'};
+  document.getElementById('thresholdSummary').textContent = labels[threshold];
+}
+function renderSupportQuestion(){
+  const options = supportByThreshold[threshold || 'NONE'];
+  const key = options[supportIndex];
+  document.getElementById('supportProgress').textContent = `${supportIndex + 1}/${options.length}`;
+  document.getElementById('supportQuestion').textContent = supportLabels[key];
+  document.getElementById('supportDescription').textContent = threshold === 'NONE'
+    ? '通院のみでは前向きに考えにくい場合、この条件なら気持ちはどう変わりますか？'
+    : '通院のみの場合と比べて、この条件はクロザピン服用を考える気持ちにどう影響しますか？';
+  document.querySelectorAll('input[name="support_direction_current"]').forEach(input => {
+    input.checked = supportAnswers[key] === input.value;
+  });
+}
 function nextSupport(){
-  const val = document.querySelector('input[name="support_package"]:checked')?.value;
-  if(!val){ alert('最も前向きに考えやすい条件を選んでください。'); return; }
-  supportChoice = val;
-  document.getElementById('supportSummary').textContent = supportLabels[val];
-  if(val === 'NONE'){ current = 7; renderStep(); return; }
+  const val = document.querySelector('input[name="support_direction_current"]:checked')?.value;
+  if(!val){ alert('1つ選んでください。'); return; }
+  const options = supportByThreshold[threshold || 'NONE'];
+  const key = options[supportIndex];
+  supportAnswers[key] = val;
+  if(supportIndex < options.length - 1){
+    supportIndex++;
+    document.querySelectorAll('input[name="support_direction_current"]').forEach(input => input.checked = false);
+    renderSupportQuestion();
+    return;
+  }
+  document.getElementById('supportSummary').textContent = options.map(k => `${supportLabels[k]}: ${directionLabels[supportAnswers[k]]}`).join(' / ');
+  if(threshold === 'NONE' && !options.some(k => supportAnswers[k] === 'positive')){ reasonSource = 'support_none'; current = 7; renderStep(); return; }
   current = 8; renderStep();
+}
+function prevSupport(){
+  if(supportIndex > 0){
+    supportIndex--;
+    renderSupportQuestion();
+    return;
+  }
+  prev();
 }
 function scenarioText(){
   if(assumedState === 'some') return '以下では「症状による困りごとや生活のしづらさがいくらか残っている」状態で、主治医からクロザピンを勧められたと想像してください。';
