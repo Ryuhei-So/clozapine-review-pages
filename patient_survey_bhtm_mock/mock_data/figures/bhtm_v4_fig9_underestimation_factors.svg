@@ -8,7 +8,7 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="310" y="30" class="title">図9. ベースライン情報でみる外来導入受容性の過小評価要因</text>
+<text x="310" y="30" class="title">図9. ベースライン情報でみる医師予測の過小評価要因</text>
 <line x1="310.0" y1="48" x2="310.0" y2="710" stroke="#e5eaf0" stroke-width="1"/>
 <text x="310.0" y="742" text-anchor="middle" class="axis">0.25</text>
 <line x1="435.0" y1="48" x2="435.0" y2="710" stroke="#e5eaf0" stroke-width="1"/>

@@ -933,8 +933,6 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     matrix_svg(p, "図8. 医師予測と患者本人の外来受容性", both, physician_only, patient_only, neither)
     fig_paths["fig8"] = rel(p)
 
-    threshold_by_id = {r["participant_id"]: r for r in threshold}
-    vignette_by_id = {r["participant_id"]: r for r in vignette}
     underestimation = [
         r["physician_expected_outpatient_acceptance"] == "0" and r["patient_outpatient_acceptance"] == "1"
         for r in gap
@@ -967,7 +965,7 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
         or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
     p = FIG / f"bhtm_v{version}_fig9_underestimation_factors.svg"
-    forest_or_svg(p, "図9. ベースライン情報でみる外来導入受容性の過小評価要因", or_rows)
+    forest_or_svg(p, "図9. ベースライン情報でみる医師予測の過小評価要因", or_rows)
     fig_paths["fig9"] = rel(p)
     return fig_paths
 
@@ -1039,7 +1037,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig6": "クロザピンの期待される有効性が、患者本人にとって服用を試す理由としてどの程度十分と受け止められるかを示す図。副作用や通院負担だけでなく、そもそも提示されたbenefitが十分な価値として受け止められているかを確認する。",
         "fig7": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig8": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
-        "fig9": "図8の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する要因を単変量ORで示す。説明変数は、年齢、mGAF-F、過去拒否記載、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。患者本人の受容性回答、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、結果や調査内判断に近い情報は入れない。",
+        "fig9": "図8で医師予測が患者本人の回答より保守的だったケースについて、どのような事前情報と関連するかを単変量ORで示す。説明変数は、年齢、mGAF-F、過去拒否記載、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。入院導入・外来導入への意向、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、患者や医師の判断そのものに近い情報は入れない。",
     }
     links = """
       <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>
