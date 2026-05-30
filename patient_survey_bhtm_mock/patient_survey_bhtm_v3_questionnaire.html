@@ -83,9 +83,8 @@
         <p class="question">日中活動は週にどのくらいありますか？</p>
         <div class="seg"><label><input type="radio" name="day_activity_frequency" value="週0-1日" data-bg-field="1"> 週0-1日</label>
 <label><input type="radio" name="day_activity_frequency" value="週2-3日" data-bg-field="1"> 週2-3日</label>
-<label><input type="radio" name="day_activity_frequency" value="週4日以上" data-bg-field="1"> 週4日以上</label>
-<label><input type="radio" name="day_activity_frequency" value="該当なし" data-bg-field="1"> 該当なし</label></div>
-        <p class="small">就労・就学・福祉的就労・デイケア等がない場合は「該当なし」を選んでください。</p>
+<label><input type="radio" name="day_activity_frequency" value="週4日以上" data-bg-field="1"> 週4日以上</label></div>
+        <p class="small">前の質問で日中活動がないと分かる場合、この質問は自動でスキップされます。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -105,9 +104,8 @@
         <p class="question">同居家族から通院や体調確認の支援を受けられますか？</p>
         <div class="seg"><label><input type="radio" name="family_support" value="受けられる" data-bg-field="1"> 受けられる</label>
 <label><input type="radio" name="family_support" value="少し受けられる" data-bg-field="1"> 少し受けられる</label>
-<label><input type="radio" name="family_support" value="ほぼ受けられない" data-bg-field="1"> ほぼ受けられない</label>
-<label><input type="radio" name="family_support" value="同居なし" data-bg-field="1"> 同居なし</label></div>
-        <p class="small">同居していない場合は「同居なし」を選んでください。</p>
+<label><input type="radio" name="family_support" value="ほぼ受けられない" data-bg-field="1"> ほぼ受けられない</label></div>
+        <p class="small">前の質問で同居家族がいないと分かる場合、この質問は自動でスキップされます。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -321,6 +319,7 @@ const supportLabels = {
   V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
 const supportAnswers = {};
+const backgroundAnswers = {};
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -340,9 +339,23 @@ function wireAutoAdvance(){
   });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
-  document.querySelectorAll('input[data-bg-field="1"]').forEach(input => input.addEventListener('change', () => next()));
+  document.querySelectorAll('input[data-bg-field="1"]').forEach(input => input.addEventListener('change', () => {
+    backgroundAnswers[input.name] = input.value;
+    handleBackgroundChange(input.name);
+    next();
+  }));
 }
-function next(){ if(current < steps.length-1){ current++; renderStep(); } }
+function next(){ moveVisible(1); }
+function moveVisible(direction){
+  let target = current + direction;
+  while(target >= 0 && target < steps.length && isSkippedStep(steps[target])){
+    target += direction;
+  }
+  if(target >= 0 && target < steps.length){
+    current = target;
+    renderStep();
+  }
+}
 function prev(){
   if(current === STEP_SUMMARY){
     if(threshold === 'NO_CLOZAPINE') current = STEP_CLOZAPINE;
@@ -352,9 +365,56 @@ function prev(){
   }
   if(current === STEP_SUPPORT){ current = STEP_VISIT; renderStep(); return; }
   if(current > 0){
-    current--;
-    renderStep();
+    moveVisible(-1);
   }
+}
+function radioValue(name){
+  return document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+}
+function setRadioValue(name, value){
+  document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = input.value === value);
+}
+function handleBackgroundChange(name){
+  if(name === 'day_activity'){
+    const activity = radioValue('day_activity');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+    } else {
+      delete backgroundAnswers.day_activity_frequency;
+      clearChecked('day_activity_frequency');
+    }
+  }
+  if(name === 'living_arrangement'){
+    const living = radioValue('living_arrangement');
+    if(living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+    } else {
+      delete backgroundAnswers.family_support;
+      clearChecked('family_support');
+    }
+  }
+}
+function isSkippedStep(step){
+  const bgStep = step?.dataset?.bgStep;
+  if(bgStep === 'day_activity_frequency'){
+    const activity = radioValue('day_activity');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+      return true;
+    }
+  }
+  if(bgStep === 'family_support'){
+    const living = radioValue('living_arrangement');
+    if(living && living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+      return true;
+    }
+  }
+  return false;
 }
 function nextParticipantCode(){
   const input = document.getElementById('participantCode');

@@ -1109,9 +1109,9 @@ def questionnaire_html(version: int) -> str:
         background_choice_step(*spec)
         for spec in [
             ("day_activity", "日中活動", "普段の日中活動として最も近いものを選んでください。", BACKGROUND_OPTIONS["day_activity"], "入院や頻回通院が生活に与える影響を解釈するために伺います。"),
-            ("day_activity_frequency", "日中活動の頻度", "日中活動は週にどのくらいありますか？", ["週0-1日", "週2-3日", "週4日以上", "該当なし"], "就労・就学・福祉的就労・デイケア等がない場合は「該当なし」を選んでください。"),
+            ("day_activity_frequency", "日中活動の頻度", "日中活動は週にどのくらいありますか？", ["週0-1日", "週2-3日", "週4日以上"], "前の質問で日中活動がないと分かる場合、この質問は自動でスキップされます。"),
             ("living_arrangement", "同居状況", "現在の同居状況として最も近いものを選んでください。", BACKGROUND_OPTIONS["living_arrangement"], "外来導入時の支援の受けやすさを解釈するために伺います。"),
-            ("family_support", "同居家族からの支援", "同居家族から通院や体調確認の支援を受けられますか？", ["受けられる", "少し受けられる", "ほぼ受けられない", "同居なし"], "同居していない場合は「同居なし」を選んでください。"),
+            ("family_support", "同居家族からの支援", "同居家族から通院や体調確認の支援を受けられますか？", ["受けられる", "少し受けられる", "ほぼ受けられない"], "前の質問で同居家族がいないと分かる場合、この質問は自動でスキップされます。"),
             ("caregiving_role", "本人のケア役割", "あなた自身が、誰かのケアを担っていますか？", BACKGROUND_OPTIONS["caregiving_role"], "入院や頻回通院が難しくなる事情を把握するために伺います。"),
             ("travel_time_one_way", "通院にかかる片道時間", "病院までの片道時間として最も近いものを選んでください。", BACKGROUND_OPTIONS["travel_time_one_way"], "普段の移動手段で考えてください。"),
             ("transport", "主な通院手段", "主な通院手段として最も近いものを選んでください。", BACKGROUND_OPTIONS["transport"], "複数ある場合は、いちばんよく使うものを選んでください。"),
@@ -1324,6 +1324,7 @@ const supportLabels = {
   V1N1:'週2回確認: 週1回通院+週1回訪問看護'
 };
 const supportAnswers = {};
+const backgroundAnswers = {};
 function renderStep(){
   steps.forEach((s,i)=>s.classList.toggle('active', i===current));
   document.getElementById('stepNow').textContent = String(current+1);
@@ -1343,9 +1344,23 @@ function wireAutoAdvance(){
   });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
-  document.querySelectorAll('input[data-bg-field="1"]').forEach(input => input.addEventListener('change', () => next()));
+  document.querySelectorAll('input[data-bg-field="1"]').forEach(input => input.addEventListener('change', () => {
+    backgroundAnswers[input.name] = input.value;
+    handleBackgroundChange(input.name);
+    next();
+  }));
 }
-function next(){ if(current < steps.length-1){ current++; renderStep(); } }
+function next(){ moveVisible(1); }
+function moveVisible(direction){
+  let target = current + direction;
+  while(target >= 0 && target < steps.length && isSkippedStep(steps[target])){
+    target += direction;
+  }
+  if(target >= 0 && target < steps.length){
+    current = target;
+    renderStep();
+  }
+}
 function prev(){
   if(current === STEP_SUMMARY){
     if(threshold === 'NO_CLOZAPINE') current = STEP_CLOZAPINE;
@@ -1355,9 +1370,56 @@ function prev(){
   }
   if(current === STEP_SUPPORT){ current = STEP_VISIT; renderStep(); return; }
   if(current > 0){
-    current--;
-    renderStep();
+    moveVisible(-1);
   }
+}
+function radioValue(name){
+  return document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+}
+function setRadioValue(name, value){
+  document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = input.value === value);
+}
+function handleBackgroundChange(name){
+  if(name === 'day_activity'){
+    const activity = radioValue('day_activity');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+    } else {
+      delete backgroundAnswers.day_activity_frequency;
+      clearChecked('day_activity_frequency');
+    }
+  }
+  if(name === 'living_arrangement'){
+    const living = radioValue('living_arrangement');
+    if(living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+    } else {
+      delete backgroundAnswers.family_support;
+      clearChecked('family_support');
+    }
+  }
+}
+function isSkippedStep(step){
+  const bgStep = step?.dataset?.bgStep;
+  if(bgStep === 'day_activity_frequency'){
+    const activity = radioValue('day_activity');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+      return true;
+    }
+  }
+  if(bgStep === 'family_support'){
+    const living = radioValue('living_arrangement');
+    if(living && living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+      return true;
+    }
+  }
+  return false;
 }
 function nextParticipantCode(){
   const input = document.getElementById('participantCode');
