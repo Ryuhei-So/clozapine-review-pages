@@ -941,15 +941,8 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     ]
     ids = [r["participant_id"] for r in gap]
     factor_specs: list[tuple[str, list[bool]]] = [
-        ("現在の状態で回答", [participants[pid]["response_frame"] == "actual_current" for pid in ids]),
+        ("65歳以上", [int(participants[pid]["age"]) >= 65 for pid in ids]),
         ("臨床家評価mGAF-F 40以下", [int(participants[pid]["clinician_mgaf_function"]) <= 40 for pid in ids]),
-        ("現在治療で困りごとあり", [participants[pid]["current_unmet_need"] == "あり" for pid in ids]),
-        ("主観的困りごと/つらさあり", [participants[pid]["subjective_distress"] == "あり" for pid in ids]),
-        ("入院導入は前向きに考えにくい", [vignette_by_id[pid]["inpatient_asked_accept"] == "0" for pid in ids]),
-        ("外来週1回通院なら受容", [threshold_by_id[pid]["threshold"] == "V1" for pid in ids]),
-        ("週5回確認まで受容", [support_level(threshold_by_id[pid]["support_accept_condition"]) == "S5" for pid in ids]),
-        ("副作用懸念が強い（最大4以上）", [int(threshold_by_id[pid]["side_effect_max_impact"]) >= 4 for pid in ids]),
-        ("有効性は十分（4以上）", [int(threshold_by_id[pid]["efficacy_sufficiency"]) >= 4 for pid in ids]),
         ("過去拒否記載あり", [participants[pid]["past_clozapine_refusal_documented"] == "あり" for pid in ids]),
         ("日中活動あり", [participants[pid]["day_activity"] in {"就労中", "就学中", "福祉的就労", "デイケア等"} for pid in ids]),
         ("同居家族から支援あり", [participants[pid]["family_support"] == "受けられる" for pid in ids]),
@@ -965,9 +958,6 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         ("精神保健指定医", [physicians[participants[pid]["physician_id"]]["designated_mental_health_physician"] == "1" for pid in ids]),
         ("クロザピン導入3例以上", [int(physicians[participants[pid]["physician_id"]]["clozapine_initiation_cases"]) >= 3 for pid in ids]),
         ("現在担当クロザピン患者3名以上", [int(physicians[participants[pid]["physician_id"]]["current_clozapine_patients"]) >= 3 for pid in ids]),
-        ("医師の外来導入推奨率が高い", [float(physicians[participants[pid]["physician_id"]]["outpatient_recommendation_rate"]) >= 0.50 for pid in ids]),
-        ("stably unwell理由選択率が高い", [float(physicians[participants[pid]["physician_id"]]["stably_unwell_reason_rate"]) >= 0.30 for pid in ids]),
-        ("患者拒否見込み理由選択率が高い", [float(physicians[participants[pid]["physician_id"]]["expected_refusal_reason_rate"]) >= 0.45 for pid in ids]),
     ]
     or_rows: list[dict[str, str | float | int]] = [{"label": "A. 患者要因", "header": 1}]
     for label, exposed in factor_specs:
@@ -978,7 +968,7 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         orv, lo, hi, events, exposed_n = univariate_or(exposed, underestimation)
         or_rows.append({"label": label, "or": orv, "lo": lo, "hi": hi, "events": events, "exposed_n": exposed_n})
     p = FIG / f"bhtm_v{version}_fig9_underestimation_factors.svg"
-    forest_or_svg(p, "図9. 医師が外来導入受容性を過小評価しやすい患者・医師要因", or_rows)
+    forest_or_svg(p, "図9. ベースライン情報でみる外来導入受容性の過小評価要因", or_rows)
     fig_paths["fig9"] = rel(p)
     return fig_paths
 
@@ -1051,7 +1041,7 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
         "fig6": "クロザピンの期待される有効性が、患者本人にとって服用を試す理由としてどの程度十分と受け止められるかを示す図。副作用や通院負担だけでなく、そもそも提示されたbenefitが十分な価値として受け止められているかを確認する。",
         "fig7": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig8": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
-        "fig9": "図8の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する患者要因と医師要因を単変量ORで示す。因果推論ではなく、医師判断だけでは見落とされやすい患者像と、見落としが起きやすい医師側の判断スタイルを探索的に記述する目的で置く。医師要因は臨床家調査と患者調査を主治医単位でリンクできる場合に解析する。",
+        "fig9": "図8の右上象限、すなわち「医師は外来導入を受け入れにくいと予測したが、患者本人は外来導入を受け入れる」層に関連する要因を単変量ORで示す。説明変数は、年齢、mGAF-F、過去拒否記載、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。患者本人の受容性回答、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、結果や調査内判断に近い情報は入れない。",
     }
     links = """
       <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>
