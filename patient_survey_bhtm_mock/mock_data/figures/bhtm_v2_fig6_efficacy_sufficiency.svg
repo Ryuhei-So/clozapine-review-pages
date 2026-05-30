@@ -10,20 +10,20 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="280" y="30" class="title">図6. クロザピンの期待される有効性は試す理由として十分か</text>
 <text x="268" y="91.9" text-anchor="end" class="label">1. まったく十分ではない</text>
-<rect x="280" y="70.6" width="24.8" height="31.4" fill="#2f7d8c"/>
-<text x="312.8" y="91.9" class="num">3</text>
+<rect x="280" y="70.6" width="7.2" height="31.4" fill="#2f7d8c"/>
+<text x="295.2" y="91.9" class="num">1</text>
 <text x="268" y="154.7" text-anchor="end" class="label">2. あまり十分ではない</text>
-<rect x="280" y="133.4" width="190.3" height="31.4" fill="#2f7d8c"/>
-<text x="478.3" y="154.7" class="num">23</text>
+<rect x="280" y="133.4" width="129.3" height="31.4" fill="#2f7d8c"/>
+<text x="417.3" y="154.7" class="num">18</text>
 <text x="268" y="217.5" text-anchor="end" class="label">3. どちらともいえない</text>
-<rect x="280" y="196.2" width="521.2" height="31.4" fill="#2f7d8c"/>
-<text x="809.2" y="217.5" class="num">63</text>
+<rect x="280" y="196.2" width="373.6" height="31.4" fill="#2f7d8c"/>
+<text x="661.6" y="217.5" class="num">52</text>
 <text x="268" y="280.3" text-anchor="end" class="label">4. ある程度十分だと思う</text>
 <rect x="280" y="259.0" width="546.0" height="31.4" fill="#2f7d8c"/>
-<text x="834.0" y="280.3" class="num">66</text>
+<text x="834.0" y="280.3" class="num">76</text>
 <text x="268" y="343.1" text-anchor="end" class="label">5. 十分だと思う</text>
-<rect x="280" y="321.8" width="206.8" height="31.4" fill="#2f7d8c"/>
-<text x="494.8" y="343.1" class="num">25</text>
+<rect x="280" y="321.8" width="237.1" height="31.4" fill="#2f7d8c"/>
+<text x="525.1" y="343.1" class="num">33</text>
 <line x1="280" y1="372" x2="826" y2="372" stroke="#1f2933"/>
 <text x="553.0" y="416" text-anchor="middle" class="axis">人数</text>
 </svg>

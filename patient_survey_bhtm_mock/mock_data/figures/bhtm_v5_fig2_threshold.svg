@@ -10,25 +10,25 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="190" y="30" class="title">図2. 入院導入受容性別にみた外来通院頻度threshold</text>
 <text x="178" y="96" text-anchor="end" class="label">入院導入を前向きに考える</text>
-<rect x="190.0" y="68" width="84.5" height="36" fill="#0f766e"/>
-<text x="232.2" y="91" text-anchor="middle" class="inside">11</text>
-<rect x="274.5" y="68" width="168.9" height="36" fill="#2f7d8c"/>
-<text x="358.9" y="91" text-anchor="middle" class="inside">22</text>
-<rect x="443.4" y="68" width="192.0" height="36" fill="#8bbbc3"/>
-<text x="539.4" y="91" text-anchor="middle" class="inside">25</text>
-<rect x="635.3" y="68" width="222.7" height="36" fill="#d8dee4"/>
-<text x="746.7" y="91" text-anchor="middle" class="inside">29</text>
-<text x="866" y="91" class="num">n=87</text>
+<rect x="190.0" y="68" width="102.8" height="36" fill="#0f766e"/>
+<text x="241.4" y="91" text-anchor="middle" class="inside">12</text>
+<rect x="292.8" y="68" width="188.4" height="36" fill="#2f7d8c"/>
+<text x="387.0" y="91" text-anchor="middle" class="inside">22</text>
+<rect x="481.2" y="68" width="179.8" height="36" fill="#8bbbc3"/>
+<text x="571.1" y="91" text-anchor="middle" class="inside">21</text>
+<rect x="661.0" y="68" width="197.0" height="36" fill="#d8dee4"/>
+<text x="759.5" y="91" text-anchor="middle" class="inside">23</text>
+<text x="866" y="91" class="num">n=78</text>
 <text x="178" y="172" text-anchor="end" class="label">入院導入を前向きに考えにくい</text>
-<rect x="190.0" y="144" width="86.2" height="36" fill="#0f766e"/>
-<text x="233.1" y="167" text-anchor="middle" class="inside">12</text>
-<rect x="276.2" y="144" width="150.8" height="36" fill="#2f7d8c"/>
-<text x="351.6" y="167" text-anchor="middle" class="inside">21</text>
-<rect x="427.0" y="144" width="158.0" height="36" fill="#8bbbc3"/>
-<text x="506.0" y="167" text-anchor="middle" class="inside">22</text>
-<rect x="585.1" y="144" width="272.9" height="36" fill="#d8dee4"/>
-<text x="721.5" y="167" text-anchor="middle" class="inside">38</text>
-<text x="866" y="167" class="num">n=93</text>
+<rect x="190.0" y="144" width="131.0" height="36" fill="#0f766e"/>
+<text x="255.5" y="167" text-anchor="middle" class="inside">20</text>
+<rect x="321.0" y="144" width="150.6" height="36" fill="#2f7d8c"/>
+<text x="396.3" y="167" text-anchor="middle" class="inside">23</text>
+<rect x="471.6" y="144" width="131.0" height="36" fill="#8bbbc3"/>
+<text x="537.1" y="167" text-anchor="middle" class="inside">20</text>
+<rect x="602.6" y="144" width="255.4" height="36" fill="#d8dee4"/>
+<text x="730.3" y="167" text-anchor="middle" class="inside">39</text>
+<text x="866" y="167" class="num">n=102</text>
 <rect x="190" y="322" width="14" height="14" fill="#0f766e"/>
 <text x="210" y="334" class="legend">週3回通院なら受容</text>
 <rect x="360" y="322" width="14" height="14" fill="#2f7d8c"/>

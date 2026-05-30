@@ -10,14 +10,14 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="230" y="30" class="title">図3. 訪問看護を含む確認頻度threshold</text>
 <text x="218" y="93" text-anchor="end" class="label">外来導入受容者</text>
-<rect x="230.0" y="66" width="227.1" height="38" fill="#245b67"/>
-<text x="343.5" y="91" text-anchor="middle" class="inside">39</text>
-<rect x="457.1" y="66" width="186.3" height="38" fill="#2f7d8c"/>
-<text x="550.3" y="91" text-anchor="middle" class="inside">32</text>
-<rect x="643.4" y="66" width="34.9" height="38" fill="#8bbbc3"/>
-<rect x="678.4" y="66" width="209.6" height="38" fill="#d8dee4"/>
-<text x="783.2" y="91" text-anchor="middle" class="inside">36</text>
-<text x="896" y="91" class="num">n=113</text>
+<rect x="230.0" y="66" width="228.6" height="38" fill="#245b67"/>
+<text x="344.3" y="91" text-anchor="middle" class="inside">41</text>
+<rect x="458.6" y="66" width="150.6" height="38" fill="#2f7d8c"/>
+<text x="533.9" y="91" text-anchor="middle" class="inside">27</text>
+<rect x="609.2" y="66" width="22.3" height="38" fill="#8bbbc3"/>
+<rect x="631.5" y="66" width="256.5" height="38" fill="#d8dee4"/>
+<text x="759.7" y="91" text-anchor="middle" class="inside">46</text>
+<text x="896" y="91" class="num">n=118</text>
 <rect x="230" y="322" width="14" height="14" fill="#245b67"/>
 <text x="250" y="334" class="legend">週5回確認まで受容</text>
 <rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>

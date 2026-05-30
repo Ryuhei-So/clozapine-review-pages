@@ -113,7 +113,7 @@ BACKGROUND_OPTIONS = {
     "travel_time_one_way": ["30分未満", "30-60分", "60-90分", "90分以上"],
     "transport": ["自分で運転", "公共交通", "家族送迎", "福祉交通・タクシー", "徒歩・自転車", "その他"],
     "home_nursing_current": ["あり", "過去あり", "なし"],
-    "main_income_source": ["就労収入", "障害年金", "生活保護", "家族支援", "その他", "答えたくない"],
+    "main_income_source": ["就労収入", "障害年金", "家族支援", "その他", "答えたくない"],
     "public_assistance": ["あり", "なし", "答えたくない"],
     "economic_strain": ["困っていない", "少し困る", "かなり困る", "答えたくない"],
 }
@@ -196,10 +196,10 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         )
         main_income_source = RNG.choices(
             BACKGROUND_OPTIONS["main_income_source"],
-            weights=[0.18, 0.36, 0.18, 0.14, 0.08, 0.06],
+            weights=[0.20, 0.40, 0.18, 0.12, 0.10],
             k=1,
         )[0]
-        public_assistance = "あり" if main_income_source == "生活保護" else RNG.choices(["なし", "答えたくない"], weights=[0.92, 0.08], k=1)[0]
+        public_assistance = RNG.choices(["あり", "なし"], weights=[0.20, 0.80], k=1)[0]
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
@@ -949,7 +949,6 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
         ("ケア役割あり", [participants[pid]["caregiving_role"] != "なし" for pid in ids]),
         ("通院片道60分以上", [participants[pid]["travel_time_one_way"] in {"60-90分", "90分以上"} for pid in ids]),
         ("訪問看護を現在利用", [participants[pid]["home_nursing_current"] == "あり" for pid in ids]),
-        ("生活保護あり", [participants[pid]["public_assistance"] == "あり" for pid in ids]),
         ("経済的にかなり困る", [participants[pid]["economic_strain"] == "かなり困る" for pid in ids]),
     ]
     physician_factor_specs: list[tuple[str, list[bool]]] = [
@@ -1023,7 +1022,6 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
         count_row("通院手段: 家族送迎", "transport", "家族送迎"),
         count_row("訪問看護を現在利用", "home_nursing_current", "あり"),
         count_row("主な収入源: 障害年金", "main_income_source", "障害年金"),
-        count_row("生活保護あり", "public_assistance", "あり"),
         count_row("経済的にかなり困る", "economic_strain", "かなり困る"),
     ]
     return "<table><tr><th>項目</th><th>値</th></tr>" + "".join(f"<tr><td>{a}</td><td>{b}</td></tr>" for a, b in rows) + "</table>"
@@ -1088,10 +1086,40 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
 </html>"""
 
 
+def background_choice_step(name: str, title: str, question: str, options: list[str], help_text: str) -> str:
+    choices = "\n".join(
+        f'<label><input type="radio" name="{name}" value="{esc(option)}" data-bg-field="1"> {esc(option)}</label>'
+        for option in options
+    )
+    return f"""
+      <section class="step" data-bg-step="{esc(name)}">
+        <h2>{esc(title)}</h2>
+        <p class="question">{esc(question)}</p>
+        <div class="seg">{choices}</div>
+        <p class="small">{esc(help_text)}</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>"""
+
+
 def questionnaire_html(version: int) -> str:
     v = VERSIONS[version]
     compact = version >= 4
     final = version == 5
+    bg_steps = "\n".join(
+        background_choice_step(*spec)
+        for spec in [
+            ("day_activity", "日中活動", "普段の日中活動として最も近いものを選んでください。", BACKGROUND_OPTIONS["day_activity"], "入院や頻回通院が生活に与える影響を解釈するために伺います。"),
+            ("day_activity_frequency", "日中活動の頻度", "日中活動は週にどのくらいありますか？", ["週0-1日", "週2-3日", "週4日以上", "該当なし"], "就労・就学・福祉的就労・デイケア等がない場合は「該当なし」を選んでください。"),
+            ("living_arrangement", "同居状況", "現在の同居状況として最も近いものを選んでください。", BACKGROUND_OPTIONS["living_arrangement"], "外来導入時の支援の受けやすさを解釈するために伺います。"),
+            ("family_support", "同居家族からの支援", "同居家族から通院や体調確認の支援を受けられますか？", ["受けられる", "少し受けられる", "ほぼ受けられない", "同居なし"], "同居していない場合は「同居なし」を選んでください。"),
+            ("caregiving_role", "本人のケア役割", "あなた自身が、誰かのケアを担っていますか？", BACKGROUND_OPTIONS["caregiving_role"], "入院や頻回通院が難しくなる事情を把握するために伺います。"),
+            ("travel_time_one_way", "通院にかかる片道時間", "病院までの片道時間として最も近いものを選んでください。", BACKGROUND_OPTIONS["travel_time_one_way"], "普段の移動手段で考えてください。"),
+            ("transport", "主な通院手段", "主な通院手段として最も近いものを選んでください。", BACKGROUND_OPTIONS["transport"], "複数ある場合は、いちばんよく使うものを選んでください。"),
+            ("home_nursing_current", "訪問看護の利用", "現在、訪問看護を利用していますか？", BACKGROUND_OPTIONS["home_nursing_current"], "外来導入時に訪問看護を組み合わせる条件の解釈に使います。"),
+            ("main_income_source", "主な収入源", "主な収入源として最も近いものを選んでください。", BACKGROUND_OPTIONS["main_income_source"], "生活保護の有無は電子カルテから取得するため、ここでは伺いません。"),
+            ("economic_strain", "経済的余裕", "通院や治療にかかる負担を考えたとき、経済的にはどの程度困りますか？", BACKGROUND_OPTIONS["economic_strain"], "答えたくない場合は「答えたくない」を選んでください。"),
+        ]
+    )
     return f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -1133,68 +1161,10 @@ def questionnaire_html(version: int) -> str:
         <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
         <div id="scenarioBox" class="notice hidden"></div>
         <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
-
-        <div class="background-block">
-          <h3>生活・通院背景</h3>
-          <p class="small">生年月日、性別、診断などは電子カルテから取得します。ここでは入院・通院・訪問看護の負担に関係する項目だけ伺います。</p>
-          <label class="field-label" for="dayActivity">日中活動</label>
-          <select class="select-input bg-required" id="dayActivity" name="day_activity">
-            <option value="">選択してください</option>
-            <option>就労中</option><option>就学中</option><option>福祉的就労</option><option>デイケア等</option><option>主に自宅</option><option>その他</option>
-          </select>
-          <label class="field-label" for="dayActivityFrequency">日中活動の頻度</label>
-          <select class="select-input bg-required" id="dayActivityFrequency" name="day_activity_frequency">
-            <option value="">選択してください</option>
-            <option>週0-1日</option><option>週2-3日</option><option>週4日以上</option><option>該当なし</option>
-          </select>
-          <label class="field-label" for="livingArrangement">同居状況</label>
-          <select class="select-input bg-required" id="livingArrangement" name="living_arrangement">
-            <option value="">選択してください</option>
-            <option>一人暮らし</option><option>家族等と同居</option><option>施設・グループホーム</option><option>その他</option>
-          </select>
-          <label class="field-label" for="familySupport">同居家族からの支援</label>
-          <select class="select-input bg-required" id="familySupport" name="family_support">
-            <option value="">選択してください</option>
-            <option>受けられる</option><option>少し受けられる</option><option>ほぼ受けられない</option><option>同居なし</option>
-          </select>
-          <label class="field-label" for="caregivingRole">本人が誰かのケアを担っていますか</label>
-          <select class="select-input bg-required" id="caregivingRole" name="caregiving_role">
-            <option value="">選択してください</option>
-            <option>なし</option><option>子どものケア</option><option>親・配偶者等のケア</option><option>その他</option>
-          </select>
-          <label class="field-label" for="travelTimeOneWay">通院にかかる片道時間</label>
-          <select class="select-input bg-required" id="travelTimeOneWay" name="travel_time_one_way">
-            <option value="">選択してください</option>
-            <option>30分未満</option><option>30-60分</option><option>60-90分</option><option>90分以上</option>
-          </select>
-          <label class="field-label" for="transport">主な通院手段</label>
-          <select class="select-input bg-required" id="transport" name="transport">
-            <option value="">選択してください</option>
-            <option>自分で運転</option><option>公共交通</option><option>家族送迎</option><option>福祉交通・タクシー</option><option>徒歩・自転車</option><option>その他</option>
-          </select>
-          <label class="field-label" for="homeNursingCurrent">訪問看護の現在利用</label>
-          <select class="select-input bg-required" id="homeNursingCurrent" name="home_nursing_current">
-            <option value="">選択してください</option>
-            <option>あり</option><option>過去あり</option><option>なし</option>
-          </select>
-          <label class="field-label" for="mainIncomeSource">主な収入源</label>
-          <select class="select-input bg-required" id="mainIncomeSource" name="main_income_source">
-            <option value="">選択してください</option>
-            <option>就労収入</option><option>障害年金</option><option>生活保護</option><option>家族支援</option><option>その他</option><option>答えたくない</option>
-          </select>
-          <label class="field-label" for="publicAssistance">生活保護</label>
-          <select class="select-input bg-required" id="publicAssistance" name="public_assistance">
-            <option value="">選択してください</option>
-            <option>あり</option><option>なし</option><option>答えたくない</option>
-          </select>
-          <label class="field-label" for="economicStrain">経済的余裕</label>
-          <select class="select-input bg-required" id="economicStrain" name="economic_strain">
-            <option value="">選択してください</option>
-            <option>困っていない</option><option>少し困る</option><option>かなり困る</option><option>答えたくない</option>
-          </select>
-        </div>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
+
+      {bg_steps}
 
       <section class="step" data-step="3">
         <img class="hero" id="infoStepHero1" src="{ASSET_PREFIX}/clozapine_info.png" alt="">
@@ -1299,6 +1269,15 @@ def yes_no_choices(name: str) -> str:
 def questionnaire_js(final: bool, compact: bool) -> str:
     return r"""
 const steps = Array.from(document.querySelectorAll('.step'));
+const stepIndexFor = selector => steps.indexOf(document.querySelector(selector)?.closest('.step'));
+const STEP_CODE = stepIndexFor('#participantCode');
+const STEP_INFO1 = stepIndexFor('#infoStepTitle1');
+const STEP_INFO2 = stepIndexFor('#infoStepTitle2');
+const STEP_CLOZAPINE = stepIndexFor('input[name="clozapine_accept"]');
+const STEP_INPATIENT = stepIndexFor('input[name="inpatient_accept"]');
+const STEP_VISIT = stepIndexFor('#visitQuestion');
+const STEP_SUPPORT = stepIndexFor('#supportQuestion');
+const STEP_SUMMARY = stepIndexFor('#thresholdSummary');
 let current = 0;
 let threshold = null;
 let visitIndex = 0;
@@ -1317,12 +1296,12 @@ const participantCodeMap = {
   HYP002: {frame:'hypothetical_future', order:'side_effect_first', label:'将来TRS相当を想定して回答'}
 };
 const sideEffects = [
-  ['sedation','眠気・だるさ','比較的よくみられる','日中の眠気や活動しづらさにつながることがあります。'],
-  ['hypersalivation','よだれ・流涎','比較的よくみられる','唾液が増え、夜間や会話中に困ることがあります。'],
-  ['weight_metabolic','体重増加・代謝異常','比較的よくみられる','体重、血糖、脂質などを定期的に確認します。'],
-  ['constipation','便秘','比較的よくみられる・重くなることがある','早めに対処しないと重くなることがあります。'],
-  ['infection_blood','白血球減少・感染リスク','まれだが重要','早く見つけるため、定期的な採血を行います。'],
-  ['myocarditis','心筋炎など重い副作用','まれだが重要','発熱、胸痛、息切れなどがあれば早めに相談します。']
+  ['sedation','眠気・だるさ','説明文書では「よく出現する副作用」','日中の眠気、だるさ、動きにくさにつながることがあります。'],
+  ['hypersalivation','よだれ','説明文書では「よく出現する副作用」','唾液が増え、夜間や会話中に困ることがあります。'],
+  ['weight_metabolic','体重増加・血糖','高血糖・糖尿病などは13.0%。体重増加は「よく出現する副作用」','体重や血糖が上がることがあります。強いのどの渇き、尿が多い、急な体重減少があれば相談します。'],
+  ['constipation','便秘・おなかの症状','説明文書では「よく出現する副作用」。腸閉塞などは頻度は高くないが重要','便秘、腹痛、おなかの張り、吐き気、食欲低下があれば早めに相談します。'],
+  ['infection_blood','白血球低下・感染','無顆粒球症は1.1%。定期採血で早く見つけます','感染に弱くなることがあります。発熱、さむけ、のどの痛みがあれば相談します。'],
+  ['myocarditis','心臓・けいれんなど','心臓への副作用は「まれ」。けいれん発作は説明文書に数値なし','胸の痛み、息切れ、動悸、原因不明の強い疲れ、けいれんがあれば相談します。']
 ];
 const sideEffectAnswers = {};
 const visitQuestions = [
@@ -1350,9 +1329,9 @@ function renderStep(){
   document.getElementById('stepNow').textContent = String(current+1);
   document.getElementById('stepTotal').textContent = String(steps.length);
   document.querySelectorAll('.scenarioText').forEach(el => el.textContent = scenarioText());
-  if(current === 3 || current === 4) renderInfoStep(current);
-  if(current === 7) renderVisitQuestion();
-  if(current === 8) renderSupportQuestion();
+  if(current === STEP_INFO1 || current === STEP_INFO2) renderInfoStep(current);
+  if(current === STEP_VISIT) renderVisitQuestion();
+  if(current === STEP_SUPPORT) renderSupportQuestion();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function wireAutoAdvance(){
@@ -1364,40 +1343,19 @@ function wireAutoAdvance(){
   });
   document.querySelectorAll('input[name="clozapine_accept"]').forEach(input => input.addEventListener('change', nextClozapine));
   document.querySelectorAll('input[name="inpatient_accept"]').forEach(input => input.addEventListener('change', nextInpatient));
+  document.querySelectorAll('input[data-bg-field="1"]').forEach(input => input.addEventListener('change', () => next()));
 }
 function next(){ if(current < steps.length-1){ current++; renderStep(); } }
 function prev(){
-  if(current === 9){
-    if(threshold === 'NO_CLOZAPINE') current = 5;
-    else if(supportEligible()) current = 8;
-    else current = 7;
+  if(current === STEP_SUMMARY){
+    if(threshold === 'NO_CLOZAPINE') current = STEP_CLOZAPINE;
+    else if(supportEligible()) current = STEP_SUPPORT;
+    else current = STEP_VISIT;
     renderStep(); return;
   }
-  if(current === 8){ current = 7; renderStep(); return; }
+  if(current === STEP_SUPPORT){ current = STEP_VISIT; renderStep(); return; }
   if(current > 0){
-    const target = current - 1;
-    if(target === 2){
-      responseFrame = null;
-      participantCode = null;
-      infoOrder = null;
-      document.getElementById('participantCode').value = '';
-      const box = document.getElementById('scenarioBox');
-      box.textContent = '';
-      box.classList.add('hidden');
-      resetAfterNeed();
-    } else if(target === 3){
-      resetInfoAnswers();
-      resetAfterNeed();
-    } else if(target === 4){
-      clearChecked('clozapine_accept');
-      resetAfterClozapine();
-    } else if(target === 5){
-      clearChecked('inpatient_accept');
-      inpatientAccept = null;
-      document.getElementById('inpatientSummary').textContent = '未回答';
-      resetAfterInpatient();
-    }
-    current = target;
+    current--;
     renderStep();
   }
 }
@@ -1412,7 +1370,6 @@ function nextParticipantCode(){
     input.focus();
     return;
   }
-  if(!validateBackgroundFields()) return;
   resetAfterNeed();
   participantCode = raw;
   responseFrame = match.frame;
@@ -1435,12 +1392,12 @@ function firstInfoKind(){
 }
 function infoKindForStep(step){
   const first = firstInfoKind();
-  if(step === 3) return first;
+  if(step === STEP_INFO1) return first;
   return first === 'efficacy' ? 'side_effect' : 'efficacy';
 }
 function renderInfoStep(step){
   const kind = infoKindForStep(step);
-  const suffix = step === 3 ? '1' : '2';
+  const suffix = step === STEP_INFO1 ? '1' : '2';
   document.getElementById(`infoStepHero${suffix}`)?.setAttribute('src', kind === 'efficacy' ? '../patient_survey_mock/assets/clozapine_info.png' : '../patient_survey_mock/assets/monitoring.png');
   if(kind === 'efficacy') renderEfficacyQuestion(suffix);
   else renderSideEffectQuestion(suffix);
@@ -1449,9 +1406,10 @@ function renderEfficacyQuestion(suffix){
   document.getElementById(`infoStepTitle${suffix}`).textContent = '期待される有効性';
   document.getElementById(`infoStepBody${suffix}`).innerHTML = `
     <p class="scenarioText">${scenarioText()}</p>
-    <p>クロザピンは、複数の抗精神病薬で十分に改善しない統合失調症に対して、症状や生活のしづらさを改善する可能性がある薬です。</p>
-    <p>すべての人に十分効くわけではありませんが、他の治療で改善が乏しい場合に、改善を期待して検討されます。</p>
-    <p class="question">このような改善可能性は、クロザピンを試す理由としてどの程度十分だと思いますか？</p>
+    <p>クロザピンは、ほかの薬で十分よくならない統合失調症に使う薬です。</p>
+    <p>症状や生活のしづらさが軽くなることがあります。国内試験では、約6割の人で改善がみられました。</p>
+    <p class="small">全員に効くわけではありませんが、ほかの治療で改善が乏しい場合に検討されます。</p>
+    <p class="question">この改善可能性は、試してみる理由としてどの程度十分ですか？</p>
     <div class="seg">
       <label><input type="radio" name="efficacy_sufficiency" value="1"> 1. まったく十分ではない</label>
       <label><input type="radio" name="efficacy_sufficiency" value="2"> 2. あまり十分ではない</label>
@@ -1474,19 +1432,21 @@ function renderSideEffectQuestion(suffix){
   document.getElementById(`infoStepTitle${suffix}`).textContent = '副作用可能性の影響';
   const [key, label, frequency, description] = sideEffects[sideEffectIndex];
   document.getElementById(`infoStepBody${suffix}`).innerHTML = `
-    <p>以下の副作用の可能性は、クロザピン服用を前向きに考えるうえで、どの程度妨げになりますか？</p>
+    <p>クロザピンには副作用があります。よくみられるものと、頻度は低くても重要なものがあります。</p>
+    <p>早く見つけるため、採血と体調確認を続けます。</p>
     <div class="tt-card">
       <span class="pill">${sideEffectIndex + 1}/${sideEffects.length}</span>
       <h3>${label}</h3>
-      <p class="small"><strong>${frequency}</strong></p>
+      <p class="small"><strong>頻度:</strong> ${frequency}</p>
       <p class="small">${description}</p>
     </div>
+    <p class="question">この副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
     <div class="seg">
-      <label><input type="radio" name="side_effect_current" value="1"> 1. まったく妨げにならない</label>
-      <label><input type="radio" name="side_effect_current" value="2"> 2. あまり妨げにならない</label>
-      <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げになる</label>
-      <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げになる</label>
-      <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えられないほど妨げになる</label>
+      <label><input type="radio" name="side_effect_current" value="1"> 1. 妨げにならない</label>
+      <label><input type="radio" name="side_effect_current" value="2"> 2. 少し妨げ</label>
+      <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げ</label>
+      <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げ</label>
+      <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えにくい</label>
     </div>
     <p class="small">選択すると次へ進みます。</p>
   `;
@@ -1525,7 +1485,7 @@ function nextClozapine(){
   if(val === 'no'){
     threshold = 'NO_CLOZAPINE';
     document.getElementById('thresholdSummary').textContent = 'クロザピン服用自体を前向きに考えにくい';
-    current = 9; renderStep(); return;
+    current = STEP_SUMMARY; renderStep(); return;
   }
   next();
 }
@@ -1549,7 +1509,7 @@ function answerVisit(accepted){
     setThresholdSummary();
     supportIndex = 0;
     supportBaseVisit = threshold;
-    current = 8;
+    current = STEP_SUPPORT;
     renderStep();
     return;
   }
@@ -1560,7 +1520,7 @@ function answerVisit(accepted){
   }
   threshold = 'NONE';
   setThresholdSummary();
-  current = 9;
+  current = STEP_SUMMARY;
   renderStep();
 }
 function prevVisit(){
@@ -1581,7 +1541,7 @@ function supportEligible(){
 function renderSupportQuestion(){
   const options = supportByThreshold[supportBaseVisit || threshold || 'NONE'];
   if(!options.length){
-    current = 9;
+    current = STEP_SUMMARY;
     renderStep();
     return;
   }
@@ -1611,7 +1571,7 @@ function answerSupport(answer){
   supportAnswers[key] = answer;
   if(answer === 'accepted'){
     document.getElementById('supportSummary').textContent = `${supportLabels[key]}なら前向きに考えたい`;
-    current = 9; renderStep(); return;
+    current = STEP_SUMMARY; renderStep(); return;
   }
   if(supportIndex < options.length - 1){
     supportIndex++;
@@ -1619,7 +1579,7 @@ function answerSupport(answer){
     return;
   }
   document.getElementById('supportSummary').textContent = '訪問看護追加は前向きに考えにくい/不明';
-  current = 9; renderStep();
+  current = STEP_SUMMARY; renderStep();
 }
 function prevSupport(){
   if(supportIndex > 0){
@@ -1627,7 +1587,7 @@ function prevSupport(){
     renderSupportQuestion();
     return;
   }
-  current = 7;
+  current = STEP_VISIT;
   renderStep();
 }
 function clearChecked(name){

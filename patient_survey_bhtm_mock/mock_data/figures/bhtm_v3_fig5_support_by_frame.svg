@@ -10,24 +10,25 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="230" y="30" class="title">図5. 回答前提別にみた訪問看護確認頻度threshold</text>
 <text x="218" y="93" text-anchor="end" class="label">現在の状態で回答</text>
-<rect x="230.0" y="66" width="213.8" height="38" fill="#245b67"/>
-<text x="336.9" y="91" text-anchor="middle" class="inside">13</text>
-<rect x="443.9" y="66" width="213.8" height="38" fill="#2f7d8c"/>
-<text x="550.8" y="91" text-anchor="middle" class="inside">13</text>
-<rect x="657.7" y="66" width="49.4" height="38" fill="#8bbbc3"/>
-<text x="682.4" y="91" text-anchor="middle" class="inside">3</text>
-<rect x="707.1" y="66" width="180.9" height="38" fill="#d8dee4"/>
-<text x="797.5" y="91" text-anchor="middle" class="inside">11</text>
-<text x="896" y="91" class="num">n=40</text>
+<rect x="230.0" y="66" width="226.2" height="38" fill="#245b67"/>
+<text x="343.1" y="91" text-anchor="middle" class="inside">11</text>
+<rect x="456.2" y="66" width="164.5" height="38" fill="#2f7d8c"/>
+<text x="538.4" y="91" text-anchor="middle" class="inside">8</text>
+<rect x="620.7" y="66" width="61.7" height="38" fill="#8bbbc3"/>
+<text x="651.5" y="91" text-anchor="middle" class="inside">3</text>
+<rect x="682.4" y="66" width="205.6" height="38" fill="#d8dee4"/>
+<text x="785.2" y="91" text-anchor="middle" class="inside">10</text>
+<text x="896" y="91" class="num">n=32</text>
 <text x="218" y="161" text-anchor="end" class="label">将来TRS相当を想定</text>
-<rect x="230.0" y="134" width="182.8" height="38" fill="#245b67"/>
-<text x="321.4" y="159" text-anchor="middle" class="inside">20</text>
-<rect x="412.8" y="134" width="182.8" height="38" fill="#2f7d8c"/>
-<text x="504.2" y="159" text-anchor="middle" class="inside">20</text>
-<rect x="595.6" y="134" width="36.6" height="38" fill="#8bbbc3"/>
-<rect x="632.1" y="134" width="255.9" height="38" fill="#d8dee4"/>
-<text x="760.1" y="159" text-anchor="middle" class="inside">28</text>
-<text x="896" y="159" class="num">n=72</text>
+<rect x="230.0" y="134" width="266.5" height="38" fill="#245b67"/>
+<text x="363.3" y="159" text-anchor="middle" class="inside">32</text>
+<rect x="496.5" y="134" width="183.2" height="38" fill="#2f7d8c"/>
+<text x="588.2" y="159" text-anchor="middle" class="inside">22</text>
+<rect x="679.8" y="134" width="50.0" height="38" fill="#8bbbc3"/>
+<text x="704.8" y="159" text-anchor="middle" class="inside">6</text>
+<rect x="729.7" y="134" width="158.3" height="38" fill="#d8dee4"/>
+<text x="808.9" y="159" text-anchor="middle" class="inside">19</text>
+<text x="896" y="159" class="num">n=79</text>
 <rect x="230" y="322" width="14" height="14" fill="#245b67"/>
 <text x="250" y="334" class="legend">週5回確認まで受容</text>
 <rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>
