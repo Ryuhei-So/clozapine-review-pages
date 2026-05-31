@@ -12,19 +12,37 @@ DATA = ROOT / "mock_data"
 FIG = DATA / "figures"
 ASSET_PREFIX = "../patient_survey_mock/assets"
 RNG = random.Random(20260529)
+PAGES_BASE = "https://ryuhei-so.github.io/clozapine-review-pages"
+
+
+def literature_link(file_name: str, label: str) -> str:
+    return f'<a href="{PAGES_BASE}/literature/{file_name}">{label}</a>'
+
+
+def pubmed_link(pmid: str) -> str:
+    return f'<a href="https://pubmed.ncbi.nlm.nih.gov/{pmid}/">PubMed</a>'
+
+
+BHTM_NOTE = literature_link("BHTM_threshold_technique_design_note.html", "BHTM設計ノート")
+HAUBER_2020 = literature_link("Hauber_Coulter_2020_threshold_technique_literature_note.html", "Hauber & Coulter 2020")
+PARIKH_2023 = literature_link("Parikh_2023_HCC_threshold_technique_literature_note.html", "Parikh 2023")
+BARRETT_2005 = literature_link("Barrett_2005_benefit_harm_tradeoff_literature_note.html", "Barrett 2005")
+RESEARCH_NOTE_2018 = literature_link("ResearchNote_2018_smallest_worthwhile_effect_literature_note.html", "Research Note 2018")
+GEE_2017 = literature_link("Gee_2017_patient_attitudes_clozapine_initiation_literature_note.html", "Gee 2017")
+JAKOBSEN_2025 = literature_link("Jakobsen_2025_patient_perspectives_clozapine_literature_note.html", "Jakobsen 2025")
 
 VERSIONS = {
     1: {
         "label": "v1: DCEからBHTM/TTへ置換した最小構成",
         "focus": "DCEをやめ、入院導入・外来導入のvignette比較と外来負担閾値だけに絞った初期案。",
         "improvements": [
-            "Hauber & Coulter 2020に従い、1つのkey attributeを外来導入burden packageとして順序化。",
-            "Barrett 2005を参考に、benefit/harmを明示してから受容閾値を尋ねる構成に変更。",
+            f"{HAUBER_2020}（{pubmed_link('31541362')}）に従い、1つのkey attributeを外来導入burden packageとして順序化。",
+            f"{BARRETT_2005}（{pubmed_link('15673581')}）を参考に、benefit/harmを明示してから受容閾値を尋ねる構成に変更。",
         ],
     },
     2: {
         "label": "v2: benefit/harm固定と直接選好を分離",
-        "focus": "Parikh 2023に合わせ、まず同じ効果・安全性説明のもとで入院/外来の直接受容性を聞き、その後にTTへ進む。",
+        "focus": f"{PARIKH_2023}に合わせ、まず同じ効果・安全性説明のもとで入院/外来の直接受容性を聞き、その後にTTへ進む。",
         "improvements": [
             "入院導入の期間、外来導入の7週目以降、異常時入院切替を明示。",
             "“今の状態で提案されたら”と“今より困りごとが強くなった場合”を分けることで唐突さを減らした。",
@@ -42,7 +60,7 @@ VERSIONS = {
         "label": "v4: 患者の読みやすさを優先",
         "focus": "長文説明を避け、イラスト、短いカード、1画面1判断のウィザードへ近づけた版。",
         "improvements": [
-            "Health literacyへの配慮として、Hauber & Coulter 2020の注意点に沿い視覚情報と短文説明を増やした。",
+            f"Health literacyへの配慮として、{HAUBER_2020}（{pubmed_link('31541362')}）の注意点に沿い視覚情報と短文説明を増やした。",
             "障壁リストは“全部嫌”になりやすいため、最大の負担を1つだけ選ぶ形式へ変更。",
         ],
     },
@@ -983,68 +1001,80 @@ def write_version_data(version: int, data: dict[str, list[dict[str, str]]]) -> N
 def table_html(data: dict[str, list[dict[str, str]]]) -> str:
     participants = data["participants"]
     n = len(participants)
-    target = Counter(r["target_group"] for r in participants)
-    unmet = Counter(r["current_unmet_need"] for r in participants)
-    distress = Counter(r["subjective_distress"] for r in participants)
-    frame = Counter(r["response_frame"] for r in participants)
+    ages = sorted(int(r["age"]) for r in participants)
+    mgaf = sorted(int(r["clinician_mgaf_function"]) for r in participants)
+
+    def median_iqr(values: list[int]) -> str:
+        def percentile(p: float) -> int:
+            idx = round((len(values) - 1) * p)
+            return values[idx]
+        return f"{percentile(0.50)} ({percentile(0.25)}-{percentile(0.75)})"
+
+    def n_pct(count: int, denom: int = n) -> str:
+        return f"{count} ({count/denom*100:.1f}%)" if denom else "0 (0.0%)"
+
+    def add_summary(rows: list[tuple[str, str, str]], variable: str, category: str, value: str) -> None:
+        rows.append((variable, category, value))
+
+    def add_distribution(rows: list[tuple[str, str, str]], variable: str, field: str, categories: list[str]) -> None:
+        counts = Counter(r[field] for r in participants)
+        first = True
+        for category in categories:
+            rows.append((variable if first else "", category, n_pct(counts[category])))
+            first = False
+
+    rows: list[tuple[str, str, str]] = []
+    add_summary(rows, "解析対象者", "合計", f"{n}")
+    add_summary(rows, "年齢", "中央値 (IQR)", median_iqr(ages))
+    add_summary(rows, "臨床家評価mGAF-F", "中央値 (IQR)", median_iqr(mgaf))
+    add_distribution(rows, "対象集団", "target_group", ["TRS適格候補", "広い未使用外来患者"])
+    add_distribution(rows, "回答前提", "response_frame", ["actual_current", "hypothetical_future"])
+    rows[-2] = (rows[-2][0], "現在の状態で回答", rows[-2][2])
+    rows[-1] = ("", "将来TRS相当を想定して回答", rows[-1][2])
+
     mgaf_le40 = sum(1 for r in participants if int(r["clinician_mgaf_function"]) <= 40)
+    rows.append(("mGAF-F 40以下", "該当", n_pct(mgaf_le40)))
+    rows.append(("", "非該当", n_pct(n - mgaf_le40)))
+    add_distribution(rows, "現在の治療で残る困りごと", "current_unmet_need", ["あり", "なし/軽度"])
+    add_distribution(rows, "主観的困りごと/つらさ", "subjective_distress", ["あり", "なし/軽度"])
+    add_distribution(rows, "日中活動", "day_activity", BACKGROUND_OPTIONS["day_activity"])
+    add_distribution(rows, "日中活動の頻度", "day_activity_frequency", BACKGROUND_OPTIONS["day_activity_frequency"])
+    add_distribution(rows, "同居状況", "living_arrangement", BACKGROUND_OPTIONS["living_arrangement"])
+    add_distribution(rows, "同居家族からの支援", "family_support", BACKGROUND_OPTIONS["family_support"])
+    add_distribution(rows, "本人のケア役割", "caregiving_role", BACKGROUND_OPTIONS["caregiving_role"])
+    add_distribution(rows, "通院片道時間", "travel_time_one_way", BACKGROUND_OPTIONS["travel_time_one_way"])
+    add_distribution(rows, "主な通院手段", "transport", BACKGROUND_OPTIONS["transport"])
+    add_distribution(rows, "訪問看護の現在利用", "home_nursing_current", BACKGROUND_OPTIONS["home_nursing_current"])
+    add_distribution(rows, "主な収入源", "main_income_source", BACKGROUND_OPTIONS["main_income_source"])
+    add_distribution(rows, "経済的余裕", "economic_strain", BACKGROUND_OPTIONS["economic_strain"])
 
-    def count_row(label: str, field: str, key: str) -> tuple[str, str]:
-        count = sum(1 for r in participants if r[field] == key)
-        return label, f"{count} ({count/n*100:.1f}%)"
-
-    def count_if(label: str, predicate) -> tuple[str, str]:
-        count = sum(1 for r in participants if predicate(r))
-        return label, f"{count} ({count/n*100:.1f}%)"
-
-    rows = [
-        ("解析対象者", f"{n}"),
-        ("TRS適格候補", f"{target['TRS適格候補']} ({target['TRS適格候補']/n*100:.1f}%)"),
-        ("広い未使用外来患者", f"{target['広い未使用外来患者']} ({target['広い未使用外来患者']/n*100:.1f}%)"),
-        ("臨床家評価mGAF-F 40以下", f"{mgaf_le40} ({mgaf_le40/n*100:.1f}%)"),
-        ("現在の状態で回答", f"{frame['actual_current']} ({frame['actual_current']/n*100:.1f}%)"),
-        ("将来TRS相当を想定して回答", f"{frame['hypothetical_future']} ({frame['hypothetical_future']/n*100:.1f}%)"),
-        ("現在の治療で残る困りごとあり", f"{unmet['あり']} ({unmet['あり']/n*100:.1f}%)"),
-        ("主観的困りごと/つらさあり", f"{distress['あり']} ({distress['あり']/n*100:.1f}%)"),
-        count_if("日中活動あり（就労/就学/福祉的就労/デイケア等）", lambda r: r["day_activity"] in {"就労中", "就学中", "福祉的就労", "デイケア等"}),
-        count_row("福祉的就労", "day_activity", "福祉的就労"),
-        count_row("デイケア等", "day_activity", "デイケア等"),
-        count_row("主に自宅", "day_activity", "主に自宅"),
-        count_row("週4日以上の日中活動", "day_activity_frequency", "週4日以上"),
-        count_row("一人暮らし", "living_arrangement", "一人暮らし"),
-        count_row("家族等と同居", "living_arrangement", "家族等と同居"),
-        count_row("同居家族から支援を受けられる", "family_support", "受けられる"),
-        count_if("本人が誰かのケアを担っている", lambda r: r["caregiving_role"] != "なし"),
-        count_if("通院片道60分以上", lambda r: r["travel_time_one_way"] in {"60-90分", "90分以上"}),
-        count_row("通院手段: 公共交通", "transport", "公共交通"),
-        count_row("通院手段: 家族送迎", "transport", "家族送迎"),
-        count_row("訪問看護を現在利用", "home_nursing_current", "あり"),
-        count_row("主な収入源: 障害年金", "main_income_source", "障害年金"),
-        count_row("経済的にかなり困る", "economic_strain", "かなり困る"),
-    ]
-    return "<table><tr><th>項目</th><th>値</th></tr>" + "".join(f"<tr><td>{a}</td><td>{b}</td></tr>" for a, b in rows) + "</table>"
+    body = "".join(
+        f"<tr><td>{variable}</td><td>{category}</td><td>{value}</td></tr>"
+        for variable, category, value in rows
+    )
+    return "<table><tr><th>変数</th><th>カテゴリ/統計量</th><th>中央値 (IQR) または n (%)</th></tr>" + body + "</table>"
 
 
 def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: dict[str, str]) -> str:
     v = VERSIONS[version]
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8", "fig9"]
     reasons = {
-        "fig1": "回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。Gee 2017やJakobsen 2025で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
+        "fig1": f"回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。{GEE_2017}（{pubmed_link('28704228')}）や{JAKOBSEN_2025}（{pubmed_link('40107686')}）で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "外来導入を受容しうる人について、通院に訪問看護を加えた総確認頻度をどこまで受け入れられるかを示す図。安全に必要な頻度は医師が判断する前提で、その頻度を患者が受容可能かを直接把握する。",
         "fig4": "先に確定した通院頻度thresholdごとに、訪問看護を加えた確認頻度thresholdを示す図。週3回通院を受容する人、週2回なら受容する人、週1回なら受容する人で、追加モニタリングへの許容度が異なるかを確認する。",
         "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
         "fig6": "クロザピンの期待される有効性が、患者本人にとって服用を試す理由としてどの程度十分と受け止められるかを示す図。副作用や通院負担だけでなく、そもそも提示されたbenefitが十分な価値として受け止められているかを確認する。",
         "fig7": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
-        "fig8": "患者調査を臨床家調査と接続する図。Jakobsen 2025の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
+        "fig8": f"患者調査を臨床家調査と接続する図。{JAKOBSEN_2025}（{pubmed_link('40107686')}）の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
         "fig9": "図8で医師予測が患者本人の回答より保守的だったケースについて、どのような事前情報と関連するかを単変量ORで示す。説明変数は、年齢、mGAF-F、過去拒否記載、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。入院導入・外来導入への意向、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、患者や医師の判断そのものに近い情報は入れない。",
     }
-    links = """
-      <a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a>
-      <a href="../Hauber_Coulter_2020_threshold_technique_literature_note.html">Hauber & Coulter 2020</a>
-      <a href="../Parikh_2023_HCC_threshold_technique_literature_note.html">Parikh 2023</a>
-      <a href="../Barrett_2005_benefit_harm_tradeoff_literature_note.html">Barrett 2005</a>
-      <a href="../ResearchNote_2018_smallest_worthwhile_effect_literature_note.html">Research Note 2018</a>
+    links = f"""
+      {BHTM_NOTE}
+      {HAUBER_2020}
+      {PARIKH_2023}
+      {BARRETT_2005}
+      {RESEARCH_NOTE_2018}
     """
     fig_sections = "\n".join(
         f"""<section class="figure-card">
@@ -1763,7 +1793,7 @@ def write_index() -> None:
               <p><a href="patient_survey_bhtm_v{v}_figures_mock.html">図表モック</a> / <a href="patient_survey_bhtm_v{v}_questionnaire.html">質問票</a></p>
             </section>"""
         )
-    html = f"""<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>患者調査BHTMモック</title><style>{common_css()}</style></head><body><header><h1>患者調査BHTMモック</h1><p>5回ブラッシュアップ版の一覧</p></header><main><nav class="links"><a href="../BHTM_threshold_technique_design_note.html">BHTM設計ノート</a><a href="../Hauber_Coulter_2020_threshold_technique_literature_note.html">Hauber & Coulter 2020</a><a href="../Parikh_2023_HCC_threshold_technique_literature_note.html">Parikh 2023</a><a href="../Barrett_2005_benefit_harm_tradeoff_literature_note.html">Barrett 2005</a></nav>{''.join(cards)}</main></body></html>"""
+    html = f"""<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>患者調査BHTMモック</title><style>{common_css()}</style></head><body><header><h1>患者調査BHTMモック</h1><p>5回ブラッシュアップ版の一覧</p></header><main><nav class="links">{BHTM_NOTE}{HAUBER_2020}{PARIKH_2023}{BARRETT_2005}</nav>{''.join(cards)}</main></body></html>"""
     (ROOT / "index.html").write_text(html, encoding="utf-8")
 
 
