@@ -17,13 +17,14 @@
     .field-label{display:block;font-weight:700;margin-top:12px}.text-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:13px 12px;font-size:16px;text-transform:uppercase;background:white}
     .select-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:12px;font-size:16px;background:white}
     .background-block{border-top:1px solid #d8dee4;margin-top:14px;padding-top:10px}
+    .background-grid{display:grid;gap:12px}.bg-group{border-top:1px solid #d8dee4;padding-top:10px}.bg-group:first-child{border-top:0;padding-top:0}
     code{background:#eef2f6;border:1px solid #d8dee4;border-radius:4px;padding:1px 5px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
     .full{width:100%}
     .nav{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}.nav .primary{order:-1}
     .notice{border-left:4px solid #c2410c;background:#fff7ed;padding:10px;margin:10px 0}.hidden{display:none}
-    .tt-card{border:2px solid #2f7d8c;border-radius:12px;padding:14px;background:#f3f8f9}.pill{display:inline-block;background:#2f7d8c;color:white;border-radius:999px;padding:2px 10px;font-weight:700;margin:0 0 4px}
+    .tt-card{border:2px solid #2f7d8c;border-radius:12px;padding:14px;background:#f3f8f9}.side-effect-card{margin:12px 0}.pill{display:inline-block;background:#2f7d8c;color:white;border-radius:999px;padding:2px 10px;font-weight:700;margin:0 0 4px}
     .summary{background:#eef6f7;border:1px solid #b8d6dc;border-radius:8px;padding:10px;margin-top:14px}
     @media (max-width:420px){.phone-frame{padding:6px}.step{border-radius:0;border-left:0;border-right:0}button{width:100%}.seg.two{grid-template-columns:1fr}}
     </style>
@@ -55,16 +56,26 @@
       </section>
 
       <section class="step" data-step="2">
-        <h2>参加者コード</h2>
-        <p>研究スタッフから渡された参加者コードを入力してください。入力されたコードに基づいて、回答していただく前提をシステム側で設定します。</p>
-        <label class="field-label" for="participantCode">参加者コード</label>
-        <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
+        <h2>参加者ID</h2>
+        <p>研究スタッフから渡された参加者IDを入力してください。この質問票では、現在のあなたの状態で主治医からクロザピン導入を提案された場合として回答します。</p>
+        <label class="field-label" for="participantCode">参加者ID</label>
+        <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: P001">
         <div id="scenarioBox" class="notice hidden"></div>
-        <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
+        <p class="small">デモ用ID: <code>P001</code>/<code>P002</code>。IDは回答前提を変えません。末尾が偶数の場合のみ、有効性説明と副作用説明の提示順が入れ替わります。本番では提示順の割付を調査システム側で管理します。</p>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
       
+      <section class="step" data-bg-step="current_unmet_need">
+        <h2>現在の困りごと/つらさ</h2>
+        <p class="question">現在の治療でも、症状や生活のしづらさなどの困りごと・つらさが残っていると感じますか？</p>
+        <div class="seg"><label><input type="radio" name="current_unmet_need" value="あり" data-bg-field="1"> あり</label>
+<label><input type="radio" name="current_unmet_need" value="なし/軽度" data-bg-field="1"> なし/軽度</label>
+<label><input type="radio" name="current_unmet_need" value="答えたくない" data-bg-field="1"> 答えたくない</label></div>
+        <p class="small">現在の状態でクロザピン導入をどう受け止めるかを解釈するために伺います。</p>
+        <div class="nav"><button onclick="prev()">前へ</button></div>
+      </section>
+
       <section class="step" data-bg-step="day_activity">
         <h2>日中活動</h2>
         <p class="question">普段の日中活動として最も近いものを選んでください。</p>
@@ -137,7 +148,8 @@
         <div class="seg"><label><input type="radio" name="transport" value="自分で運転" data-bg-field="1"> 自分で運転</label>
 <label><input type="radio" name="transport" value="公共交通" data-bg-field="1"> 公共交通</label>
 <label><input type="radio" name="transport" value="家族送迎" data-bg-field="1"> 家族送迎</label>
-<label><input type="radio" name="transport" value="福祉交通・タクシー" data-bg-field="1"> 福祉交通・タクシー</label>
+<label><input type="radio" name="transport" value="通院同行・送迎" data-bg-field="1"> 通院同行・送迎</label>
+<label><input type="radio" name="transport" value="タクシー等の移動支援" data-bg-field="1"> タクシー等の移動支援</label>
 <label><input type="radio" name="transport" value="徒歩・自転車" data-bg-field="1"> 徒歩・自転車</label>
 <label><input type="radio" name="transport" value="その他" data-bg-field="1"> その他</label></div>
         <p class="small">複数ある場合は、いちばんよく使うものを選んでください。</p>
@@ -159,10 +171,11 @@
         <p class="question">主な収入源として最も近いものを選んでください。</p>
         <div class="seg"><label><input type="radio" name="main_income_source" value="就労収入" data-bg-field="1"> 就労収入</label>
 <label><input type="radio" name="main_income_source" value="障害年金" data-bg-field="1"> 障害年金</label>
+<label><input type="radio" name="main_income_source" value="生活保護" data-bg-field="1"> 生活保護</label>
 <label><input type="radio" name="main_income_source" value="家族支援" data-bg-field="1"> 家族支援</label>
 <label><input type="radio" name="main_income_source" value="その他" data-bg-field="1"> その他</label>
 <label><input type="radio" name="main_income_source" value="答えたくない" data-bg-field="1"> 答えたくない</label></div>
-        <p class="small">生活保護の有無は電子カルテから取得するため、ここでは伺いません。</p>
+        <p class="small">答えたくない場合は「答えたくない」を選んでください。</p>
         <div class="nav"><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -278,18 +291,12 @@ let threshold = null;
 let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
-let responseFrame = null;
+let responseFrame = 'actual_current';
 let supportBaseVisit = null;
 let inpatientAccept = null;
 let participantCode = null;
-let infoOrder = null;
+let infoOrder = 'efficacy_first';
 let effectivenessAnswer = null;
-const participantCodeMap = {
-  ACT001: {frame:'actual_current', order:'efficacy_first', label:'現在の状態で回答'},
-  ACT002: {frame:'actual_current', order:'side_effect_first', label:'現在の状態で回答'},
-  HYP001: {frame:'hypothetical_future', order:'efficacy_first', label:'将来TRS相当を想定して回答'},
-  HYP002: {frame:'hypothetical_future', order:'side_effect_first', label:'将来TRS相当を想定して回答'}
-};
 const sideEffects = [
   ['sedation','眠気・だるさ','説明文書では「よく出現する副作用」','日中の眠気、だるさ、動きにくさにつながることがあります。'],
   ['hypersalivation','よだれ','説明文書では「よく出現する副作用」','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -344,6 +351,10 @@ function wireAutoAdvance(){
     handleBackgroundChange(input.name);
     next();
   }));
+  document.querySelectorAll('[data-compact-bg] input').forEach(input => input.addEventListener('change', () => {
+    backgroundAnswers[input.name] = input.value;
+    handleCompactBackgroundChange(input.name);
+  }));
 }
 function next(){ moveVisible(1); }
 function moveVisible(direction){
@@ -396,6 +407,59 @@ function handleBackgroundChange(name){
     }
   }
 }
+function handleCompactBackgroundChange(name){
+  if(name === 'day_activity'){
+    const activity = radioValue('day_activity');
+    const freq = document.querySelector('[data-compact-bg="day_activity_frequency"]');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+      freq?.classList.add('hidden');
+    } else {
+      delete backgroundAnswers.day_activity_frequency;
+      clearChecked('day_activity_frequency');
+      freq?.classList.remove('hidden');
+    }
+  }
+  if(name === 'living_arrangement'){
+    const living = radioValue('living_arrangement');
+    const support = document.querySelector('[data-compact-bg="family_support"]');
+    if(living && living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+      support?.classList.add('hidden');
+    } else {
+      delete backgroundAnswers.family_support;
+      clearChecked('family_support');
+      support?.classList.remove('hidden');
+    }
+  }
+}
+function nextBackground(){
+  const required = [
+    'current_unmet_need',
+    'day_activity',
+    'day_activity_frequency',
+    'living_arrangement',
+    'family_support',
+    'caregiving_role',
+    'travel_time_one_way',
+    'transport',
+    'home_nursing_current',
+    'main_income_source',
+    'economic_strain'
+  ];
+  const missing = required.find(name => !backgroundAnswers[name]);
+  const box = document.getElementById('backgroundMessage');
+  if(missing){
+    box.textContent = '未回答の背景項目があります。表示されている項目を選択してください。';
+    box.classList.remove('hidden');
+    document.querySelector(`[data-compact-bg="${missing}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  box?.classList.add('hidden');
+  next();
+}
 function isSkippedStep(step){
   const bgStep = step?.dataset?.bgStep;
   if(bgStep === 'day_activity_frequency'){
@@ -420,18 +484,18 @@ function nextParticipantCode(){
   const input = document.getElementById('participantCode');
   const raw = input.value.trim().toUpperCase();
   const box = document.getElementById('scenarioBox');
-  const match = participantCodeMap[raw];
-  if(!match){
-    box.textContent = '参加者コードを確認できませんでした。研究スタッフから渡されたコードを入力してください。';
+  if(!raw){
+    box.textContent = '研究スタッフから渡された参加者IDを入力してください。';
     box.classList.remove('hidden');
     input.focus();
     return;
   }
   resetAfterNeed();
   participantCode = raw;
-  responseFrame = match.frame;
-  infoOrder = match.order;
-  box.textContent = `${match.label}: ${scenarioText()}`;
+  responseFrame = 'actual_current';
+  infoOrder = /[02468]$/.test(raw) ? 'side_effect_first' : 'efficacy_first';
+  const orderLabel = infoOrder === 'side_effect_first' ? '副作用説明を先に提示' : '有効性説明を先に提示';
+  box.textContent = `現在の状態で回答します（${orderLabel}）。${scenarioText()}`;
   box.classList.remove('hidden');
   next();
 }
@@ -487,31 +551,45 @@ function renderEfficacyQuestion(suffix){
 }
 function renderSideEffectQuestion(suffix){
   document.getElementById(`infoStepTitle${suffix}`).textContent = '副作用可能性の影響';
-  const [key, label, frequency, description] = sideEffects[sideEffectIndex];
   document.getElementById(`infoStepBody${suffix}`).innerHTML = `
     <p>クロザピンには副作用があります。よくみられるものと、頻度は低くても重要なものがあります。</p>
     <p>早く見つけるため、採血と体調確認を続けます。</p>
-    <div class="tt-card">
-      <span class="pill">${sideEffectIndex + 1}/${sideEffects.length}</span>
-      <h3>${label}</h3>
-      <p class="small"><strong>頻度:</strong> ${frequency}</p>
-      <p class="small">${description}</p>
-    </div>
-    <p class="question">この副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
-    <div class="seg">
-      <label><input type="radio" name="side_effect_current" value="1"> 1. 妨げにならない</label>
-      <label><input type="radio" name="side_effect_current" value="2"> 2. 少し妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えにくい</label>
-    </div>
-    <p class="small">選択すると次へ進みます。</p>
+    <p class="question">それぞれの副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
+    ${sideEffects.map(([key, label, frequency, description]) => `
+      <div class="tt-card side-effect-card">
+        <h3>${label}</h3>
+        <p class="small"><strong>頻度:</strong> ${frequency}</p>
+        <p class="small">${description}</p>
+        <div class="seg">
+          <label><input type="radio" name="side_effect_${key}" value="1"> 妨げにならない</label>
+          <label><input type="radio" name="side_effect_${key}" value="3"> やや妨げ</label>
+          <label><input type="radio" name="side_effect_${key}" value="5"> 服用を考えにくい</label>
+        </div>
+      </div>
+    `).join('')}
+    <div id="sideEffectMessage" class="notice hidden"></div>
   `;
-  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prevSideEffect()">前へ</button>';
-  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
-    input.checked = sideEffectAnswers[key] === input.value;
-    input.addEventListener('change', nextSideEffect);
+  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prev()">前へ</button><button class="primary" onclick="nextSideEffectMatrix()">次へ</button>';
+  sideEffects.forEach(([key]) => {
+    document.querySelectorAll(`input[name="side_effect_${key}"]`).forEach(input => {
+      input.checked = sideEffectAnswers[key] === input.value;
+      input.addEventListener('change', () => {
+        sideEffectAnswers[key] = input.value;
+        document.getElementById('sideEffectMessage')?.classList.add('hidden');
+      });
+    });
   });
+}
+function nextSideEffectMatrix(){
+  const missing = sideEffects.find(([key]) => !sideEffectAnswers[key]);
+  const box = document.getElementById('sideEffectMessage');
+  if(missing){
+    box.textContent = 'すべての副作用について選択してください。';
+    box.classList.remove('hidden');
+    document.querySelector(`input[name="side_effect_${missing[0]}"]`)?.closest('.side-effect-card')?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  next();
 }
 function nextSideEffect(){
   const val = document.querySelector('input[name="side_effect_current"]:checked')?.value;
@@ -690,12 +768,11 @@ function resetInfoAnswers(){
   effectivenessAnswer = null;
   Object.keys(sideEffectAnswers).forEach(key => delete sideEffectAnswers[key]);
   clearChecked('side_effect_current');
+  sideEffects.forEach(([key]) => clearChecked(`side_effect_${key}`));
   clearChecked('efficacy_sufficiency');
 }
 function scenarioText(){
-  if(responseFrame === 'actual_current') return '以下では、現在のあなたの状態で、主治医からクロザピンを勧められた場面を想像してください。';
-  if(responseFrame === 'hypothetical_future') return '以下では、もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合を想像してください。';
-  return '以下では、主治医からクロザピンを勧められた場面を想像してください。';
+  return '以下では、現在のあなたの状態で、主治医からクロザピン導入を提案された場面を想像してください。';
 }
 function finish(){
   alert('ダミー質問票です。実際の回答は保存されません。');

@@ -8,27 +8,27 @@
 .big{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#1f2933}
 </style>
 <rect width="100%" height="100%" fill="white"/>
-<text x="230" y="30" class="title">図5. 回答前提別にみた訪問看護確認頻度threshold</text>
-<text x="218" y="93" text-anchor="end" class="label">現在の状態で回答</text>
-<rect x="230.0" y="66" width="183.6" height="38" fill="#245b67"/>
-<text x="321.8" y="91" text-anchor="middle" class="inside">12</text>
-<rect x="413.6" y="66" width="91.8" height="38" fill="#2f7d8c"/>
-<text x="459.5" y="91" text-anchor="middle" class="inside">6</text>
-<rect x="505.4" y="66" width="107.1" height="38" fill="#8bbbc3"/>
-<text x="559.0" y="91" text-anchor="middle" class="inside">7</text>
-<rect x="612.6" y="66" width="275.4" height="38" fill="#d8dee4"/>
-<text x="750.3" y="91" text-anchor="middle" class="inside">18</text>
-<text x="896" y="91" class="num">n=43</text>
-<text x="218" y="161" text-anchor="end" class="label">将来TRS相当を想定</text>
-<rect x="230.0" y="134" width="259.7" height="38" fill="#245b67"/>
-<text x="359.9" y="159" text-anchor="middle" class="inside">30</text>
-<rect x="489.7" y="134" width="155.8" height="38" fill="#2f7d8c"/>
-<text x="567.7" y="159" text-anchor="middle" class="inside">18</text>
-<rect x="645.6" y="134" width="43.3" height="38" fill="#8bbbc3"/>
-<text x="667.2" y="159" text-anchor="middle" class="inside">5</text>
-<rect x="688.9" y="134" width="199.1" height="38" fill="#d8dee4"/>
-<text x="788.4" y="159" text-anchor="middle" class="inside">23</text>
-<text x="896" y="159" class="num">n=76</text>
+<text x="230" y="30" class="title">図5. 訪問看護利用状況別にみた確認頻度threshold</text>
+<text x="218" y="93" text-anchor="end" class="label">訪問看護あり/過去あり</text>
+<rect x="230.0" y="66" width="295.0" height="38" fill="#245b67"/>
+<text x="377.5" y="91" text-anchor="middle" class="inside">13</text>
+<rect x="525.0" y="66" width="113.4" height="38" fill="#2f7d8c"/>
+<text x="581.7" y="91" text-anchor="middle" class="inside">5</text>
+<rect x="638.4" y="66" width="68.1" height="38" fill="#8bbbc3"/>
+<text x="672.4" y="91" text-anchor="middle" class="inside">3</text>
+<rect x="706.5" y="66" width="181.5" height="38" fill="#d8dee4"/>
+<text x="797.2" y="91" text-anchor="middle" class="inside">8</text>
+<text x="896" y="91" class="num">n=29</text>
+<text x="218" y="161" text-anchor="end" class="label">訪問看護なし</text>
+<rect x="230.0" y="134" width="192.3" height="38" fill="#245b67"/>
+<text x="326.2" y="159" text-anchor="middle" class="inside">19</text>
+<rect x="422.3" y="134" width="222.7" height="38" fill="#2f7d8c"/>
+<text x="533.7" y="159" text-anchor="middle" class="inside">22</text>
+<rect x="645.0" y="134" width="70.9" height="38" fill="#8bbbc3"/>
+<text x="680.5" y="159" text-anchor="middle" class="inside">7</text>
+<rect x="715.9" y="134" width="172.1" height="38" fill="#d8dee4"/>
+<text x="802.0" y="159" text-anchor="middle" class="inside">17</text>
+<text x="896" y="159" class="num">n=65</text>
 <rect x="230" y="322" width="14" height="14" fill="#245b67"/>
 <text x="250" y="334" class="legend">週5回確認まで受容</text>
 <rect x="440" y="322" width="14" height="14" fill="#2f7d8c"/>

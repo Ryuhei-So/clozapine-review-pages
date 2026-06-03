@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>患者向け質問票 教示リバイス案</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #d8dee8;
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --accent: #176b87;
+      --accent-soft: #e9f5f7;
+      --warn: #8a5a12;
+      --warn-soft: #fff5df;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
+    header {
+      padding: 20px 0 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    h2 {
+      margin: 28px 0 12px;
+      font-size: 22px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+    p { margin: 0 0 12px; }
+    ul, ol { padding-left: 1.2rem; }
+    li { margin: 6px 0; }
+    .lead {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .card, .phone, .note {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card.accent { border-color: #b9dbe2; background: var(--accent-soft); }
+    .note { background: var(--warn-soft); border-color: #f0d7a6; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1;
+      padding: 6px 9px;
+      margin-bottom: 10px;
+    }
+    .small { color: var(--muted); font-size: 13px; }
+    .phone {
+      max-width: 360px;
+      margin: 0 auto;
+      border: 1px solid #cfd8e3;
+      box-shadow: 0 10px 30px rgba(23, 32, 51, 0.08);
+    }
+    .phone img {
+      width: 100%;
+      display: block;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      background: #eef3f7;
+    }
+    .question {
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.45;
+      margin-top: 14px;
+    }
+    .choice {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      background: #fff;
+      font-weight: 600;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+    .flow div {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 84px;
+      font-size: 13px;
+    }
+    .flow strong { display: block; margin-bottom: 4px; }
+    code {
+      background: #eef1f5;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    @media (max-width: 760px) {
+      main { padding: 18px 12px 40px; }
+      .grid, .flow { grid-template-columns: 1fr; }
+      .card, .phone, .note { padding: 14px; }
+      h2 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>患者向け質問票：有効性・副作用教示のリバイス案</h1>
+    <p class="lead">クロザリル説明文書のOCR校正版をもとに、スマホ回答で読める短さに圧縮するための設計プラン。対象は <code>patient_survey_bhtm_v5_questionnaire.html</code> の有効性・副作用パート。</p>
+  </header>
+
+  <section class="card accent">
+    <span class="tag">結論</span>
+    <h2>推奨方針</h2>
+    <p>有効性と副作用は、長い説明を読ませるのではなく、<strong>1画面1判断</strong>にする。画面上の本文は短く抑えつつ、クロザリル説明文書に書かれている頻度と対策だけを明示する。</p>
+    <p>副作用は「全部の医学情報を教える」画面ではなく、<strong>服用判断の妨げになる程度を測る</strong>画面として設計する。重大副作用は不安をあおらず、「頻度」と「早く見つけるための採血・体調確認」をセットで提示する。</p>
+  </section>
+
+  <h2>現在版からの変更点</h2>
+  <div class="grid">
+    <section class="card">
+      <h3>1. 有効性は数値を1つだけ出す</h3>
+      <p>説明文書には国内試験で約57〜67%の改善が記載されている。患者向けには「約6割」と丸め、期待値を伝える。</p>
+      <p class="small">注意: 厳密な引用文ではなく、質問票用の平易化表現として扱う。</p>
+    </section>
+    <section class="card">
+      <h3>2. 副作用は説明文書ベースで6カテゴリ</h3>
+      <p>現在版の6項目は分析しやすい。数値頻度は、説明文書に明記されている無顆粒球症と高血糖・糖尿病などに限定する。</p>
+    </section>
+    <section class="card">
+      <h3>3. 折りたたみは使わない</h3>
+      <p>「詳しく見る」は見られない前提で使わない。必要な情報は、各画面の短い本文内にそのまま入れる。</p>
+    </section>
+    <section class="card">
+      <h3>4. イラストは理解の入口に使う</h3>
+      <p>既存の <code>clozapine_info.png</code> と <code>monitoring.png</code> を使う。副作用ごとの新規画像は不要。</p>
+    </section>
+  </div>
+
+  <h2>推奨フロー</h2>
+  <div class="flow">
+    <div><strong>1</strong>回答前提<br>現在/将来想定をコードで設定</div>
+    <div><strong>2</strong>有効性<br>短い教示 + 十分性評価</div>
+    <div><strong>3</strong>副作用<br>6項目を1画面ずつ評価</div>
+    <div><strong>4</strong>服用意向<br>有効性・副作用を踏まえて回答</div>
+    <div><strong>5</strong>導入方法<br>入院/外来、通院頻度threshold</div>
+  </div>
+  <p class="small">提示順ランダム化は現行どおり維持。有効性先/副作用先の割付でプライミングを探索する。</p>
+
+  <h2>有効性教示の改訂文案</h2>
+  <div class="phone">
+    <img src="../patient_survey_mock/assets/clozapine_info.png" alt="クロザピン説明イラスト">
+    <h3>期待される効果</h3>
+    <p>クロザピンは、ほかの薬で十分よくならない統合失調症に使う薬です。</p>
+    <p>症状や生活のしづらさが軽くなることがあります。国内試験では、約6割の人で改善がみられました。</p>
+    <p class="small">全員に効くわけではありませんが、ほかの治療で改善が乏しい場合に検討されます。</p>
+    <p class="question">この改善可能性は、試してみる理由としてどの程度十分ですか？</p>
+    <span class="choice">十分だと思う</span>
+    <span class="choice">ある程度十分だと思う</span>
+    <span class="choice">どちらともいえない</span>
+    <span class="choice">あまり十分ではない</span>
+    <span class="choice">まったく十分ではない</span>
+  </div>
+
+  <h2>副作用教示の改訂文案</h2>
+  <section class="card">
+    <h3>副作用パート冒頭</h3>
+    <p>クロザピンには副作用があります。よくみられるものと、頻度は低くても重要なものがあります。</p>
+    <p>早く見つけるため、採血と体調確認を続けます。発熱、のどの痛み、胸の痛み・息切れ、強い便秘は早めに相談します。</p>
+    <p class="question">それぞれの副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h3>1. 眠気・だるさ</h3>
+      <p><strong>頻度:</strong> 説明文書では「よく出現する副作用」</p>
+      <p><strong>短文:</strong> 日中の眠気、だるさ、動きにくさにつながることがあります。</p>
+    </section>
+    <section class="card">
+      <h3>2. よだれ</h3>
+      <p><strong>頻度:</strong> 説明文書では「よく出現する副作用」</p>
+      <p><strong>短文:</strong> 唾液が増え、夜間や会話中に困ることがあります。</p>
+    </section>
+    <section class="card">
+      <h3>3. 体重増加・血糖</h3>
+      <p><strong>頻度:</strong> 高血糖・糖尿病などは13.0%。体重増加は「よく出現する副作用」</p>
+      <p><strong>短文:</strong> 体重や血糖が上がることがあります。強いのどの渇き、尿が多い、急な体重減少があれば相談します。</p>
+    </section>
+    <section class="card">
+      <h3>4. 便秘・おなかの症状</h3>
+      <p><strong>頻度:</strong> 説明文書では「よく出現する副作用」。腸閉塞などは頻度は高くないが重要</p>
+      <p><strong>短文:</strong> 便秘、腹痛、おなかの張り、吐き気、食欲低下があれば早めに相談します。</p>
+    </section>
+    <section class="card">
+      <h3>5. 白血球低下・感染</h3>
+      <p><strong>頻度:</strong> 無顆粒球症は1.1%。定期採血で早く見つけます</p>
+      <p><strong>短文:</strong> 感染に弱くなることがあります。定期採血で早く見つけます。発熱、さむけ、のどの痛みがあれば相談します。</p>
+    </section>
+    <section class="card">
+      <h3>6. 心臓・けいれんなど</h3>
+      <p><strong>頻度:</strong> 心臓への副作用は「まれ」。けいれん発作は説明文書に数値なし</p>
+      <p><strong>短文:</strong> 胸の痛み、息切れ、動悸、原因不明の強い疲れ、けいれんがあれば相談します。</p>
+    </section>
+  </div>
+
+  <h2>頻度の扱い</h2>
+  <section class="card">
+    <p>患者向け画面では、クロザリル説明文書に書かれている頻度だけを使う。外部の添付文書、インタビューフォーム、CPMS資料、論文の頻度は混ぜない。</p>
+    <ul>
+      <li>説明文書に明記されている数値: 有効性 約57〜67%、無顆粒球症 1.1%、高血糖・糖尿病など 13.0%。</li>
+      <li>説明文書に数値がない副作用: 眠気・だるさ、よだれ、体重増加、便秘、心臓への副作用、けいれん発作。</li>
+      <li>数値がないものは、説明文書の表現どおり「よく出現する」「まれ」「頻度は高くないが重要」などで示す。</li>
+    </ul>
+  </section>
+
+  <h2>回答選択肢</h2>
+  <section class="card">
+    <p>副作用ごとの回答は現行の5件法を維持する。ただし、スマホでは長すぎるため、ラベルを短くする。</p>
+    <ol>
+      <li>妨げにならない</li>
+      <li>少し妨げ</li>
+      <li>やや妨げ</li>
+      <li>かなり妨げ</li>
+      <li>服用を考えにくい</li>
+    </ol>
+    <p class="small">データ値は現行の1〜5を維持。表示だけ短縮する。</p>
+  </section>
+
+  <h2>実装メモ</h2>
+  <section class="card">
+    <ul>
+      <li><code>renderEfficacyQuestion()</code> の本文を上記文案に置換する。</li>
+      <li><code>sideEffects</code> 配列は、表示名、頻度、短文を本文内に出す構成へ変更する。</li>
+      <li>副作用パートの最初だけ <code>monitoring.png</code> を表示し、2項目目以降は画像なしでもよい。</li>
+      <li>1画面の本文は、画像を除いて180〜240字程度に収める。説明文書にある頻度表現は削らない。</li>
+      <li>副作用を読む画面と回答する画面を分けない。読んだ直後にタップできる形にする。</li>
+    </ul>
+  </section>
+
+  <section class="note">
+    <h2>残すべき注意</h2>
+    <p>この質問票は同意説明文書の代替ではない。患者調査では「服用判断に対する感じ方」を測るため、頻度と主要な相談サインを短く示す。正式な治療説明では主治医説明・同意文書・原資料を使う。</p>
+  </section>
+
+  <footer>
+    <p class="small">作成日: 2026-05-29 / 参照: <code>references/2026-05-22_クロザリル説明文書_BHTM/2026-05-22_クロザリルの説明文書_NDL-OCR_corrected.md</code></p>
+  </footer>
+</main>
+</body>
+</html>

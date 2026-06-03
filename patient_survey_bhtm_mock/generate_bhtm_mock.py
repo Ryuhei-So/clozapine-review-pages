@@ -65,11 +65,10 @@ VERSIONS = {
         ],
     },
     5: {
-        "label": "v5: 最終候補",
-        "focus": "科学的価値、方法論的妥当性、回答しやすさのバランスを取った現時点の推奨版。",
+        "label": "v5: 2026-06-02 MTG反映版",
+        "focus": "主治医調査でクロザピン検討候補として一次抽出された患者を対象に、入院導入・外来導入の受容性と外来導入レジメンの許容条件を測る案。",
         "improvements": [
-            "臨床家調査のmGAF-Fに基づき、mGAF-F 40以下は現在の状態で回答、41以上は将来TRS相当となった場合の仮想シナリオで回答する2層構造にした。",
-            "参加者コードで回答前提と有効性/副作用の提示順を内部設定し、提示順によるプライミングを探索できるようにした。",
+            "対象を主治医調査でクロザピン検討候補として抽出された患者に絞り、将来の状態を想定する仮想シナリオ群は削除した。",
             "クロザピン服用意向の前に、有効性の十分性評価と副作用別の服用判断への影響を取得する。",
             "主要アウトカムを“入院導入と外来導入の受容性”と“外来導入時の初期通院頻度threshold”に固定。",
             "抽象的な外来導入Yes/Noは削除し、外来導入受容性は週3/週2/週1通院条件のいずれかを受容したかで定義する。",
@@ -129,9 +128,9 @@ BACKGROUND_OPTIONS = {
     "family_support": ["受けられる", "少し受けられる", "ほぼ受けられない", "同居なし"],
     "caregiving_role": ["なし", "子どものケア", "親・配偶者等のケア", "その他"],
     "travel_time_one_way": ["30分未満", "30-60分", "60-90分", "90分以上"],
-    "transport": ["自分で運転", "公共交通", "家族送迎", "福祉交通・タクシー", "徒歩・自転車", "その他"],
+    "transport": ["自分で運転", "公共交通", "家族送迎", "通院同行・送迎", "タクシー等の移動支援", "徒歩・自転車", "その他"],
     "home_nursing_current": ["あり", "過去あり", "なし"],
-    "main_income_source": ["就労収入", "障害年金", "家族支援", "その他", "答えたくない"],
+    "main_income_source": ["就労収入", "障害年金", "生活保護", "家族支援", "その他", "答えたくない"],
     "public_assistance": ["あり", "なし", "答えたくない"],
     "economic_strain": ["困っていない", "少し困る", "かなり困る", "答えたくない"],
 }
@@ -182,15 +181,16 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
 
     for i in range(1, n + 1):
         physician = physicians[(i - 1) % n_physicians]
-        target = "TRS適格候補" if i <= 86 else "広い未使用外来患者"
-        unmet = RNG.random() < (0.72 if target == "TRS適格候補" else 0.46)
+        target = "主治医抽出候補"
+        unmet = RNG.random() < 0.70
         past_refusal = RNG.random() < 0.16
         subjective_distress = RNG.random() < (0.68 if unmet else 0.30)
-        age = max(21, min(78, int(RNG.normalvariate(48 if target == "TRS適格候補" else 44, 12))))
-        mgaf_function = max(18, min(75, int(RNG.normalvariate(36 if target == "TRS適格候補" else 50, 7))))
-        if target == "広い未使用外来患者" and not unmet:
-            mgaf_function = max(mgaf_function, int(RNG.normalvariate(55, 5)))
-        response_frame = "actual_current" if mgaf_function <= 40 else "hypothetical_future"
+        age = max(21, min(78, int(RNG.normalvariate(48, 12))))
+        screening_reason = RNG.choices(
+            ["症状残存が目立つ", "低機能だが安定", "入院反復/治療変更を検討", "患者・家族から困りごとの訴え"],
+            weights=[0.34, 0.32, 0.18, 0.16],
+            k=1,
+        )[0]
         info_order = RNG.choice(["efficacy_first", "side_effect_first"])
         living_arrangement = RNG.choices(
             BACKGROUND_OPTIONS["living_arrangement"],
@@ -214,17 +214,16 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
         )
         main_income_source = RNG.choices(
             BACKGROUND_OPTIONS["main_income_source"],
-            weights=[0.20, 0.40, 0.18, 0.12, 0.10],
+            weights=[0.20, 0.38, 0.14, 0.14, 0.08, 0.06],
             k=1,
         )[0]
-        public_assistance = RNG.choices(["あり", "なし"], weights=[0.20, 0.80], k=1)[0]
+        public_assistance = "あり" if main_income_source == "生活保護" else RNG.choices(["あり", "なし"], weights=[0.06, 0.94], k=1)[0]
         participants.append(
             {
                 "participant_id": f"P{i:03d}",
                 "physician_id": physician["physician_id"],
                 "target_group": target,
-                "clinician_mgaf_function": str(mgaf_function),
-                "response_frame": response_frame,
+                "clinician_screening_reason": screening_reason,
                 "info_order": info_order,
                 "age": str(age),
                 "sex": RNG.choice(["女性", "男性", "回答しない"]),
@@ -237,7 +236,7 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
                 "family_support": family_support,
                 "caregiving_role": RNG.choices(BACKGROUND_OPTIONS["caregiving_role"], weights=[0.78, 0.08, 0.10, 0.04], k=1)[0],
                 "travel_time_one_way": RNG.choices(BACKGROUND_OPTIONS["travel_time_one_way"], weights=[0.44, 0.38, 0.14, 0.04], k=1)[0],
-                "transport": RNG.choices(BACKGROUND_OPTIONS["transport"], weights=[0.18, 0.32, 0.18, 0.12, 0.16, 0.04], k=1)[0],
+                "transport": RNG.choices(BACKGROUND_OPTIONS["transport"], weights=[0.17, 0.28, 0.16, 0.11, 0.10, 0.15, 0.03], k=1)[0],
                 "home_nursing_current": RNG.choices(BACKGROUND_OPTIONS["home_nursing_current"], weights=[0.26, 0.13, 0.61], k=1)[0],
                 "main_income_source": main_income_source,
                 "public_assistance": public_assistance,
@@ -247,23 +246,19 @@ def simulate(version: int) -> dict[str, list[dict[str, str]]]:
 
         p_inpatient_now = sigmoid(-1.35 + 0.50 * unmet + 0.35 * subjective_distress - 0.45 * past_refusal)
         p_outpatient_now = sigmoid(0.05 + 0.65 * unmet + 0.55 * subjective_distress - 0.30 * past_refusal)
-        p_inpatient_worse = min(0.95, p_inpatient_now + 0.22 + 0.12 * subjective_distress)
-        p_outpatient_worse = min(0.97, p_outpatient_now + 0.18 + 0.10 * subjective_distress)
         inpatient_now = RNG.random() < p_inpatient_now
         outpatient_now = RNG.random() < p_outpatient_now
-        inpatient_worse = RNG.random() < p_inpatient_worse
-        outpatient_worse = RNG.random() < p_outpatient_worse
-        method_inpatient_accept = inpatient_now if response_frame == "actual_current" else inpatient_worse
-        method_outpatient_accept = outpatient_now if response_frame == "actual_current" else outpatient_worse
+        method_inpatient_accept = inpatient_now
+        method_outpatient_accept = outpatient_now
         clozapine_accept = method_inpatient_accept or method_outpatient_accept
         vignette.append(
             {
                 "participant_id": f"P{i:03d}",
-                "response_frame": response_frame,
+                "response_frame": "actual_current",
                 "inpatient_now_accept": str(int(inpatient_now)),
                 "outpatient_now_accept": str(int(outpatient_now)),
-                "inpatient_worse_accept": str(int(inpatient_worse)),
-                "outpatient_worse_accept": str(int(outpatient_worse)),
+                "inpatient_worse_accept": "",
+                "outpatient_worse_accept": "",
                 "inpatient_asked_accept": str(int(method_inpatient_accept)),
                 "outpatient_asked_accept": str(int(method_outpatient_accept)),
             }
@@ -497,7 +492,7 @@ def method_pattern_by_frame_svg(path: Path, title: str, rows: dict[str, Counter]
     }
     row_labels = {
         "actual_current": "現在の状態で回答",
-        "hypothetical_future": "将来TRS相当を想定",
+        "hypothetical_future": "仮想シナリオ削除済み",
     }
     parts = [svg_head(width, height), f'<text x="{left}" y="30" class="title">{esc(title)}</text>']
     for i, key in enumerate(["actual_current", "hypothetical_future"]):
@@ -842,7 +837,7 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     threshold = data["threshold_responses"]
     gap = data["physician_patient_gap"]
 
-    method_counts_by_frame: dict[str, Counter] = {"actual_current": Counter(), "hypothetical_future": Counter()}
+    method_counts = Counter()
     for r in vignette:
         inpatient = r["inpatient_asked_accept"] == "1"
         outpatient = r["outpatient_asked_accept"] == "1"
@@ -854,9 +849,9 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
             key = "outpatient_only"
         else:
             key = "neither"
-        method_counts_by_frame[r["response_frame"]][key] += 1
+        method_counts[key] += 1
     p = FIG / f"bhtm_v{version}_fig1_clozapine_accept.svg"
-    method_pattern_by_frame_svg(p, "図1. 回答前提別にみた入院導入・外来導入の受容パターン", method_counts_by_frame)
+    method_pattern_svg(p, "図1. 入院導入・外来導入の受容パターン", method_counts)
     fig_paths["fig1"] = rel(p)
 
     inpatient_accept_ids = {r["participant_id"] for r in vignette if r["inpatient_asked_accept"] == "1"}
@@ -895,17 +890,18 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     )
     fig_paths["fig4"] = rel(p)
 
-    support_by_frame: dict[str, Counter] = {"actual_current": Counter(), "hypothetical_future": Counter()}
+    support_by_nursing: dict[str, Counter] = {"あり/過去あり": Counter(), "なし": Counter()}
     for r in threshold:
         if r["support_eligible"] == "1":
-            frame_key = participants[r["participant_id"]]["response_frame"]
-            support_by_frame[frame_key][support_level(r["support_accept_condition"])] += 1
+            nursing = participants[r["participant_id"]]["home_nursing_current"]
+            key = "あり/過去あり" if nursing in {"あり", "過去あり"} else "なし"
+            support_by_nursing[key][support_level(r["support_accept_condition"])] += 1
     p = FIG / f"bhtm_v{version}_fig5_support_by_frame.svg"
     support_threshold_rows_svg(
         p,
-        "図5. 回答前提別にみた訪問看護確認頻度threshold",
-        support_by_frame,
-        {"actual_current": "現在の状態で回答", "hypothetical_future": "将来TRS相当を想定"},
+        "図5. 訪問看護利用状況別にみた確認頻度threshold",
+        support_by_nursing,
+        {"あり/過去あり": "訪問看護あり/過去あり", "なし": "訪問看護なし"},
     )
     fig_paths["fig5"] = rel(p)
 
@@ -958,8 +954,9 @@ def make_figures(version: int, data: dict[str, list[dict[str, str]]]) -> dict[st
     ids = [r["participant_id"] for r in gap]
     factor_specs: list[tuple[str, list[bool]]] = [
         ("65歳以上", [int(participants[pid]["age"]) >= 65 for pid in ids]),
-        ("臨床家評価mGAF-F 40以下", [int(participants[pid]["clinician_mgaf_function"]) <= 40 for pid in ids]),
         ("過去拒否記載あり", [participants[pid]["past_clozapine_refusal_documented"] == "あり" for pid in ids]),
+        ("低機能だが安定として抽出", [participants[pid]["clinician_screening_reason"] == "低機能だが安定" for pid in ids]),
+        ("症状残存が目立つとして抽出", [participants[pid]["clinician_screening_reason"] == "症状残存が目立つ" for pid in ids]),
         ("日中活動あり", [participants[pid]["day_activity"] in {"就労中", "就学中", "福祉的就労", "デイケア等"} for pid in ids]),
         ("同居家族から支援あり", [participants[pid]["family_support"] == "受けられる" for pid in ids]),
         ("ケア役割あり", [participants[pid]["caregiving_role"] != "なし" for pid in ids]),
@@ -1002,7 +999,6 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
     participants = data["participants"]
     n = len(participants)
     ages = sorted(int(r["age"]) for r in participants)
-    mgaf = sorted(int(r["clinician_mgaf_function"]) for r in participants)
 
     def median_iqr(values: list[int]) -> str:
         def percentile(p: float) -> int:
@@ -1026,17 +1022,8 @@ def table_html(data: dict[str, list[dict[str, str]]]) -> str:
     rows: list[tuple[str, str, str]] = []
     add_summary(rows, "解析対象者", "合計", f"{n}")
     add_summary(rows, "年齢", "中央値 (IQR)", median_iqr(ages))
-    add_summary(rows, "臨床家評価mGAF-F", "中央値 (IQR)", median_iqr(mgaf))
-    add_distribution(rows, "対象集団", "target_group", ["TRS適格候補", "広い未使用外来患者"])
-    add_distribution(rows, "回答前提", "response_frame", ["actual_current", "hypothetical_future"])
-    rows[-2] = (rows[-2][0], "現在の状態で回答", rows[-2][2])
-    rows[-1] = ("", "将来TRS相当を想定して回答", rows[-1][2])
-
-    mgaf_le40 = sum(1 for r in participants if int(r["clinician_mgaf_function"]) <= 40)
-    rows.append(("mGAF-F 40以下", "該当", n_pct(mgaf_le40)))
-    rows.append(("", "非該当", n_pct(n - mgaf_le40)))
-    add_distribution(rows, "現在の治療で残る困りごと", "current_unmet_need", ["あり", "なし/軽度"])
-    add_distribution(rows, "主観的困りごと/つらさ", "subjective_distress", ["あり", "なし/軽度"])
+    add_distribution(rows, "対象集団", "target_group", ["主治医抽出候補"])
+    add_distribution(rows, "現在の困りごと/つらさ", "current_unmet_need", ["あり", "なし/軽度"])
     add_distribution(rows, "日中活動", "day_activity", BACKGROUND_OPTIONS["day_activity"])
     add_distribution(rows, "日中活動の頻度", "day_activity_frequency", BACKGROUND_OPTIONS["day_activity_frequency"])
     add_distribution(rows, "同居状況", "living_arrangement", BACKGROUND_OPTIONS["living_arrangement"])
@@ -1059,15 +1046,15 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
     v = VERSIONS[version]
     visible = ["fig1", "fig2", "fig3", "fig4", "fig5", "fig6", "fig7", "fig8", "fig9"]
     reasons = {
-        "fig1": f"回答前提別に、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。mGAF-F 40以下の実意思決定に近い群と、将来TRS相当となった場合を想定する群を分けることで、企画倒れを避けつつ解釈可能性を保つ。{GEE_2017}（{pubmed_link('28704228')}）や{JAKOBSEN_2025}（{pubmed_link('40107686')}）で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
+        "fig1": f"主治医調査でクロザピン検討候補として抽出された患者について、入院導入と外来導入の受容性を比較する中核図。外来導入受容性は抽象的なYes/Noではなく、週3/週2/週1通院条件のいずれかを受容した場合として定義する。{GEE_2017}（{pubmed_link('28704228')}）や{JAKOBSEN_2025}（{pubmed_link('40107686')}）で入院導入が大きな障壁として示されたことを踏まえ、“入院は難しいが外来なら前向き”という潜在ニーズを可視化する。",
         "fig2": "入院導入を前向きに考える人と考えにくい人に分け、外来導入の通院頻度thresholdを示す中核図。入院導入を受け入れうる人でも外来週3回は難しい、あるいは入院導入は難しい人でも外来なら受容に転じる、といった現実的な選好のずれを示す。",
         "fig3": "外来導入を受容しうる人について、通院に訪問看護を加えた総確認頻度をどこまで受け入れられるかを示す図。安全に必要な頻度は医師が判断する前提で、その頻度を患者が受容可能かを直接把握する。",
         "fig4": "先に確定した通院頻度thresholdごとに、訪問看護を加えた確認頻度thresholdを示す図。週3回通院を受容する人、週2回なら受容する人、週1回なら受容する人で、追加モニタリングへの許容度が異なるかを確認する。",
-        "fig5": "現在の状態で回答した群と、将来TRS相当を想定して回答した群で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。即時候補者と潜在ニーズ層の違いを分けて解釈するために置く。",
+        "fig5": "訪問看護の現在利用または過去利用の有無で、訪問看護を含む確認頻度thresholdがどう異なるかを示す図。訪問看護に慣れている患者では受容性が高い可能性があり、外来導入レジメン設計に直接関係する。",
         "fig6": "クロザピンの期待される有効性が、患者本人にとって服用を試す理由としてどの程度十分と受け止められるかを示す図。副作用や通院負担だけでなく、そもそも提示されたbenefitが十分な価値として受け止められているかを確認する。",
         "fig7": "副作用は単一項目にまとめると解釈しにくいため、眠気、流涎、体重増加、便秘、採血異常・感染リスク、心筋炎などに分けて、服用判断をどの程度妨げるかを測定する。",
         "fig8": f"患者調査を臨床家調査と接続する図。{JAKOBSEN_2025}（{pubmed_link('40107686')}）の示唆に沿い、医師が非受容と想定する患者の中にも外来導入なら受け入れる層がいるかを示す。",
-        "fig9": "図8で医師予測が患者本人の回答より保守的だったケースについて、どのような事前情報と関連するかを単変量ORで示す。説明変数は、年齢、mGAF-F、過去拒否記載、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。入院導入・外来導入への意向、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、患者や医師の判断そのものに近い情報は入れない。",
+        "fig9": "図8で医師予測が患者本人の回答より保守的だったケースについて、どのような事前情報と関連するかを単変量ORで示す。説明変数は、年齢、過去拒否記載、現在の困りごと/つらさ、生活・通院・訪問看護・経済状況、医師の経験・資格・クロザピン経験など、調査回答の前または初期に容易に把握できるベースライン情報に限定する。入院導入・外来導入への意向、副作用懸念、有効性十分性、医師の推奨率・理由選択率など、患者や医師の判断そのものに近い情報は入れない。",
     }
     links = f"""
       {BHTM_NOTE}
@@ -1093,20 +1080,43 @@ def figure_mock_html(version: int, data: dict[str, list[dict[str, str]]], figs: 
 </head>
 <body>
   <header>
-    <h1>患者調査BHTM 図表モック {version}</h1>
-    <p>{v['label']}</p>
+    <h1>当事者調査 図表モック {version}</h1>
+    <p>{v['label']}。数値はすべてダミーデータ。</p>
   </header>
   <main>
     <nav class="links">{links}<a href="patient_survey_bhtm_v{version}_questionnaire.html">質問票を見る</a><a href="index.html">一覧へ</a></nav>
     <section>
-      <h2>この版の考え方</h2>
-      <p>{v['focus']}</p>
-      <ul>{''.join(f'<li>{x}</li>' for x in v['improvements'])}</ul>
+      <h2>研究目的</h2>
+      <div class="grid">
+        <div class="mini"><strong>目的1</strong><br>主治医調査でクロザピン検討候補として抽出された患者本人が、入院導入と外来導入をどの程度前向きに考えられるかを明らかにする。</div>
+        <div class="mini"><strong>目的2</strong><br>「入院は難しいが外来なら前向き」な患者の割合を推定し、外来導入が治療アクセスを広げる層を可視化する。</div>
+        <div class="mini"><strong>目的3</strong><br>初期6週間の通院頻度と訪問看護を含む確認頻度について、患者が受容できるthresholdを把握する。</div>
+        <div class="mini"><strong>目的4</strong><br>有効性説明、副作用説明、医師が想像する受容性とのギャップを整理し、患者説明・外来導入レジメン改善につなげる。</div>
+      </div>
+    </section>
+    <section>
+      <h2>Methods 概要</h2>
+      <div class="panel">対象は、主治医調査で「クロザピン検討候補となりうる低機能・症状残存患者」として一次抽出された患者。クロザピン使用中または使用歴ありの患者は除外する。</div>
+      <h3>対象者と回答前提</h3>
+      <p>回答者には、現在の自分に主治医からクロザピン導入を提案された場面として回答してもらう。機能評価による層別や、将来の状態を想定した仮想シナリオは主解析から外す。</p>
+      <h3>説明内容</h3>
+      <p>クロザピンの適応、期待される有効性、採血・体調確認、頻度の高い副作用、まれだが重要な副作用を平易な文章と図で説明する。副作用は頻度と症状をセットで提示し、早期発見のための採血・相談体制も併記する。</p>
+      <h3>主要アウトカム</h3>
+      <p>まず入院導入を提案された場合の受容性を尋ねる。外来導入は抽象的なYes/Noではなく、初期6週間の通院頻度を週3回、週2回、週1回の順に提示し、初めて受容できる条件をthresholdとして記録する。</p>
+      <h3>訪問看護threshold</h3>
+      <p>通院頻度thresholdを決めた後、その通院頻度を固定し、訪問看護を加えて週5回、週3回、週2回程度の総確認頻度にした場合の受容性を尋ねる。これは外来導入レジメン作成に直接使う情報として扱う。</p>
+      <h3>医師予測との接続</h3>
+      <p>主治医調査で取得する「外来導入を提案した場合の患者受容見込み」と、患者本人の回答を対応づけ、医師が受容性を過小評価しやすい層を探索的に示す。</p>
+      <p class="reason">{v['focus']}</p>
+    </section>
+    <section>
+      <h2>Results 図表モック</h2>
+      <div class="panel">図1で入院/外来導入の受容パターン、図2-5で外来導入レジメンの許容条件、図6-7で有効性・副作用説明の受け止め、図8-9で医師予測とのギャップを示す。</div>
     </section>
     <section>
       <h2>Table 1. 回答者背景</h2>
       {table_html(data)}
-      <p class="reason">患者本人の受容性を解釈するため、対象集団、現在の困りごと、主観的つらさを最小限の背景情報として置く。</p>
+      <p class="reason">患者本人の受容性を解釈するため、現在の困りごと/つらさ、日中活動、通院手段、訪問看護、主な収入源、経済的余裕を最小限の背景情報として置く。</p>
     </section>
     {fig_sections}
   </main>
@@ -1129,13 +1139,53 @@ def background_choice_step(name: str, title: str, question: str, options: list[s
       </section>"""
 
 
+def compact_background_section() -> str:
+    def group(name: str, title: str, question: str, options: list[str], help_text: str, extra_class: str = "") -> str:
+        choices = "\n".join(
+            f'<label><input type="radio" name="{name}" value="{esc(option)}"> {esc(option)}</label>'
+            for option in options
+        )
+        return f"""
+          <div class="bg-group {extra_class}" data-compact-bg="{esc(name)}">
+            <h3>{esc(title)}</h3>
+            <p class="question">{esc(question)}</p>
+            <div class="seg">{choices}</div>
+            <p class="small">{esc(help_text)}</p>
+          </div>"""
+
+    groups = "\n".join(
+        [
+            group("current_unmet_need", "現在の困りごと/つらさ", "現在の治療でも、症状や生活のしづらさなどの困りごと・つらさが残っていると感じますか？", ["あり", "なし/軽度", "答えたくない"], "Table 1と医師予測とのギャップ解析に使います。"),
+            group("day_activity", "日中活動", "普段の日中活動として最も近いものを選んでください。", BACKGROUND_OPTIONS["day_activity"], "入院や頻回通院が生活に与える影響を解釈します。"),
+            group("day_activity_frequency", "日中活動の頻度", "日中活動は週にどのくらいありますか？", ["週0-1日", "週2-3日", "週4日以上"], "日中活動がある場合だけ伺います。", "conditional hidden"),
+            group("living_arrangement", "同居状況", "現在の同居状況として最も近いものを選んでください。", BACKGROUND_OPTIONS["living_arrangement"], "外来導入時の支援の受けやすさを解釈します。"),
+            group("family_support", "同居家族からの支援", "同居家族から通院や体調確認の支援を受けられますか？", ["受けられる", "少し受けられる", "ほぼ受けられない"], "家族等と同居している場合だけ伺います。", "conditional hidden"),
+            group("caregiving_role", "本人のケア役割", "あなた自身が、誰かのケアを担っていますか？", BACKGROUND_OPTIONS["caregiving_role"], "入院や頻回通院が難しくなる事情を把握します。"),
+            group("travel_time_one_way", "通院にかかる片道時間", "病院までの片道時間として最も近いものを選んでください。", BACKGROUND_OPTIONS["travel_time_one_way"], "普段の移動手段で考えてください。"),
+            group("transport", "主な通院手段", "主な通院手段として最も近いものを選んでください。", BACKGROUND_OPTIONS["transport"], "複数ある場合はいちばんよく使うものを選んでください。"),
+            group("home_nursing_current", "訪問看護の利用", "現在、訪問看護を利用していますか？", BACKGROUND_OPTIONS["home_nursing_current"], "訪問看護を含む確認頻度thresholdの解釈に使います。"),
+            group("main_income_source", "主な収入源", "主な収入源として最も近いものを選んでください。", BACKGROUND_OPTIONS["main_income_source"], "答えたくない場合は「答えたくない」を選んでください。"),
+            group("economic_strain", "経済的余裕", "通院や治療にかかる負担を考えたとき、経済的にはどの程度困りますか？", BACKGROUND_OPTIONS["economic_strain"], "答えたくない場合は「答えたくない」を選んでください。"),
+        ]
+    )
+    return f"""
+      <section class="step" data-step="background">
+        <h2>生活・通院背景</h2>
+        <p>図表作成に必要な背景だけをまとめて伺います。該当しない質問は自動で隠します。</p>
+        <div class="background-grid">{groups}</div>
+        <div id="backgroundMessage" class="notice hidden"></div>
+        <div class="nav"><button class="primary" onclick="nextBackground()">次へ</button><button onclick="prev()">前へ</button></div>
+      </section>"""
+
+
 def questionnaire_html(version: int) -> str:
     v = VERSIONS[version]
     compact = version >= 4
     final = version == 5
-    bg_steps = "\n".join(
+    bg_steps = compact_background_section() if final else "\n".join(
         background_choice_step(*spec)
         for spec in [
+            ("current_unmet_need", "現在の困りごと/つらさ", "現在の治療でも、症状や生活のしづらさなどの困りごと・つらさが残っていると感じますか？", ["あり", "なし/軽度", "答えたくない"], "現在の状態でクロザピン導入をどう受け止めるかを解釈するために伺います。"),
             ("day_activity", "日中活動", "普段の日中活動として最も近いものを選んでください。", BACKGROUND_OPTIONS["day_activity"], "入院や頻回通院が生活に与える影響を解釈するために伺います。"),
             ("day_activity_frequency", "日中活動の頻度", "日中活動は週にどのくらいありますか？", ["週0-1日", "週2-3日", "週4日以上"], "前の質問で日中活動がないと分かる場合、この質問は自動でスキップされます。"),
             ("living_arrangement", "同居状況", "現在の同居状況として最も近いものを選んでください。", BACKGROUND_OPTIONS["living_arrangement"], "外来導入時の支援の受けやすさを解釈するために伺います。"),
@@ -1144,7 +1194,7 @@ def questionnaire_html(version: int) -> str:
             ("travel_time_one_way", "通院にかかる片道時間", "病院までの片道時間として最も近いものを選んでください。", BACKGROUND_OPTIONS["travel_time_one_way"], "普段の移動手段で考えてください。"),
             ("transport", "主な通院手段", "主な通院手段として最も近いものを選んでください。", BACKGROUND_OPTIONS["transport"], "複数ある場合は、いちばんよく使うものを選んでください。"),
             ("home_nursing_current", "訪問看護の利用", "現在、訪問看護を利用していますか？", BACKGROUND_OPTIONS["home_nursing_current"], "外来導入時に訪問看護を組み合わせる条件の解釈に使います。"),
-            ("main_income_source", "主な収入源", "主な収入源として最も近いものを選んでください。", BACKGROUND_OPTIONS["main_income_source"], "生活保護の有無は電子カルテから取得するため、ここでは伺いません。"),
+            ("main_income_source", "主な収入源", "主な収入源として最も近いものを選んでください。", BACKGROUND_OPTIONS["main_income_source"], "答えたくない場合は「答えたくない」を選んでください。"),
             ("economic_strain", "経済的余裕", "通院や治療にかかる負担を考えたとき、経済的にはどの程度困りますか？", BACKGROUND_OPTIONS["economic_strain"], "答えたくない場合は「答えたくない」を選んでください。"),
         ]
     )
@@ -1183,12 +1233,12 @@ def questionnaire_html(version: int) -> str:
       </section>
 
       <section class="step" data-step="2">
-        <h2>参加者コード</h2>
-        <p>研究スタッフから渡された参加者コードを入力してください。入力されたコードに基づいて、回答していただく前提をシステム側で設定します。</p>
-        <label class="field-label" for="participantCode">参加者コード</label>
-        <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: ACT001">
+        <h2>参加者ID</h2>
+        <p>研究スタッフから渡された参加者IDを入力してください。この質問票では、現在のあなたの状態で主治医からクロザピン導入を提案された場合として回答します。</p>
+        <label class="field-label" for="participantCode">参加者ID</label>
+        <input class="text-input" id="participantCode" name="participant_code" type="text" inputmode="latin" autocomplete="off" placeholder="例: P001">
         <div id="scenarioBox" class="notice hidden"></div>
-        <p class="small">デモ用コード: <code>ACT001</code>/<code>ACT002</code> は現在の状態で回答、<code>HYP001</code>/<code>HYP002</code> は将来TRS相当を想定して回答します。末尾001/002で有効性と副作用の提示順が変わります。本番では対応表を調査システム側で管理します。</p>
+        <p class="small">デモ用ID: <code>P001</code>/<code>P002</code>。IDは回答前提を変えません。末尾が偶数の場合のみ、有効性説明と副作用説明の提示順が入れ替わります。本番では提示順の割付を調査システム側で管理します。</p>
         <div class="nav"><button class="primary" onclick="nextParticipantCode()">次へ</button><button onclick="prev()">前へ</button></div>
       </section>
 
@@ -1311,18 +1361,12 @@ let threshold = null;
 let visitIndex = 0;
 let sideEffectIndex = 0;
 let supportIndex = 0;
-let responseFrame = null;
+let responseFrame = 'actual_current';
 let supportBaseVisit = null;
 let inpatientAccept = null;
 let participantCode = null;
-let infoOrder = null;
+let infoOrder = 'efficacy_first';
 let effectivenessAnswer = null;
-const participantCodeMap = {
-  ACT001: {frame:'actual_current', order:'efficacy_first', label:'現在の状態で回答'},
-  ACT002: {frame:'actual_current', order:'side_effect_first', label:'現在の状態で回答'},
-  HYP001: {frame:'hypothetical_future', order:'efficacy_first', label:'将来TRS相当を想定して回答'},
-  HYP002: {frame:'hypothetical_future', order:'side_effect_first', label:'将来TRS相当を想定して回答'}
-};
 const sideEffects = [
   ['sedation','眠気・だるさ','説明文書では「よく出現する副作用」','日中の眠気、だるさ、動きにくさにつながることがあります。'],
   ['hypersalivation','よだれ','説明文書では「よく出現する副作用」','唾液が増え、夜間や会話中に困ることがあります。'],
@@ -1377,6 +1421,10 @@ function wireAutoAdvance(){
     handleBackgroundChange(input.name);
     next();
   }));
+  document.querySelectorAll('[data-compact-bg] input').forEach(input => input.addEventListener('change', () => {
+    backgroundAnswers[input.name] = input.value;
+    handleCompactBackgroundChange(input.name);
+  }));
 }
 function next(){ moveVisible(1); }
 function moveVisible(direction){
@@ -1429,6 +1477,59 @@ function handleBackgroundChange(name){
     }
   }
 }
+function handleCompactBackgroundChange(name){
+  if(name === 'day_activity'){
+    const activity = radioValue('day_activity');
+    const freq = document.querySelector('[data-compact-bg="day_activity_frequency"]');
+    if(['主に自宅','その他'].includes(activity)){
+      backgroundAnswers.day_activity_frequency = '該当なし';
+      setRadioValue('day_activity_frequency', '該当なし');
+      freq?.classList.add('hidden');
+    } else {
+      delete backgroundAnswers.day_activity_frequency;
+      clearChecked('day_activity_frequency');
+      freq?.classList.remove('hidden');
+    }
+  }
+  if(name === 'living_arrangement'){
+    const living = radioValue('living_arrangement');
+    const support = document.querySelector('[data-compact-bg="family_support"]');
+    if(living && living !== '家族等と同居'){
+      backgroundAnswers.family_support = '同居なし';
+      setRadioValue('family_support', '同居なし');
+      support?.classList.add('hidden');
+    } else {
+      delete backgroundAnswers.family_support;
+      clearChecked('family_support');
+      support?.classList.remove('hidden');
+    }
+  }
+}
+function nextBackground(){
+  const required = [
+    'current_unmet_need',
+    'day_activity',
+    'day_activity_frequency',
+    'living_arrangement',
+    'family_support',
+    'caregiving_role',
+    'travel_time_one_way',
+    'transport',
+    'home_nursing_current',
+    'main_income_source',
+    'economic_strain'
+  ];
+  const missing = required.find(name => !backgroundAnswers[name]);
+  const box = document.getElementById('backgroundMessage');
+  if(missing){
+    box.textContent = '未回答の背景項目があります。表示されている項目を選択してください。';
+    box.classList.remove('hidden');
+    document.querySelector(`[data-compact-bg="${missing}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  box?.classList.add('hidden');
+  next();
+}
 function isSkippedStep(step){
   const bgStep = step?.dataset?.bgStep;
   if(bgStep === 'day_activity_frequency'){
@@ -1453,18 +1554,18 @@ function nextParticipantCode(){
   const input = document.getElementById('participantCode');
   const raw = input.value.trim().toUpperCase();
   const box = document.getElementById('scenarioBox');
-  const match = participantCodeMap[raw];
-  if(!match){
-    box.textContent = '参加者コードを確認できませんでした。研究スタッフから渡されたコードを入力してください。';
+  if(!raw){
+    box.textContent = '研究スタッフから渡された参加者IDを入力してください。';
     box.classList.remove('hidden');
     input.focus();
     return;
   }
   resetAfterNeed();
   participantCode = raw;
-  responseFrame = match.frame;
-  infoOrder = match.order;
-  box.textContent = `${match.label}: ${scenarioText()}`;
+  responseFrame = 'actual_current';
+  infoOrder = /[02468]$/.test(raw) ? 'side_effect_first' : 'efficacy_first';
+  const orderLabel = infoOrder === 'side_effect_first' ? '副作用説明を先に提示' : '有効性説明を先に提示';
+  box.textContent = `現在の状態で回答します（${orderLabel}）。${scenarioText()}`;
   box.classList.remove('hidden');
   next();
 }
@@ -1520,31 +1621,45 @@ function renderEfficacyQuestion(suffix){
 }
 function renderSideEffectQuestion(suffix){
   document.getElementById(`infoStepTitle${suffix}`).textContent = '副作用可能性の影響';
-  const [key, label, frequency, description] = sideEffects[sideEffectIndex];
   document.getElementById(`infoStepBody${suffix}`).innerHTML = `
     <p>クロザピンには副作用があります。よくみられるものと、頻度は低くても重要なものがあります。</p>
     <p>早く見つけるため、採血と体調確認を続けます。</p>
-    <div class="tt-card">
-      <span class="pill">${sideEffectIndex + 1}/${sideEffects.length}</span>
-      <h3>${label}</h3>
-      <p class="small"><strong>頻度:</strong> ${frequency}</p>
-      <p class="small">${description}</p>
-    </div>
-    <p class="question">この副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
-    <div class="seg">
-      <label><input type="radio" name="side_effect_current" value="1"> 1. 妨げにならない</label>
-      <label><input type="radio" name="side_effect_current" value="2"> 2. 少し妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="3"> 3. やや妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="4"> 4. かなり妨げ</label>
-      <label><input type="radio" name="side_effect_current" value="5"> 5. 服用を考えにくい</label>
-    </div>
-    <p class="small">選択すると次へ進みます。</p>
+    <p class="question">それぞれの副作用は、服用を考えるうえでどの程度妨げになりますか？</p>
+    ${sideEffects.map(([key, label, frequency, description]) => `
+      <div class="tt-card side-effect-card">
+        <h3>${label}</h3>
+        <p class="small"><strong>頻度:</strong> ${frequency}</p>
+        <p class="small">${description}</p>
+        <div class="seg">
+          <label><input type="radio" name="side_effect_${key}" value="1"> 妨げにならない</label>
+          <label><input type="radio" name="side_effect_${key}" value="3"> やや妨げ</label>
+          <label><input type="radio" name="side_effect_${key}" value="5"> 服用を考えにくい</label>
+        </div>
+      </div>
+    `).join('')}
+    <div id="sideEffectMessage" class="notice hidden"></div>
   `;
-  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prevSideEffect()">前へ</button>';
-  document.querySelectorAll('input[name="side_effect_current"]').forEach(input => {
-    input.checked = sideEffectAnswers[key] === input.value;
-    input.addEventListener('change', nextSideEffect);
+  document.getElementById(`infoStepNav${suffix}`).innerHTML = '<button onclick="prev()">前へ</button><button class="primary" onclick="nextSideEffectMatrix()">次へ</button>';
+  sideEffects.forEach(([key]) => {
+    document.querySelectorAll(`input[name="side_effect_${key}"]`).forEach(input => {
+      input.checked = sideEffectAnswers[key] === input.value;
+      input.addEventListener('change', () => {
+        sideEffectAnswers[key] = input.value;
+        document.getElementById('sideEffectMessage')?.classList.add('hidden');
+      });
+    });
   });
+}
+function nextSideEffectMatrix(){
+  const missing = sideEffects.find(([key]) => !sideEffectAnswers[key]);
+  const box = document.getElementById('sideEffectMessage');
+  if(missing){
+    box.textContent = 'すべての副作用について選択してください。';
+    box.classList.remove('hidden');
+    document.querySelector(`input[name="side_effect_${missing[0]}"]`)?.closest('.side-effect-card')?.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  next();
 }
 function nextSideEffect(){
   const val = document.querySelector('input[name="side_effect_current"]:checked')?.value;
@@ -1723,12 +1838,11 @@ function resetInfoAnswers(){
   effectivenessAnswer = null;
   Object.keys(sideEffectAnswers).forEach(key => delete sideEffectAnswers[key]);
   clearChecked('side_effect_current');
+  sideEffects.forEach(([key]) => clearChecked(`side_effect_${key}`));
   clearChecked('efficacy_sufficiency');
 }
 function scenarioText(){
-  if(responseFrame === 'actual_current') return '以下では、現在のあなたの状態で、主治医からクロザピンを勧められた場面を想像してください。';
-  if(responseFrame === 'hypothetical_future') return '以下では、もし今後、症状や生活のしづらさが強くなり、複数の薬でも十分改善せず、主治医からクロザピン導入を勧められた場合を想像してください。';
-  return '以下では、主治医からクロザピンを勧められた場面を想像してください。';
+  return '以下では、現在のあなたの状態で、主治医からクロザピン導入を提案された場面を想像してください。';
 }
 function finish(){
   alert('ダミー質問票です。実際の回答は保存されません。');
@@ -1751,6 +1865,9 @@ def common_css() -> str:
     th,td{border:1px solid #d8dee4;padding:8px 10px;text-align:left}
     th{background:#eef2f6}
     img{max-width:100%;height:auto;display:block;margin:0 auto}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .mini{background:#f8fafc;border:1px solid #d8dee4;border-radius:6px;padding:12px}
+    .panel{border-left:4px solid #2f7d8c;background:#f3f8f9;padding:10px 12px;margin:10px 0 14px}
     .links{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
     .links a{background:white;border:1px solid #cbd5df;border-radius:999px;padding:6px 12px;color:#245b67;text-decoration:none}
     .figure-card .reason,.reason{border-left:4px solid #2f7d8c;background:#f3f8f9;padding:10px 12px}
@@ -1771,13 +1888,14 @@ def questionnaire_css() -> str:
     .field-label{display:block;font-weight:700;margin-top:12px}.text-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:13px 12px;font-size:16px;text-transform:uppercase;background:white}
     .select-input{box-sizing:border-box;width:100%;border:1px solid #9fb3bd;border-radius:8px;padding:12px;font-size:16px;background:white}
     .background-block{border-top:1px solid #d8dee4;margin-top:14px;padding-top:10px}
+    .background-grid{display:grid;gap:12px}.bg-group{border-top:1px solid #d8dee4;padding-top:10px}.bg-group:first-child{border-top:0;padding-top:0}
     code{background:#eef2f6;border:1px solid #d8dee4;border-radius:4px;padding:1px 5px}
     button{border:1px solid #9fb3bd;background:white;color:#245b67;border-radius:8px;padding:12px 14px;font-weight:700;font-size:15px}
     .primary{background:#2f7d8c;color:white;border-color:#2f7d8c}
     .full{width:100%}
     .nav{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}.nav .primary{order:-1}
     .notice{border-left:4px solid #c2410c;background:#fff7ed;padding:10px;margin:10px 0}.hidden{display:none}
-    .tt-card{border:2px solid #2f7d8c;border-radius:12px;padding:14px;background:#f3f8f9}.pill{display:inline-block;background:#2f7d8c;color:white;border-radius:999px;padding:2px 10px;font-weight:700;margin:0 0 4px}
+    .tt-card{border:2px solid #2f7d8c;border-radius:12px;padding:14px;background:#f3f8f9}.side-effect-card{margin:12px 0}.pill{display:inline-block;background:#2f7d8c;color:white;border-radius:999px;padding:2px 10px;font-weight:700;margin:0 0 4px}
     .summary{background:#eef6f7;border:1px solid #b8d6dc;border-radius:8px;padding:10px;margin-top:14px}
     @media (max-width:420px){.phone-frame{padding:6px}.step{border-radius:0;border-left:0;border-right:0}button{width:100%}.seg.two{grid-template-columns:1fr}}
     """

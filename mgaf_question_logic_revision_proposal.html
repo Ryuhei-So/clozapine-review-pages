@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>医師向け調査 mGAF質問ロジック・文言修正案</title>
+  <style>
+    :root {
+      --ink:#17212b;
+      --muted:#5e6874;
+      --line:#cfd7df;
+      --soft:#f5f7fa;
+      --page:#fff;
+      --accent:#2f6f7e;
+      --accent2:#9b6a2f;
+      --ok:#1f7a4d;
+      --warn:#8a5a00;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      color:var(--ink);
+      background:#eef1f4;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;
+      line-height:1.65;
+    }
+    header {
+      background:var(--page);
+      border-bottom:1px solid var(--line);
+      padding:28px 36px 22px;
+    }
+    main { max-width:1180px; margin:0 auto; padding:22px 20px 60px; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    h2 { margin:0 0 14px; font-size:22px; letter-spacing:0; }
+    h3 { margin:18px 0 10px; font-size:17px; letter-spacing:0; }
+    p { margin:8px 0; }
+    section {
+      background:var(--page);
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:24px 26px;
+      margin:18px 0;
+    }
+    table { width:100%; border-collapse:collapse; margin:12px 0 4px; font-size:14px; }
+    th, td { border-bottom:1px solid var(--line); padding:10px 9px; vertical-align:top; text-align:left; }
+    th { background:#f7f9fb; font-weight:750; }
+    code { background:#eef3f6; padding:1px 5px; border-radius:4px; }
+    .subtitle,.small,.note { color:var(--muted); }
+    .small { font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px; }
+    .panel {
+      border:1px solid var(--line);
+      border-left:4px solid var(--accent);
+      border-radius:8px;
+      background:var(--soft);
+      padding:14px 16px;
+      margin:12px 0;
+    }
+    .reason {
+      border-left-color:var(--accent2);
+      background:#fff8f2;
+    }
+    .logic {
+      display:grid;
+      gap:10px;
+      counter-reset:step;
+    }
+    .step {
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      padding:14px 14px 14px 52px;
+      position:relative;
+    }
+    .step:before {
+      counter-increment:step;
+      content:counter(step);
+      position:absolute;
+      left:14px;
+      top:14px;
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      background:var(--accent);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:13px;
+    }
+    .tag {
+      display:inline-block;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:2px 9px;
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+      background:#fff;
+      margin-right:4px;
+    }
+    .tag.ok { color:var(--ok); border-color:#b8d8c8; background:#f1faf5; }
+    .tag.warn { color:var(--warn); border-color:#ebd188; background:#fff9e8; }
+    .mock {
+      border:1px solid #bcd3d9;
+      border-radius:8px;
+      padding:16px;
+      background:#f8fcfd;
+    }
+    .q {
+      border-top:1px solid var(--line);
+      padding:14px 0;
+    }
+    .q:first-child { border-top:0; }
+    .q-title { font-weight:800; margin-bottom:8px; }
+    .choices { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
+    .choice {
+      border:1px solid var(--line);
+      border-radius:6px;
+      padding:9px 10px;
+      min-height:44px;
+      background:#fff;
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      font-weight:550;
+    }
+    .choice input { margin-top:5px; }
+    .choice-text { display:grid; gap:2px; }
+    .example { color:var(--muted); font-size:12.5px; font-weight:500; }
+    .wizard-label {
+      display:inline-block;
+      margin:0 0 8px;
+      color:#fff;
+      background:var(--accent);
+      border-radius:999px;
+      padding:3px 10px;
+      font-size:12px;
+      font-weight:800;
+    }
+    .flow-note {
+      font-size:13px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    @media (max-width:760px) {
+      header { padding:22px 20px 18px; }
+      main { padding:16px 12px 44px; }
+      section { padding:18px 16px; }
+      h1 { font-size:24px; }
+      table { font-size:13px; }
+      th, td { padding:8px 6px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>医師向け調査 mGAF質問ロジック・文言修正案</h1>
+    <p class="subtitle">対象: 主治医が外来患者ごとにmGAF-SymptomとmGAF-Functionを付ける画面。現行フォームのP1を置き換える前のレビュー用案。</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>修正方針</h2>
+      <div class="grid">
+        <div class="panel">
+          <h3>1. 評価期間を固定</h3>
+          <p>外来患者では「最近1か月で最も低かった状態」を基準にする。画面冒頭と各セクションに同じ前提を出す。</p>
+        </div>
+        <div class="panel">
+          <h3>2. SとFを分ける</h3>
+          <p>mGAF-Sは症状、mGAF-Fは社会機能として別々に採点する。共通する危険・衛生・緊急入院相当項目は一度だけ聞き、両方の採点に使う。</p>
+        </div>
+        <div class="panel">
+          <h3>3. 上位重症度優先</h3>
+          <p>重篤な危険、部分的な危険、ほぼ全領域の機能不全、重い症状/機能障害、中等度、軽度、最小症状の順に判定する。</p>
+        </div>
+        <div class="panel">
+          <h3>4. 範囲ではなく内部点を保存</h3>
+          <p>選択肢は得点帯で見せ、保存値は帯の低い値にする。画面には「保存点」と「得点帯」を両方表示する。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>日本語版mGAFから使う原則</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>原則</th>
+            <th>質問票への落とし込み</th>
+            <th>理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>外来では最近1か月で評価する</td>
+            <td>P1冒頭と各mGAFセクションに「最近1か月」を明記する。</td>
+            <td>現在の瞬間評価ではなく、外来患者の直近状態を反映するため。</td>
+          </tr>
+          <tr>
+            <td>もっとも低いと思われる得点で記録する</td>
+            <td>複数の得点帯に該当しうる場合は、より低い得点帯を優先する。</td>
+            <td>上位重症度から順に判定するロジックの根拠になる。</td>
+          </tr>
+          <tr>
+            <td>mGAF-Sは症状基準、mGAF-Fは社会機能基準</td>
+            <td>症状項目と社会機能項目を分け、共通する危険項目だけ再利用する。</td>
+            <td>症状が目立たない低機能群をmGAF-Fで拾うため。</td>
+          </tr>
+          <tr>
+            <td>31-50点台は該当項目数で得点帯が決まる</td>
+            <td>Sは6項目、Fは4項目をチェックし、該当数から自動採点する。</td>
+            <td>医師に「領域数」を数えさせず、元スケールの項目数ロジックを保つ。</td>
+          </tr>
+          <tr>
+            <td>21点付近には独立した上位項目がある</td>
+            <td>自殺念慮への没頭、幻覚妄想に影響された行動、重度コミュニケーション障害を31-50点台より前に確認する。</td>
+            <td>31-50点台の項目数とは別に、1項目だけで21点相当となるため。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>提案するP1全体構造</h2>
+      <div class="logic">
+        <div class="step">
+          <strong>評価前提の確認</strong>
+          <p>「この患者さんの最近1か月の状態を思い出してください。複数の状態がある場合は、最も低い状態で評価してください。」</p>
+          <p class="flow-note">理由: 元スケールの外来評価期間と「もっとも低いと思われる得点」を、回答開始前に固定するため。</p>
+        </div>
+        <div class="step">
+          <strong>共通の重篤項目</strong>
+          <p>自殺・自傷、暴力/自傷行為、躁性興奮・焦燥・衝動性、身辺衛生、精神科緊急入院相当、医学的問題による身体的危機を、カテゴリごとに1画面1問の単一選択で確認する。</p>
+          <p class="flow-note">理由: 同じカテゴリ内で11-20点相当と1-10点相当が同時選択される矛盾を避け、現在の質問票と同じ操作感にするため。</p>
+        </div>
+        <div class="step">
+          <strong>mGAF-S: 症状プロファイル</strong>
+          <p>重い精神症状、ほぼ全領域の機能不全に相当する症状、中等度症状、軽症状、最小症状を、1画面1問のウィザードで確認する。元mGAFが項目数で採点する31-50点帯のみ複数選択を許可する。</p>
+          <p class="flow-note">理由: 症状の有無と重症度を保存でき、後の患者因子解析にも使えるため。</p>
+        </div>
+        <div class="step">
+          <strong>mGAF-F: 社会機能プロファイル</strong>
+          <p>主要機能障害4領域、続いて中等度/軽度/最小の機能低下を確認する。</p>
+          <p class="flow-note">理由: クロザピン適応相当判定では機能低下が重要で、症状と混ぜるとstably unwellを拾いにくくなるため。</p>
+        </div>
+        <div class="step">
+          <strong>スコア確認と分岐</strong>
+          <p>mGAF-S、mGAF-F、低い方を表示し、mGAF-Fが41点以上の場合は患者単位の詳細質問を終了する。</p>
+          <p class="flow-note">理由: mGAF-F 40以下を反応性不良相当の操作的条件として使う現在の研究設計と整合させるため。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>mGAF-Symptom 質問案</h2>
+      <div class="mock">
+        <div class="q">
+          <span class="wizard-label">画面 S1 / 1問</span>
+          <div class="q-title">自殺念慮・自殺企図・自傷行為について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="suicide"> 該当なし</label>
+            <label class="choice"><input type="radio" name="suicide"> 尋ねると希死念慮を認める</label>
+            <label class="choice"><input type="radio" name="suicide"> 自殺の考えに没頭しているか、自殺念慮を隠さず準備もしている</label>
+            <label class="choice"><input type="radio" name="suicide"><span class="choice-text">はっきりと死にたいと望まない自殺企図<span class="example">例: 軽度の過量服薬、みんなの前でリストカットする</span></span></label>
+            <label class="choice"><input type="radio" name="suicide"><span class="choice-text">はっきりと死ぬことを望んだ重度の自殺企図<span class="example">例: 誰もいないのを見計らって、ナイフで刺す、銃で撃つ、首をつる、重度の過量服薬</span></span></label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。選択に応じて、31-50点帯項目、21点項目、11-20点帯項目、1-10点帯項目のいずれかへ内部的に割り付ける。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S2 / 1問</span>
+          <div class="q-title">暴力行為・自傷行為について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="violence"> 該当なし</label>
+            <label class="choice"><input type="radio" name="violence"> 時に危険な暴力行為や自傷行為を認める</label>
+            <label class="choice"><input type="radio" name="violence"> 頻繁に危険な暴力行為や自傷行為を認める</label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。時に危険なら11-20点帯、頻繁なら1-10点帯の該当項目として数える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S3 / 1問</span>
+          <div class="q-title">躁病性興奮・焦燥・衝動性について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="agitation"> 該当なし</label>
+            <label class="choice"><input type="radio" name="agitation"> 重度の躁病性興奮、もしくは重度の焦燥、衝動性</label>
+            <label class="choice"><input type="radio" name="agitation"><span class="choice-text">極度の躁病性興奮、極度の焦燥、衝動性<span class="example">例: 野生的に咆える、ベッドのマットレスを引き裂く</span></span></label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。重度なら11-20点帯、極度なら1-10点帯の該当項目として数える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S4 / 1問</span>
+          <div class="q-title">身辺の清潔・健康維持について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="hygiene"> 問題なく保てる</label>
+            <label class="choice"><input type="radio" name="hygiene"><span class="choice-text">時に最低限の身辺の清潔・健康維持ができない<span class="example">例: 下剤で下痢を起こす、大便を塗りたぐる</span></span></label>
+            <label class="choice"><input type="radio" name="hygiene"> 最低限の身辺の清潔・身体維持が持続的に不可能</label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。時にできないなら11-20点帯、持続的に不可能なら1-10点帯の該当項目として数える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S5 / 1問</span>
+          <div class="q-title">精神病院への緊急入院の必要性について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="admission"> 該当なし</label>
+            <label class="choice"><input type="radio" name="admission"> （かかりつけ医の指示で）精神病院に緊急入院を要する</label>
+            <label class="choice"><input type="radio" name="admission"> （ただちに）精神病院に緊急入院を要する</label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。かかりつけ医の指示で緊急入院なら11-20点帯、ただちになら1-10点帯の該当項目として数える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S6 / 1問</span>
+          <div class="q-title">医学的問題による身体的危機について、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="medical"> 該当なし</label>
+            <label class="choice"><input type="radio" name="medical"><span class="choice-text">医学的問題のため身体的危機にある<span class="example">例: 重度の拒食症もしくは過食症、自発嘔吐もしくは過度の下剤やダイエット薬の使用。ただし重症の心・腎機能障害や、重度の脱水や見当識障害ではない</span></span></label>
+            <label class="choice"><input type="radio" name="medical"><span class="choice-text">医学的問題のため、急に重度の危険が起こる<span class="example">例: 心・腎機能障害を伴った重度の拒食症もしくは過食症、食べ物を口に入れても必ず自発嘔吐する、コントロール不能な糖尿病をもった重度のうつ病</span></span></label>
+          </div>
+          <p class="flow-note">同一カテゴリなので単一選択。身体的危機なら11-20点帯、急に重度の危険なら1-10点帯の該当項目として数える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S7 / 1問</span>
+          <div class="q-title">精神病症状・コミュニケーションについて、最近1か月で最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="psychosis"> 該当なし</label>
+            <label class="choice"><input type="radio" name="psychosis"> ほかの精神症状: 幻覚、妄想、重度の強迫的儀式</label>
+            <label class="choice"><input type="radio" name="psychosis"> 幻覚妄想にかなり影響された行動を認める</label>
+            <label class="choice"><input type="radio" name="psychosis"><span class="choice-text">重度のコミュニケーション障害がある<span class="example">例: ときどき支離滅裂で、ひどく不適切にふるまう、深いうつ病性昏迷</span></span></label>
+          </div>
+          <p class="flow-note">同じ精神病症状・コミュニケーションのカテゴリとして単一選択。幻覚妄想/強迫儀式のみなら31-50点帯項目、幻覚妄想にかなり影響された行動または重度コミュニケーション障害なら21点相当。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S8 / 1問</span>
+          <div class="q-title">その他の重症の精神症状を認めますか <span class="tag warn">複数選択可</span></div>
+          <div class="choices">
+            <label class="choice"><input type="checkbox"><span class="choice-text">判断能力に重度の障害がある<span class="example">なかなか決められない、困惑、見当識障害を含む</span></span></label>
+            <label class="choice"><input type="checkbox"><span class="choice-text">思考に重度の障害がある<span class="example">持続的に考えに没入する、歪んだボディイメージ、パラノイア</span></span></label>
+            <label class="choice"><input type="checkbox"><span class="choice-text">気分に重度の障害がある<span class="example">持続的な抑うつ気分に加え無力感や絶望感を持つ、焦燥感、爽快気分があることを含む</span></span></label>
+            <label class="choice"><input type="checkbox"><span class="choice-text">不安のために重度の機能障害がある<span class="example">パニック発作、重篤な不安</span></span></label>
+          </div>
+          <p class="flow-note">ここだけは元mGAFの31-50点帯が該当項目数で採点されるため複数選択を許可する。自殺・精神病症状カテゴリで31-50点帯項目が選ばれていれば、それも該当数に加える。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S9 / 1問</span>
+          <div class="q-title">中等度の精神症状がありますか。最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="moderate"> 中等度の精神症状はない</label>
+            <label class="choice"><input type="radio" name="moderate"> 中等度の精神症状があり、社会・職場・学校の機能では軽度以下の問題である</label>
+            <label class="choice"><input type="radio" name="moderate"> 中等度の精神症状があり、社会・職場・学校の1つ以上で中等度の問題がある</label>
+            <label class="choice"><input type="radio" name="moderate"> 中等度の精神症状があり、社会・職場・学校の機能で中等度の問題がある</label>
+          </div>
+          <p class="flow-note">採点: 58-60、54-57、51-53点帯。例: 中等度の抑うつや不眠、中等度の反復思考や強迫観念がよくおきる、時に不安発作がおきる、感情が平板的で会話が回りくどい、食行動に問題がある、うつ病でないのに安全体重を下回る。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 S10 / 1問</span>
+          <div class="q-title">軽症または最小限の精神症状について、最も近いものを1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="mild"><span class="choice-text">軽症の精神症状があり、心理的社会的ストレスだけでは予測されない反応である<span class="example">例: 軽症かそれ以下の抑うつ、軽症の不眠</span></span></label>
+            <label class="choice"><input type="radio" name="mild"><span class="choice-text">精神症状があったとしても、心理的社会的ストレスに対する一過性で予測される反応である<span class="example">例: 家族と口論した後の集中困難</span></span></label>
+            <label class="choice"><input type="radio" name="mild"><span class="choice-text">精神症状がまったくないか、ほんの少し<span class="example">例: 試験前の軽い不安</span></span></label>
+          </div>
+          <p class="flow-note">採点: 軽症で心理社会的ストレスだけでは予測されない反応は61-70点帯、一過性で予測される反応は71-80点帯、精神症状がまったくないかほんの少しは81-90点帯。各帯の中では社会・職場・学校での問題の広がりにより下位帯を選ぶ。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>mGAF-Function 質問案</h2>
+      <div class="mock">
+        <div class="q">
+          <span class="wizard-label">Fへの自動反映</span>
+          <div class="q-title">S1-S6の共通危険項目をmGAF-Fにも反映</div>
+          <p>自傷他害、身辺衛生、緊急入院、医学的問題による身体的危機は、mGAF-Sでカテゴリ別に単一選択した内容をmGAF-Fにも自動反映する。F側で同じカテゴリを再質問しない。</p>
+          <p class="flow-note">採点: 11-20点帯または1-10点帯の該当項目数として内部計算する。回答者にはスコア確認画面で反映項目を表示し、必要なら戻って修正できるようにする。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 F1 / 1問</span>
+          <div class="q-title">F1. いくつかの重度の機能障害を認めますか</div>
+          <div class="choices">
+            <label class="choice"><input type="checkbox"> 職場、学校、もしくは家事で重度の機能障害がある</label>
+            <label class="choice"><input type="checkbox"> 法にふれる問題をたびたびおこす、または時にけんか腰である</label>
+            <label class="choice"><input type="checkbox"> 交友関係に重度の障害がある</label>
+            <label class="choice"><input type="checkbox"> 家族関係に重度の障害がある、または安定した住居がない</label>
+          </div>
+          <p class="flow-note">元mGAF-Fの21-50点帯は4項目の該当数で採点するため、この画面のみ複数選択を許可する。1項目44-50点帯、2項目37-43点帯、3項目31-36点帯、4項目21-30点帯。就労・就学していない場合は、家事、通所、デイケア、役割遂行、日中活動で判断する。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 F2 / 1問</span>
+          <div class="q-title">F2. 中等度の社会・仕事・学業機能低下がありますか</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="f2"> 社会・職場・学校の機能で中等度の問題があるが、精神症状は軽度である</label>
+            <label class="choice"><input type="radio" name="f2"> 社会・職場・学校の1つ以上で中等度の問題があり、中等度の精神症状がある</label>
+            <label class="choice"><input type="radio" name="f2"> 社会・職場・学校の機能で中等度の問題があり、中等度の精神症状がある</label>
+            <label class="choice"><input type="radio" name="f2"> なし</label>
+          </div>
+          <p class="flow-note">採点: 58-60、54-57、51-53点帯。例: 友達が少ししかいない、同僚と衝突するなど。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 F3 / 1問</span>
+          <div class="q-title">F3. 軽度または最小の機能低下</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="f3"> いくつかの持続した軽症の機能障害がある</label>
+            <label class="choice"><input type="radio" name="f3"> 一過性の軽度の機能障害がある</label>
+            <label class="choice"><input type="radio" name="f3"> すべての面でよい機能で、生活に満足している</label>
+            <label class="choice"><input type="radio" name="f3"> 日々のありふれた問題や心配以上のものはない</label>
+          </div>
+          <p class="flow-note">採点: 持続する軽度は61-70、一過性軽度は71-80、最小機能低下は81-90。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>コメントへの対応案</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>コメント</th>
+            <th>対応する修正案</th>
+            <th>理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>「受動的な希死念慮」とは何か。</td>
+            <td>「受動的な希死念慮」という独自ラベルは使わず、日本語版mGAFの表現に合わせて「尋ねると希死念慮を認める」とする。必要時の補足として「自殺念慮への没頭や明確な準備はない」を添える。</td>
+            <td>日本語版mGAFの31-50点帯項目を活かし、21点相当の「自殺の考えに没頭している/準備している」と区別するため。</td>
+          </tr>
+          <tr>
+            <td>「死亡期待なしの自殺企図」はNSSIならその文言の方がよいのではないか。</td>
+            <td>日本語版mGAFの「はっきりと死にたいと望まない自殺企図」を基本文言にし、質問票上は「または自傷行為」を併記する。</td>
+            <td>NSSIだけに限定すると、軽度過量服薬や人前でのリストカットなど、元表の例示を狭める可能性があるため。</td>
+          </tr>
+          <tr>
+            <td>「死亡期待あり」は「希死念慮」の方が一般的ではないか。</td>
+            <td>日本語版mGAFの「はっきりと死ぬことを望んだ重度の自殺企図」を使う。</td>
+            <td>「死亡期待」という独自訳語を避け、元表の日本語表現に戻す。</td>
+          </tr>
+          <tr>
+            <td>身辺衛生の「なし」は「問題なし」か「保てる」ではないか。</td>
+            <td>「問題なく保てる」「時に最低限の身辺の清潔・健康維持ができない」「最低限の身辺の清潔・身体維持が持続的に不可能」にする。</td>
+            <td>「なし」だけでは何がないのか曖昧。元表の「時に」「持続的に」の違いを残す。</td>
+          </tr>
+          <tr>
+            <td>「身体的危険」とは何か。</td>
+            <td>「摂食・セルフケア等の問題に関連した身体的危険」とし、補足に「重度の拒食・過食、自発嘔吐、過度の下剤使用、脱水、管理不能な身体疾患など」を入れる。</td>
+            <td>mGAFの例示に沿って、精神状態やセルフケア低下に伴う身体危機だと分かるようにする。</td>
+          </tr>
+          <tr>
+            <td>「行動が妄想または幻覚に影響」と「幻覚・妄想・重い強迫儀式」の違いが分かりにくい。</td>
+            <td>前者を「幻覚・妄想にかなり影響された行動がある」、後者を「幻覚・妄想・重い強迫儀式があるが、行動が著しく支配されるほどではない」に分ける。</td>
+            <td>前者は21点相当の上位項目、後者は31-50点帯の重い症状領域として扱うため、行動への影響の有無で区別する。</td>
+          </tr>
+          <tr>
+            <td>「重い症状領域」「中等度症状」がつけづらい。</td>
+            <td>見出しを日本語版mGAFの「いくつかの重症の精神症状を認める」「中等度の精神症状がある」に戻し、項目は「判断能力に重度の障害がある」など元表の症状単位で選ばせる。</td>
+            <td>「領域」という採点者向け概念を前面に出さず、元スケールの症状項目に沿って回答できるようにする。</td>
+          </tr>
+          <tr>
+            <td>「判断の重い障害」は「重い判断」と読める。</td>
+            <td>日本語版mGAFの「判断能力に重度の障害がある」を使う。思考、気分、不安も「思考に重度の障害がある」「気分に重度の障害がある」「不安のために重度の機能障害がある」にする。</td>
+            <td>北川さんの読みづらさを解消しつつ、日本語版mGAFの文言から離れないようにする。</td>
+          </tr>
+          <tr>
+            <td>P9で「白血球数が足りない」症例をどう扱うか。</td>
+            <td>P9/P10に「医学的禁忌・検査値上の理由（白血球数・好中球数が基準を満たさない、または確認が必要）」を追加する。選択後の補助項目で「基準未満を確認済み」「過去低値・変動があり懸念」「直近値を把握しておらず確認が必要」を分ける。</td>
+            <td>担当症例をまとめて回答する場面では直近採血値を覚えていないことがあり、白血球数不足を確定理由としてだけ扱うと回答しづらいため。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>P9理由項目の修正案</h2>
+      <div class="mock">
+        <div class="q">
+          <span class="wizard-label">画面 P9 / 1問</span>
+          <div class="q-title">クロザピン導入を積極的に検討しない、または保留する主な理由を1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="p9"> Stably well / 十分治療されている</label>
+            <label class="choice"><input type="radio" name="p9"> Stably unwell / 低機能だが安定している</label>
+            <label class="choice"><input type="radio" name="p9"> 改善見込みが乏しい / beyond clozapine</label>
+            <label class="choice"><input type="radio" name="p9"> 有害事象・忍容性への懸念</label>
+            <label class="choice"><input type="radio" name="p9"><span class="choice-text">医学的禁忌・検査値上の理由<span class="example">白血球数・好中球数が基準を満たさない、または確認が必要</span></span></label>
+            <label class="choice"><input type="radio" name="p9"> 服薬遵守・連絡・支援体制への懸念</label>
+            <label class="choice"><input type="radio" name="p9"> 患者側: 入院が困難または受け入れ困難</label>
+            <label class="choice"><input type="radio" name="p9"> 患者側: 採血・受診の負担</label>
+            <label class="choice"><input type="radio" name="p9"> 患者側: 副作用への懸念</label>
+            <label class="choice"><input type="radio" name="p9"> 患者側: 期待される有用性の理解が難しい</label>
+          </div>
+          <p class="flow-note">主理由は1つのみ。白血球数・好中球数は「有害事象への一般的懸念」と分け、医学的に開始できない/確認が必要な理由として独立させる。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">条件付き画面 P9a / 1問</span>
+          <div class="q-title">P9で「医学的禁忌・検査値上の理由」を選んだ場合、最も近い状況を1つ選んでください</div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="p9a"> 白血球数または好中球数が、直近値で開始基準を満たさないことを確認している</label>
+            <label class="choice"><input type="radio" name="p9a"> 過去に白血球数または好中球数の低値・変動があり、開始前に慎重な確認が必要</label>
+            <label class="choice"><input type="radio" name="p9a"> 直近の白血球数または好中球数を把握しておらず、開始可否の判断には確認が必要</label>
+            <label class="choice"><input type="radio" name="p9a"> 白血球数・好中球数以外の医学的禁忌または検査値上の懸念がある</label>
+          </div>
+          <p class="flow-note">三澤先生の指摘どおり、主治医が一覧回答時に白血球数を把握していない可能性があるため、「基準未満を確認済み」と「未確認で保留」を分ける。</p>
+        </div>
+        <div class="q">
+          <span class="wizard-label">画面 P10 / 1問</span>
+          <div class="q-title">副次的理由があれば選んでください <span class="tag warn">複数選択可</span></div>
+          <p class="flow-note">P10にも同じ「医学的禁忌・検査値上の理由」を追加する。主理由ではないが、導入判断に影響する場合を拾う。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>文言修正一覧</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>対象</th>
+            <th>現行の問題</th>
+            <th>修正案</th>
+            <th>修正理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>P1冒頭</td>
+            <td>「現在のmGAF」だけでは評価期間が曖昧。</td>
+            <td>「最近1か月で最も低かった状態に基づいて、mGAF-SとmGAF-Fを別々に評価してください。」</td>
+            <td>外来評価の時間窓と最低点記録の原則を先に固定する。</td>
+          </tr>
+          <tr>
+            <td>症状入力</td>
+            <td>「現在みられる症状」は一時点評価に読める。</td>
+            <td>「最近1か月で該当した症状・状態」</td>
+            <td>外来患者では状態が変動するため、最近1か月の最重時点を拾う。</td>
+          </tr>
+          <tr>
+            <td>緊急入院</td>
+            <td>「精神科病院への緊急入院相当」がやや硬い。</td>
+            <td>「主治医判断では、ただちに精神科入院を要する状態」</td>
+            <td>回答者が臨床判断として答えやすく、入院先の制度差に左右されにくい。</td>
+          </tr>
+          <tr>
+            <td>身体的危険</td>
+            <td>精神症状評価なのに身体危険が唐突に見える。</td>
+            <td>「精神状態や摂食・セルフケアの問題に関連した急性の身体的危険」</td>
+            <td>拒食、過食、自発嘔吐、脱水など、元スケールの意図に近い範囲へ限定する。</td>
+          </tr>
+          <tr>
+            <td>精神病症状</td>
+            <td>「行動が妄想または幻覚に影響」と「幻覚・妄想・重い強迫儀式」の違いが分かりにくい。</td>
+            <td>21点相当は「幻覚・妄想にかなり影響された行動がある」、31-50点帯は「幻覚・妄想・重い強迫儀式があるが、行動が著しく支配されるほどではない」とする。</td>
+            <td>行動への影響の有無で上位重症度と重い症状領域を区別する。</td>
+          </tr>
+          <tr>
+            <td>重い症状領域</td>
+            <td>「判断、思考、気分、不安、幻覚/妄想/強迫、希死念慮を数えます」は説明が短い。</td>
+            <td>日本語版mGAFの「判断能力に重度の障害がある」「思考に重度の障害がある」「気分に重度の障害がある」「不安のために重度の機能障害がある」等をチェック項目として表示する。</td>
+            <td>医師が数を手計算しないで済み、元スケールの項目数ロジックと解析用の症状プロファイルを両方残せる。</td>
+          </tr>
+          <tr>
+            <td>mGAF-F主要機能</td>
+            <td>仕事/学業中心に読め、外来の無職・退職患者で迷う。</td>
+            <td>「仕事・学業・家事・日中活動の重い障害。就労・就学していない場合は役割遂行で判断。」</td>
+            <td>慢性期外来患者の機能低下を過小評価しないため。</td>
+          </tr>
+          <tr>
+            <td>スコア表示</td>
+            <td>低い値だけ表示すると得点帯が見えない。</td>
+            <td>「mGAF-F: 37（37-43点帯、主要機能障害2領域）」のように表示。</td>
+            <td>レビュー時に採点根拠が追跡しやすく、41点閾値との関係も説明しやすい。</td>
+          </tr>
+          <tr>
+            <td>早期終了</td>
+            <td>「mGAF-Fが41点以上」のみだと、なぜ終了するかが弱い。</td>
+            <td>「mGAF-Fが41点以上相当のため、本研究の反応性不良相当候補からは外れます。この患者の詳細質問は終了します。」</td>
+            <td>臨床的価値判断ではなく研究上の操作的分岐であることを明確にする。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>採点ロジック仕様</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>領域</th>
+            <th>判定順</th>
+            <th>保存値</th>
+            <th>保存する補助情報</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>mGAF-S</td>
+            <td>重篤危険 → 一部危険 → ほぼ全領域機能不全症状 → 重い症状領域数 → 中等度 → 持続軽度 → 一過性軽度 → 最小症状</td>
+            <td>各得点帯の低い値</td>
+            <td>該当項目名、該当数、得点帯、最終ラベル</td>
+          </tr>
+          <tr>
+            <td>mGAF-F</td>
+            <td>共通重篤項目 → 共通一部危険項目 → 主要機能障害領域数 → 中等度機能低下 → 持続軽度 → 一過性軽度 → 最小機能低下</td>
+            <td>各得点帯の低い値</td>
+            <td>主要機能障害領域、得点帯、41点閾値判定</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="panel reason">
+        <h3>実装上の注意</h3>
+        <p>mGAF-Fの37-43点帯は、保存値を37点にする限り研究上は40点以下として扱える。ただし画面表示では「37-43点帯」と明示し、閾値判定は保存値だけでなく採点帯もログに残す。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>現行フォームへの反映案</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>優先度</th>
+            <th>変更</th>
+            <th>理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag ok">高</span></td>
+            <td>P1冒頭と各サブステップに「最近1か月」「最も低い状態」を追加。</td>
+            <td>採点の再現性に直結する。</td>
+          </tr>
+          <tr>
+            <td><span class="tag ok">高</span></td>
+            <td>mGAF-Fの主要機能障害に「家事・日中活動・役割遂行」を追加。</td>
+            <td>外来慢性期患者で機能障害を過小評価しない。</td>
+          </tr>
+          <tr>
+            <td><span class="tag ok">高</span></td>
+            <td>スコア確認画面に得点帯と採点根拠を表示。</td>
+            <td>共同研究者レビューとデータ監査がしやすくなる。</td>
+          </tr>
+          <tr>
+            <td><span class="tag warn">中</span></td>
+            <td>重篤項目をS/F共通セクションとしてUI上も明示。</td>
+            <td>回答負担は下がるが、現行JSの構造変更がやや大きい。</td>
+          </tr>
+          <tr>
+            <td><span class="tag warn">中</span></td>
+            <td>「該当なし」を各チェックセクションの明示ボタンにする。</td>
+            <td>未回答と該当なしを区別できる。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

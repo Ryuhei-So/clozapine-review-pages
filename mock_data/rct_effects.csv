@@ -1,0 +1,9 @@
+contrast,outcome,intervention_n,intervention_N,control_n,control_N,difference_pp,ci_low_pp,ci_high_pp
+Patient-willingness evidence: Shown / Not shown,クロザピン改善期待あり,61,104,50,102,9.7,-4.1,23.4
+Patient-willingness evidence: Shown / Not shown,外来受容見込みあり,55,104,42,102,11.7,-2.0,25.4
+Suicide-prevention evidence: Shown / Not shown,クロザピン改善期待あり,64,103,47,103,16.5,2.8,30.2
+Suicide-prevention evidence: Shown / Not shown,外来受容見込みあり,52,103,45,103,6.8,-7.2,20.7
+Outpatient visit frequency during first 6 weeks: once-weekly / twice-weekly,外来受容見込みあり,56,103,41,103,14.6,0.7,28.5
+Outpatient visit frequency during first 6 weeks: once-weekly / twice-weekly,入院困難・外来なら受容見込み,38,103,26,103,11.7,-0.6,24.0
+Typical outpatient clozapine patient profile abroad: Shown / Not shown,クロザピン改善期待あり,63,104,48,102,13.5,-0.2,27.2
+Typical outpatient clozapine patient profile abroad: Shown / Not shown,外来受容見込みあり,58,104,39,102,17.5,3.8,31.2
